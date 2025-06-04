@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const signInSchema = z.object({
-  phoneNumber: z.string().regex(/^(\+\d{12}|\d{10})$/, {
+  phoneNumber: z.string().regex(/^(\+\d{12}|\d{10}|0\d{10})$/, {
     message: "Please enter a valid Indian mobile number",
   }),
 

@@ -1,6 +1,6 @@
 "use client";
 import useCountdown from "@/hooks/useCountdown";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
 import CodeInput from "./ui/code-input";
@@ -39,7 +39,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
   };
 
   return (
-    <Card className="shadow-none flex flex-col self-center max-w-[450px] w-full border-none py-0 px-3.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <Card className="shadow-none flex flex-col self-center max-w-[450px] w-full border-none py-0 px-3.5 animate-in fade-in slide-in-from-bottom-2 duration-300 gap-0 h-fit">
       <CardHeader className="px-0">
         <Button
           onClick={handleOnBack}
@@ -48,9 +48,9 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
           <ArrowLeft className="w-4 h-4" />
           Back{" "}
         </Button>
-        <h2 className="text-[1.8rem] font-semibold text-center md:text-left text-primary">
+        <CardTitle className="text-[1.8rem] font-semibold text-center md:text-left text-primary">
           Enter verification code
-        </h2>
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="px-0">
@@ -60,7 +60,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
               control={form.control}
               name="otp"
               render={({ field }) => (
-                <FormItem className="my-6 flex flex-row items-center justify-center">
+                <FormItem className="my-[1.875rem] flex flex-row items-center justify-center">
                   <FormControl>
                     <CodeInput
                       length={4}
@@ -75,7 +75,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
             <Button
               type="submit"
               disabled={watchedOtp?.length !== 4}
-              className="w-full p-4 font-medium h-14 text-[1.1rem]"
+              className="w-full p-4 font-medium h-14 text-[1.1rem] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300"
             >
               Verify & Login
             </Button>
@@ -88,7 +88,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
             <Button
               variant="link"
               onClick={handleResendOTP}
-              className="text-primary hover:underline p-0"
+              className="text-primary hover:underline p-0 "
             >
               Resend OTP
             </Button>

@@ -49,7 +49,7 @@ export default function CodeInput({ length = 4, onChange, className }) {
           inputMode="numeric"
           onChange={(e) => handleOnChange(e.target.value, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
-          className="w-12 h-12 md:w-14 md:h-14 text-center text-lg md:text-xl border focus-visible:border-primary focus:shadow-[0_0_0_3px_rgba(0,74,173,0.15)] font-semiboldborder self-center"
+          className="w-12 h-12 md:w-14 md:h-14 text-center text-lg md:text-xl border focus-visible:border-primary focus:shadow-[0_0_0_3px_rgba(0,74,173,0.15)] font-semibold rounded-xl self-center"
         />
       ))}
     </main>

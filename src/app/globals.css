@@ -51,8 +51,7 @@
   --border-color: #e8eaed;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   --hover-bg: #f8f9fa;
-  --primary-color-rgb: 0,74,173;
-
+  --primary-color-rgb: 0, 74, 173;
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -61,7 +60,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary:  #004aad;
+  --primary: #004aad;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: #0056b3;
   --secondary-foreground: oklch(0.205 0 0);
@@ -128,5 +127,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --tw-tracking: 0.5px;
+    letter-spacing: 0.5px;
   }
 }
