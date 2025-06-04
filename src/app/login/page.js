@@ -1,5 +1,4 @@
 "use client";
-
 import OTPPage from "@/components/otp-page";
 import LoginPage from "@/components/phone-page";
 import { redirect } from "next/navigation";
@@ -35,7 +34,7 @@ export default function Login() {
       {step === 1 && <LoginPage onSubmit={handlePhoneSubmit} />}
       {step === 2 && (
         <OTPPage 
-          onSubmit={handleOTPSubmit} 
+          onSubmit={handleOTPSubmit}
           onBack={handleBack}
           onResend={handleResendOTP}
         />

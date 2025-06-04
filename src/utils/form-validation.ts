@@ -13,3 +13,11 @@ export const signInSchema = z.object({
     .length(4, { message: "OTP must be 4 digits" })
     .regex(/^\d{4}$/, { message: "OTP must contain only digits" }),
 });
+export const signInOTPSchema = signInSchema.pick({
+  otp: true,
+});
+
+export const signInPhoneSchema = signInSchema.pick({
+  phoneNumber: true,
+  tnc: true,
+});

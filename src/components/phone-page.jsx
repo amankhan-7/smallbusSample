@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
@@ -16,12 +15,7 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { signInSchema } from "@/utils/form-validation";
-
-const signInPhoneSchema = signInSchema.pick({
-  phoneNumber: true,
-  tnc: true,
-});
+import { signInPhoneSchema } from "@/utils/form-validation";
 
 export default function PhonePage({ onSubmit }) {
   const form = useForm({

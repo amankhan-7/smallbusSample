@@ -1,17 +1,20 @@
 "use client";
 import useCountdown from "@/hooks/useCountdown";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
 import CodeInput from "./ui/code-input";
 import { useForm } from "react-hook-form";
-import { signInSchema } from "@/utils/form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
+import { signInOTPSchema } from "@/utils/form-validation";
 
-const signInOTPSchema = signInSchema.pick({
-  otp: true,
-});
 
 export default function OTPPage({ onBack, onSubmit, onResend }) {
   const { countdown, resetCountdown } = useCountdown(30);
@@ -30,10 +33,8 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
     resetCountdown();
     onBack();
   };
-
-  const handleResendOTP = async () => {
+  const handleResendOTP = () => {
     if (countdown > 0) return;
-    new Promise((resolve) => setTimeout(resolve("otp sent"), 2000));
     onResend();
     resetCountdown();
   };

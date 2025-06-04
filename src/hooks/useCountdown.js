@@ -5,10 +5,12 @@ export default function useCountdown(initialCount) {
   const [countdown, setCountdown] = useState(initialCount);
 
   useEffect(() => {
-    let timer;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    }
+    if (countdown <= 0) return;
+
+    const timer = setTimeout(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
     return () => clearTimeout(timer);
   }, [countdown]);
 
