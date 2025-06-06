@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Button from './UI/Button.jsx'
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
 
 export default function PaymentPage() {
@@ -215,12 +216,9 @@ export default function PaymentPage() {
           <div className="text-[#004aad] font-bold text-[18px]">Total Amount</div>
         </section>
 
-        <button
-          onClick={handlePayment}
-          className="block w-full p-3 bg-primary text-white rounded-lg bg-[#004aad] font-semibold cursor-pointer"
-        >
-          Make Payment
-        </button>
+      <Button onClick={handlePayment} className="w-full">
+        Make Payment
+      </Button>
       </main>
     </div>
   );
