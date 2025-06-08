@@ -1,10 +1,39 @@
 "use client";
 
-import React, { useRef } from "react";
-import Button from './UI/Button.jsx'
+import React, { useRef, useState, useEffect } from "react";
+import Button from "./UI/Button.jsx";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
 
 export default function PaymentPage() {
+  /*
+  Dummy Data to store before retrieve
+  localStorage.setItem("bookingInfo", JSON.stringify({
+  bus: "ABC Travels",
+  from: "Delhi",
+  to: "Jaipur",
+  date: "2025-06-10",
+  timeofdeparture: "7:30 AM",
+  timeofarrival: "12:15 PM",
+  seatid: ["A1", "A2"]
+}));
+*/
+  const [booking, setBooking] = useState({
+    bus: "",
+    from: "",
+    to: "",
+    date: "",
+    timeofdeparture: "",
+    timeofarrival: "",
+    seatid: [],
+  });
+
+  useEffect(() => {
+    const data = localStorage.getItem("bookingInfo");
+    if (data) {
+      setBooking(JSON.parse(data));
+    }
+  }, []);
+
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const ageRef = useRef();
@@ -64,20 +93,29 @@ export default function PaymentPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-3 bg-gray-50 border border-stone-100 rounded-lg">
               <div className="text-gray-500 text-xs">Bus</div>
-              <div className="text-sm font-medium"> ABC Bus </div>
+              <div className="text-sm font-medium"> {booking.bus} </div>
             </div>
 
             <div className="p-3 bg-gray-50 border border-stone-100 rounded-lg">
               <div className="text-gray-500 text-xs">Journey</div>
+              <div className="text-sm font-medium">
+                {booking.from} → {booking.to}
+              </div>
             </div>
 
             <div className="p-3 bg-gray-50 border border-stone-100 rounded-lg">
               <div className="text-gray-500 text-xs">Date & Time</div>
-              <div className="text-base font-medium"></div>
+              <div className="text-sm font-medium">
+                {booking.date} ({booking.timeofdeparture} -{" "}
+                {booking.timeofarrival})
+              </div>
             </div>
 
             <div className="p-3 bg-gray-50 border border-stone-100 rounded-lg">
               <div className="text-gray-500 text-xs">Seats</div>
+              <div className="text-sm font-medium">
+                {booking.seatid.join(", ")}
+              </div>
             </div>
           </div>
         </section>
@@ -90,44 +128,68 @@ export default function PaymentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="firstName"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 First Name
               </label>
               <input
                 ref={firstNameRef}
+                id="firstName"
+                name="firstName"
+                autoComplete="given-name"
                 type="text"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-200 ease-in-out"
               />
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="lastName"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 Last Name
               </label>
               <input
                 ref={lastNameRef}
+                id="lastName"
+                name="lastName"
+                autoComplete="family-name"
                 type="text"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-200 ease-in-out"
               />
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="age"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 Age
               </label>
               <input
                 ref={ageRef}
+                id="age"
+                name="age"
+                autoComplete="age"
                 type="number"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800"
               />
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="gender"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 Gender
               </label>
               <select
                 ref={genderRef}
+                id="gender"
+                name="gender"
+                autoComplete="sex"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800"
               >
                 <option value="">Select Gender</option>
@@ -140,11 +202,17 @@ export default function PaymentPage() {
 
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 Email Address
               </label>
               <input
                 ref={emailRef}
+                id="email"
+                name="email"
+                autoComplete="email"
                 type="email"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-200 ease-in-out"
               />
@@ -154,11 +222,17 @@ export default function PaymentPage() {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-text-color">
+              <label
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-text-color"
+              >
                 Phone Number
               </label>
               <input
                 ref={phoneRef}
+                id="phone"
+                name="phone"
+                autoComplete="tel"
                 type="tel"
                 className="w-full p-2.5 border border-gray-200 rounded-lg text-sm  focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-200 ease-in-out"
               />
@@ -178,8 +252,12 @@ export default function PaymentPage() {
           <div className="border border-slate-300 rounded-lg px-4 py-2.5 mb-4 flex items-center gap-3 cursor-pointer hover:border-blue-800">
             <CreditCard className="w-6 h-6 text-[#004aad]" />
             <div className="flex-1">
-              <div className="font-medium text-text-color">Credit/Debit Card</div>
-              <div className="text-sm text-slate-500">Pay securely using your card</div>
+              <div className="font-medium text-text-color">
+                Credit/Debit Card
+              </div>
+              <div className="text-sm text-slate-500">
+                Pay securely using your card
+              </div>
             </div>
           </div>
 
@@ -187,7 +265,9 @@ export default function PaymentPage() {
             <Smartphone className="w-6 h-6 text-[#004aad]" />
             <div className="flex-1">
               <div className="font-medium text-text-color">UPI</div>
-              <div className="text-sm text-slate-500">Pay using any UPI app</div>
+              <div className="text-sm text-slate-500">
+                Pay using any UPI app
+              </div>
             </div>
           </div>
 
@@ -195,7 +275,9 @@ export default function PaymentPage() {
             <Landmark className="w-6 h-6 text-[#004aad]" />
             <div className="flex-1">
               <div className="font-medium text-text-color">Net Banking</div>
-              <div className="text-sm text-slate-500">Pay directly from your bank account</div>
+              <div className="text-sm text-slate-500">
+                Pay directly from your bank account
+              </div>
             </div>
           </div>
         </section>
@@ -213,12 +295,14 @@ export default function PaymentPage() {
           </div>
           <hr className="border-gray-200 mb-3" />
 
-          <div className="text-[#004aad] font-bold text-[18px]">Total Amount</div>
+          <div className="text-[#004aad] font-bold text-[18px]">
+            Total Amount
+          </div>
         </section>
 
-      <Button onClick={handlePayment} className="w-full">
-        Make Payment
-      </Button>
+        <Button onClick={handlePayment} className="w-full">
+          Make Payment
+        </Button>
       </main>
     </div>
   );

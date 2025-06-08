@@ -1,6 +1,6 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wdth,wght@125,300..700&family=Monomakh&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@700&display=swap');
+
+@import "tailwindcss";
 
 @theme {
   --font-mont: "Montserrat", sans-serif;
