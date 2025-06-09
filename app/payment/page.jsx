@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import Button from "./UI/Button.jsx";
+import ButtonUI from '../components/UI/ButtonUI'
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
 
 export default function PaymentPage() {
@@ -74,7 +74,7 @@ export default function PaymentPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <header className="text-center py-4 bg-white shadow fixed w-full top-0 z-[1000]">
+      <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
         <a
           href="#"
           className="inline-block py-1 text-[24px] text-[#004aad] no-underline font-mont font-black"
@@ -300,9 +300,9 @@ export default function PaymentPage() {
           </div>
         </section>
 
-        <Button onClick={handlePayment} className="w-full">
+        <ButtonUI onClick={handlePayment} className="w-full py-1.5">
           Make Payment
-        </Button>
+        </ButtonUI>
       </main>
     </div>
   );

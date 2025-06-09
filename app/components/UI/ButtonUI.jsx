@@ -3,7 +3,7 @@ export default function CustomButton({ onClick, children, className = "" }) {
   return (
     <button
       onClick={onClick}
-      className={`block p-3 text-white rounded-lg font-semibold cursor-pointer bg-[#004aad] ${className}`}
+      className={`block cursor-pointer bg-[#004aad] text-white md:p-3 font-semibold rounded-lg ${className}`}
     >
       {children}
     </button>
