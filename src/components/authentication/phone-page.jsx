@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -11,11 +11,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Checkbox } from "./ui/checkbox";
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { signInPhoneSchema } from "@/utils/form-validation";
+import { Button } from "@/components/ui/button";
+import { signInPhoneSchema } from "@/utils/validations/form-validation";
 
 export default function PhonePage({ onSubmit }) {
   const form = useForm({
@@ -73,9 +73,12 @@ export default function PhonePage({ onSubmit }) {
                   <FormLabel className="text-muted-foreground h-fit font-normal self-center w-full">
                     <div className="h-fit">
                       I agree to the{" "}
-                        <Link href="#" className="text-primary hover:underline p-0 h-fit">
-                          Terms & Conditions{" "}
-                        </Link>
+                      <Link
+                        href="#"
+                        className="text-primary hover:underline p-0 h-fit"
+                      >
+                        Terms & Conditions{" "}
+                      </Link>
                       and{" "}
                       <Link
                         href="#"

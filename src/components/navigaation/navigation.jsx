@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Montserrat } from "next/font/google";
+import { cn } from "@/lib/utils";
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["700"],
+});
 
 export function Navigation({ showBackLink = true, backTo = "/home" }) {
   return (
@@ -7,7 +13,10 @@ export function Navigation({ showBackLink = true, backTo = "/home" }) {
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="/home"
-          className="text-2xl font-bold text-primary hover:text-secondary transition-colors"
+          className={cn(
+            "text-2xl text-primary hover:text-secondary transition-colors",
+            montserrat.className
+          )}
         >
           smallbus
         </Link>

@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/navigation";
+import { Navigation } from "@/components/navigaation/navigation";
 
 export default function LoginLayout({ children }) {
   return (
