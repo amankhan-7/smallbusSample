@@ -1,7 +1,7 @@
 import { SEAT_STATUS } from "@/constants/seat-selection";
-export function generateSeatLayout({ busType, rows }) {
+export function generateSeatLayout({ busLayout, rows }) {
   const seats = [];
-
+  
   const rowLabels = Array.from({ length: rows }, (_, i) =>
     String.fromCharCode(65 + i)
   );
@@ -10,7 +10,7 @@ export function generateSeatLayout({ busType, rows }) {
     const rowLabel = rowLabels[row];
     const rowSeats = [];
 
-    if (busType === "3-column") {
+    if (busLayout === "3-column") {
       rowSeats.push(createSeatItem(`${rowLabel}1`, 1));
       rowSeats.push(createSeatItem(`${rowLabel}2`, 2));
       rowSeats.push(createSeatItem(`${rowLabel}3`, 3));
@@ -36,13 +36,5 @@ function createSeatItem(id, position) {
     position,
   };
 }
-
-
-export function getSeatStatus(seatId, bookedSeats = [], selectedSeats = []) {
-  if (bookedSeats.includes(seatId)) return SEAT_STATUS.BOOKED;
-  if (selectedSeats.includes(seatId)) return SEAT_STATUS.SELECTED;
-  return SEAT_STATUS.AVAILABLE;
-}
-
 
 

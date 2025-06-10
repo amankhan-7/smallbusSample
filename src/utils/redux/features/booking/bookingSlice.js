@@ -6,7 +6,7 @@ const initialState = {
     from: "Pune",
     to: "Patna",
     date: "Sun, 3 Jun",
-    busType: "AC Sleeper Express",
+    busType: "AC Seater Express",
     busLayout: "3-column",
     departureTime: "18:30",
     arrivalTime: "00:00",
