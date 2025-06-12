@@ -6,10 +6,9 @@ import SeatSelection from "@/components/seats/seat-selection";
 
 export default function SeatsPage() {
   const router = useRouter();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
-    // Check if user is authenticated
     if (!userInfo) {
       const storedUserInfo = localStorage.getItem("userInfo");
       if (!storedUserInfo) {

@@ -21,7 +21,7 @@ export default function PhonePage({ onSubmit }) {
   const form = useForm({
     resolver: zodResolver(signInPhoneSchema),
     defaultValues: {
-      phoneNumber: "",
+      phone: "",
       tnc: true,
     },
   });
@@ -37,7 +37,7 @@ export default function PhonePage({ onSubmit }) {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="phone"
               render={({ field }) => (
                 <FormItem className="mb-5 gap-0">
                   <FormLabel className="font-medium text-[1rem] text-[var(--text-color)] mb-2.5">

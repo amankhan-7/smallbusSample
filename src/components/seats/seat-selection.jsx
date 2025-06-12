@@ -4,9 +4,6 @@ import SeatLegend from "./seat-legend";
 import BusLayout from "./bus-layout";
 import BookingSummary from "./booking-summary";
 
-/**
- * Main seat selection component wrapped with error boundary
- */
 export default function SeatSelection() {
   return (
       <Card className="mx-[0.9375rem] md:mx-auto md:mt-4 max-w-[56.25rem] p-5 md:p-[1.875rem] rounded-[0.75rem] md:rounded-2xl gap-0 mb-[1.875rem]">

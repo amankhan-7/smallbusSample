@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const signInSchema = z.object({
-  phoneNumber: z.string().regex(/^(\+\d{12}|\d{10}|0\d{10})$/, {
+const signInSchema = z.object({
+  phone: z.string().regex(/^(\+\d{12}|\d{10}|0\d{10})$/, {
     message: "Please enter a valid Indian mobile number",
   }),
 
@@ -18,6 +18,38 @@ export const signInOTPSchema = signInSchema.pick({
 });
 
 export const signInPhoneSchema = signInSchema.pick({
-  phoneNumber: true,
+  phone: true,
   tnc: true,
+});
+
+const userSchema = z.object({
+  profilePicture: z
+    .instanceof(File)
+    .refine((file) => file.size <= 2 * 1024 * 1024, {
+      message: "Profile picture must be less than 2MB",
+    })
+    .optional(),
+  fullname: z
+    .string()
+    .min(3, { message: "Full name must be at least 3 characters long" })
+    .max(50, { message: "Full name must not exceed 50 characters" }),
+  phone: z
+    .string()
+    .regex(/^(\+\d{12}|\d{10}|0\d{10})$/, {
+      message: "Please enter a valid Indian mobile number",
+    })
+    .readonly(),
+  email: z
+    .string()
+    .email({ message: "Please enter a valid email address" })
+    .max(100, { message: "Email must not exceed 100 characters" })
+    .optional(),
+});
+
+export const accountDetailSchema = userSchema.omit({
+  profilePicture: true,
+});
+
+export const userProfilePictureSchema = userSchema.pick({
+  profilePicture: true,
 });

@@ -1,7 +1,7 @@
 "use client";
 import OTPPage from "@/components/authentication/otp-page";
 import LoginPage from "@/components/authentication/phone-page";
-import { setUserInfo } from "@/utils/redux/features/auth/authSlice";
+import { setUserInfo } from "@/utils/redux/features/user/userSlice";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -30,7 +30,16 @@ export default function Login() {
   }, [dispatch]);
 
   const handleOTPSubmit = ({ otp }) => {
-    dispatch(setUserInfo({ ...phoneData, otp }));
+    console.log("OTP submitted:", otp);
+    console.log("Phone data:", phoneData);
+    dispatch(
+      setUserInfo({
+        fullname: "User",
+        phone: phoneData.phone,
+        email: "",
+        profilePicture: null,
+      })
+    );
     redirect("/home");
   };
 

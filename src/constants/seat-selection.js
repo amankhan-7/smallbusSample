@@ -3,4 +3,3 @@ export const SEAT_STATUS = {
   SELECTED: "selected",
   BOOKED: "booked",
 };
-
