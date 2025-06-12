@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, User } from "lucide-react";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Navbar() {
 
   return (
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
-      <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
@@ -49,7 +49,7 @@ export default function Navbar() {
             href="/login"
             className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
           >
-            <User size={16} /> Login
+            <FaUser size={16} /> Login
           </Link>
         </div>
 
@@ -59,18 +59,16 @@ export default function Navbar() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          {/* Menu Icon */}
-          <Menu
-            size={28}
+          <FaBars
+            size={24}
             className={`absolute transition-all duration-300 ease-in-out transform ${
               menuOpen
                 ? "opacity-0 scale-90 rotate-45"
                 : "opacity-100 scale-100 rotate-0"
             }`}
           />
-          {/* X Icon */}
-          <X
-            size={30}
+          <FaTimes
+            size={26}
             className={`pt-5 absolute transition-all duration-300 ease-in-out transform ${
               menuOpen
                 ? "opacity-100 scale-100 rotate-0"
@@ -83,20 +81,19 @@ export default function Navbar() {
       {/* Mobile Sidebar & Overlay */}
       {menuOpen && (
         <div className="fixed inset-0 z-[999] flex">
-          {/* Transparent Dim Overlay */}
+          {/* Overlay */}
           <div
             className="w-1/2 bg-black/30 mix-blend-multiply"
             onClick={() => setMenuOpen(false)}
           />
           {/* Sidebar */}
           <div className="w-1/2 bg-white shadow-lg p-6 flex flex-col pt-30 items-center relative">
-            {/* Close Button aligned same as toggle */}
             <button
               className="absolute top-4 right-4 text-[#004aad]"
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
             >
-              <X size={30} className="mb-18 mt-2.5 mr-0.5" />
+              <FaTimes size={26} className="mb-18 mt-2 mr-0.5" />
             </button>
 
             <div className="flex flex-col items-center space-y-6 text-gray-700 text-base font-medium">
@@ -119,7 +116,7 @@ export default function Navbar() {
                 className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
                 onClick={() => setMenuOpen(false)}
               >
-                <User size={16} /> Login
+                <FaUser size={16} /> Login
               </Link>
             </div>
           </div>
