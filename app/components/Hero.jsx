@@ -43,10 +43,18 @@ function Hero() {
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
-  const wrapperRef = useRef(null);
 
+  const wrapperRef = useRef(null);
   const dateInputRef = useRef(null);
 
+  //Assigning minimum and default booking date
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const deafaultBookingDate = tomorrow.toISOString().split("T")[0];
+
+  //on clicking outside of wrapped DOM clear states
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -61,21 +69,21 @@ function Hero() {
     };
   }, []);
 
+  //After selecting a city set state , clear option and SetActive input to null
   const handleSelectSuggestion = (name, setter, clearSuggestions) => {
     setter(name);
     clearSuggestions([]);
     setActiveInput(null);
   };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const fromCity = formData.get("from");
-  const toCity = formData.get("to");
-  const travelDate = formData.get("date");
-  console.log({ fromCity, toCity, travelDate });
-};
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const fromCity = formData.get("from");
+    const toCity = formData.get("to");
+    const travelDate = formData.get("date");
+    console.log({ fromCity, toCity, travelDate });
+  };
 
   return (
     <div className="font-inter h-585 md:h-345 mt-7 bg-gradient-to-b from-white via-gray-50 to-gray-100 text-gray-900 leading-relaxed">
@@ -127,7 +135,7 @@ const handleSubmit = (e) => {
                   className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-md text-base focus:outline-none focus:border-[#004aad] focus:ring-4 focus:ring-[#004aad]/20 transition-all"
                 />
                 {activeInput === "from" && fromSuggestions.length > 0 && (
-                  <ul className="absolute z-10 bg-white w-full mt-1 max-h-61 overflow-y-auto border border-gray-200 rounded shadow">
+                  <ul className="absolute z-10 bg-white w-full mt-1 max-h-65 overflow-y-auto border border-gray-200 rounded shadow">
                     {fromSuggestions.map((city, index) => (
                       <li
                         key={index}
@@ -140,7 +148,7 @@ const handleSubmit = (e) => {
                           )
                         }
                       >
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-base text-gray-900 font-semibold">
                           {city.name}
                         </p>
                         <p className="text-xs text-gray-500">{city.state}</p>
@@ -198,7 +206,7 @@ const handleSubmit = (e) => {
                   className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-md text-base focus:outline-none focus:border-[#004aad] focus:ring-4 focus:ring-[#004aad]/20 transition-all"
                 />
                 {activeInput === "to" && toSuggestions.length > 0 && (
-                  <ul className="absolute z-10 bg-white w-full mt-1 max-h-61 overflow-y-auto border border-gray-200 rounded shadow">
+                  <ul className="absolute z-10 bg-white w-full mt-1 max-h-65 overflow-y-auto border border-gray-200 rounded shadow">
                     {toSuggestions.map((city, index) => (
                       <li
                         key={index}
@@ -211,7 +219,7 @@ const handleSubmit = (e) => {
                           )
                         }
                       >
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-base font-semibold text-gray-900">
                           {city.name}
                         </p>
                         <p className="text-xs text-gray-500">{city.state}</p>
@@ -239,8 +247,8 @@ const handleSubmit = (e) => {
                 type="date"
                 id="date"
                 name="date"
-                min={new Date().toISOString().split("T")[0]}
-                defaultValue={new Date().toISOString().split("T")[0]}
+                min={deafaultBookingDate}
+                defaultValue={deafaultBookingDate}
                 className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-md text-base focus:outline-none focus:border-[#004aad] focus:ring-4 focus:ring-[#004aad]/20 transition-all cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
               />
             </div>
