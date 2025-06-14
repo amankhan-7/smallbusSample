@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/navigaation/navigation";
+import { Navigation } from "@/components/navigation/navigation";
 
 export default function SeatsLayout({ children }) {
   return (

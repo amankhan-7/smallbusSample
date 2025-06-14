@@ -20,11 +20,13 @@ export default function AccountTabs() {
             transition-all
             rounded-none
             border-0
-            text-[1rem]
+            text-base
             data-[state=inactive]:hover:bg-[var(--hover-bg)]
             data-[state=inactive]:text-[#666]
             data-[state=inactive]:bg-white
-            data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary
+            data-[state=active]:border-b-2 
+            data-[state=active]:border-primary
+            data-[state=active]:text-primary
           "
         >
           Account Details
@@ -45,7 +47,9 @@ export default function AccountTabs() {
             data-[state=inactive]:hover:bg-[var(--hover-bg)]
             data-[state=inactive]:text-[#666]
             data-[state=inactive]:bg-white
-            data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary
+            data-[state=active]:border-b-2
+            data-[state=active]:border-primary 
+            data-[state=active]:text-primary
           "
         >
           Booking History

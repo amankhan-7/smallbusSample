@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, UserCircle2, X } from "lucide-react";
+import { ArrowLeft, Menu, UserCircle2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
 
