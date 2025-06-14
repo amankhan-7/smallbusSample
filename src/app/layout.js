@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/navigaation/navigation";
+import { Navigation } from "@/components/navigation/navigation";
 import "./globals.css";
 import ReduxWrapper from "@/components/wrapper/redux-wrapper";
 

@@ -25,7 +25,7 @@ export default function Login() {
     const userInfo = localStorage.getItem("userInfo");
     if (userInfo) {
       dispatch(setUserInfo(JSON.parse(userInfo)));
-      redirect("/home");
+      redirect("/");
     }
   }, [dispatch]);
 
@@ -40,7 +40,7 @@ export default function Login() {
         profilePicture: null,
       })
     );
-    redirect("/home");
+    redirect("/");
   };
 
   const handleBack = () => {

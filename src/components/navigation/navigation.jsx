@@ -11,7 +11,7 @@ const montserrat = Montserrat({
   weight: ["700"],
 });
 
-export function Navigation({ showBackLink = false, backTo = "/home" }) {
+export function Navigation({ showBackLink = false, backTo = "/" }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
