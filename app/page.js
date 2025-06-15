@@ -7,8 +7,7 @@ export default function HeroSearchFooter() {
 
   return (
     <main>
-        <Hero/>
-        
+        <Hero/>   
         <Footer/>
     </main>
   
