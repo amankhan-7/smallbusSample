@@ -43,7 +43,8 @@ const userSchema = z.object({
     .string()
     .email({ message: "Please enter a valid email address" })
     .max(100, { message: "Email must not exceed 100 characters" })
-    .optional(),
+    .optional()
+    .or(z.literal("")),
 });
 
 export const accountDetailSchema = userSchema.omit({
