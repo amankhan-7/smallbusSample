@@ -1,0 +1,32 @@
+"use client";
+
+import { NavLink } from "./NavLink";
+import { AccountButton } from "./AccountButton";
+
+export function DesktopNavigation({ className = "", ...props }) {
+  const defaultNavigationItems = (
+    <>
+      <li>
+        <NavLink href="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink href="/my-trips">My Trips</NavLink>
+      </li>
+      <li>
+        <NavLink href="/help">Help</NavLink>
+      </li>
+      <li>
+        <AccountButton />
+      </li>
+    </>
+  );
+
+  return (
+    <ul
+      className={`hidden md:flex gap-[32px] items-center m-0 p-0 list-none ${className}`}
+      {...props}
+    >
+      {defaultNavigationItems}
+    </ul>
+  );
+}
