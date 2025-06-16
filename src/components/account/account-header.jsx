@@ -17,11 +17,13 @@ import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { setUserInfo } from "@/utils/redux/features/user/userSlice";
+import { safeLocalStorage } from "@/lib/localStorage";
 
 export default function AccountHeader() {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const userInfo = useSelector((state) => state.user.userInfo);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [mount, setMount] = useState(false);
 
   const onProfilePictureSubmit = (data) => {
     try {
@@ -48,9 +50,9 @@ export default function AccountHeader() {
   };
 
   useEffect(() => {
-    const userInfoData = localStorage.getItem("userInfo");
+    const userInfoData = safeLocalStorage.getItem("userInfo");
     if (userInfoData) {
-      dispatch(setUserInfo(JSON.parse(userInfoData)));
+      dispatch(setUserInfo(userInfoData));
     }
   }, [dispatch]);
 
@@ -65,6 +67,12 @@ export default function AccountHeader() {
       setAvatarPreview(null);
     }
   };
+  useEffect(() => {
+    setMount(true);
+  }, []);
+  if (!mount) {
+    return null;
+  }
   return (
     <Card className="bg-white rounded-none p-[30px] mb-[20px] shadow-md flex gap-[30px] max-md:flex-col max-md:text-center max-md:gap-[15px]">
       <CardContent className="flex p-0 flex-col items-center md:flex-row gap-[15px]">
@@ -127,7 +135,7 @@ export default function AccountHeader() {
             {userInfo?.fullname || "User"}
           </h2>
           <p className="text-[0.9rem] text-[#666]">
-            {userInfo?.phone || "+9100000000"}
+            {userInfo?.phone || "+910000000000"}
           </p>
         </div>
       </CardContent>

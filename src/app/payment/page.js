@@ -1,7 +1,9 @@
-import React from 'react'
+import React from "react";
 
 export default function PaymentPage() {
   return (
-    <div>PaymentPage</div>
-  )
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      PaymentPage
+    </div>
+  );
 }

@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import SeatSelection from "@/components/seats/seat-selection";
+import { safeLocalStorage } from "@/lib/localStorage";
+
 
 export default function SeatsPage() {
   const router = useRouter();
@@ -10,7 +12,7 @@ export default function SeatsPage() {
 
   useEffect(() => {
     if (!userInfo) {
-      const storedUserInfo = localStorage.getItem("userInfo");
+      const storedUserInfo = safeLocalStorage.getItem("userInfo");
       if (!storedUserInfo) {
         router.push("/login");
         return;

@@ -1,10 +1,23 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
+import { useGetBusDataQuery } from "@/utils/redux/api/bus";
 import { ArrowRight } from "lucide-react";
 import { useSelector } from "react-redux";
 
 export default function JourneyInfo() {
-  const { bookingData } = useSelector((state) => state.booking);
+  const { data: bookingData, isLoading } = useGetBusDataQuery(
+    useSelector((state) => state.booking.selectedBusId)
+  );
+  if (isLoading) {
+    return (
+      <Card className="mb-3 md:mb-4 rounded-[0.5rem]">
+        <CardContent className="text-center text-gray-500">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
+          <p>Loading booking details...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-0 mb-3 md:mb-4 rounded-[0.5rem] ">

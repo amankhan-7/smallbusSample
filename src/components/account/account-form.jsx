@@ -2,8 +2,10 @@
 import { accountDetailSchema } from "@/utils/validations/form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useUpdateUserMutation } from "@/utils/redux/api/user";
+import { updateUserInfo } from "@/utils/redux/features/user/userSlice";
 import {
   Form,
   FormControl,
@@ -18,14 +20,8 @@ import { Button } from "../ui/button";
 
 export default function AccountForm() {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const onSubmit = (data) => {
-    try {
-      console.log("Account form submitted:", data);
-      console.log("Account details updated successfully!");
-    } catch (error) {
-      console.error("Error updating account:", error);
-    }
-  };
+  const dispatch = useDispatch();
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
 
   const form = useForm({
     resolver: zodResolver(accountDetailSchema),
@@ -46,11 +42,14 @@ export default function AccountForm() {
     }
   }, [userInfo, form]);
 
-  const handleSubmit = (data) => {
-    if (onSubmit) {
-      onSubmit(data);
-    } else {
-      console.log("Form submitted with data:", data);
+  const handleSubmit = async (data) => {
+    try {
+      const result = await updateUser(data).unwrap();
+      dispatch(updateUserInfo(result));
+      alert("Account updated successfully!");
+    } catch (error) {
+      console.error("Error updating account:", error);
+      alert("Failed to update account. Please try again.");
     }
   };
 
@@ -142,12 +141,12 @@ export default function AccountForm() {
             </FormItem>
           )}
         />
-
         <Button
           type="submit"
+          disabled={isLoading}
           className="px-[1.5625rem] py-[0.75rem] bg-primary text-white rounded-none font-[500] text-base transition-colors min-h-fit"
         >
-          Save Changes
+          {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </form>
     </Form>

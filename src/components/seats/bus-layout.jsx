@@ -10,6 +10,7 @@ import {
   deselectSeat,
   selectSeat,
 } from "@/utils/redux/features/booking/bookingSlice";
+import { useGetBusDataQuery } from "@/utils/redux/api/bus";
 import { Separator } from "../ui/separator";
 
 const SeatItem = memo(function SeatItem({
@@ -186,19 +187,29 @@ const FrontRow = memo(function FrontRow({
 });
 
 export default function BusLayout() {
-  const { bookingData, selectedSeats } = useSelector((state) => state.booking);
+  const { selectedSeats, selectedBusId } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
+
+  const {
+    data: busData,
+    isLoading,
+    error,
+  } = useGetBusDataQuery({ id: selectedBusId });
+
   const seatLayout = useMemo(() => {
+    if (!busData) return [];
+
     try {
       return generateSeatLayout({
-        busLayout: bookingData.busLayout,
-        rows: bookingData.rows,
+        busLayout: busData.busLayout,
+        rows: busData.rows,
       });
     } catch (error) {
       console.error("Error generating seat layout:", error);
       return [];
     }
-  }, [bookingData.busType, bookingData.rows]);
+  }, [busData?.busLayout, busData?.rows]);
+
 
   const handleSeatClick = (seatId) => {
     if (selectedSeats.includes(seatId)) {
@@ -208,11 +219,38 @@ export default function BusLayout() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card className="mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] w-full rounded-xl">
+        <CardContent className="flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
+            <p>Loading bus layout...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] w-full rounded-xl">
+        <CardContent className="flex items-center justify-center p-8">
+          <p className="text-red-500">Error loading bus data</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!busData) {
+    return null;
+  }
+
   return (
     <Card className="mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-200 w-full rounded-xl will-change-transform">
       <CardContent className="space-y-2 p-0">
         <FrontRow
-          bookedSeats={bookingData.bookedSeats}
+          bookedSeats={busData.bookedSeats}
           selectedSeats={selectedSeats}
           onSeatClick={handleSeatClick}
         />
@@ -224,7 +262,7 @@ export default function BusLayout() {
           >
             <BusRow
               rowSeats={rowSeats}
-              bookedSeats={bookingData.bookedSeats}
+              bookedSeats={busData.bookedSeats}
               selectedSeats={selectedSeats}
               onSeatClick={handleSeatClick}
             />
@@ -232,7 +270,7 @@ export default function BusLayout() {
         ))}
         <div className="w-full h-px my-[1.875rem] bg-gray-200 mx-4"></div>
         <LastRow
-          bookedSeats={bookingData.bookedSeats}
+          bookedSeats={busData.bookedSeats}
           selectedSeats={selectedSeats}
           onSeatClick={handleSeatClick}
         />
