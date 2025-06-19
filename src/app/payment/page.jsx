@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import ButtonUI from '../components/UI/ButtonUI'
+import ButtonUI from '@/components/UI/ButtonUI'
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
 
 export default function PaymentPage() {

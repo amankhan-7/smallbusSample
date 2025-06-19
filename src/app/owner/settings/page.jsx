@@ -1,6 +1,6 @@
 "use client";
 
-import BottomNav from "@/app/owner/UI/BottomNav";
+import BottomNav from "@/components/UI/BottomNav";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useState } from "react";
 
@@ -25,7 +25,7 @@ export default function SettingsPage() {
       <BottomNav />
 
       {/* Page Content */}
-      <main className="flex-1 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-24 pb-24 md:pb-6">
+      <main className="flex-1 px-4 sm:px-6 md:px-8 pb-24 md:pb-6 lg:ml-18">
         {/* Header */}
         <div className="bg-white p-4 mt-4 md:mt-8 rounded-lg shadow mb-6 max-w-5xl mx-auto w-full flex flex-col md:flex-row md:justify-between">
           <h1 className="text-xl font-semibold text-[#004aad] mb-4 md:mb-0">
@@ -41,6 +41,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+
         {/* Settings Form */}
         <section className="bg-white rounded-[12px] p-6 mb-6 shadow max-w-5xl mx-auto w-full">
           <h2 className="text-[#004aad] mb-4 text-lg font-semibold">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ButtonUI from '../components/UI/ButtonUI'
+import ButtonUI from '@/components/UI/ButtonUI'
 
 export default function BusesPage() {
   const [sortOption, setSortOption] = useState("Price: Low to High");

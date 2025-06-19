@@ -1,6 +1,6 @@
 "use client";
 
-import BottomNav from "@/app/owner/UI/BottomNav";
+import BottomNav from "@/components/UI/BottomNav";
 import { FaBus, FaTicketAlt, FaPlus } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default function HomePage() {
       <BottomNav />
 
       {/* Page Content */}
-      <main className="flex-1 p-4 sm:p-6 md:px-16 lg:px-24 xl:px-40 pb-24 md:pb-6">
+      <main className="flex-1 px-4 sm:px-6 md:px-8 pb-24 md:pb-6 lg:ml-18">
         {/* Header */}
         <div className="bg-white p-4 mt-4 md:mt-8 rounded-lg shadow mb-6 max-w-5xl mx-auto w-full flex flex-col md:flex-row md:justify-between">
           <h1 className="text-xl font-semibold text-[#004aad] mb-4 sm:mb-0">

@@ -1,6 +1,6 @@
-import Hero from '@/app/components/Hero'
-import Footer from '@/app/components/Footer'
-import Navbar from '@/app/components/Navbar'
+import Hero from '@/components/Hero'
+import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
 
 
 export default function HeroSearchFooter() {

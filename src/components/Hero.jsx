@@ -8,9 +8,9 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
-import Features from "@/app/components/Features";
-import PopularRoutes from "./PopularRoutes";
-import ButtonUI from "@/app/components/UI/ButtonUI";
+import Features from "@/components/Features";
+import PopularRoutes from "@/components/PopularRoutes";
+import ButtonUI from "@/components/UI/ButtonUI";
 
 const cities = [
   { name: "Patna", state: "Bihar" },

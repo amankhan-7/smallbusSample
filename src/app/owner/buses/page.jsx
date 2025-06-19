@@ -1,6 +1,6 @@
 "use client";
 
-import BottomNav from "@/app/owner/UI/BottomNav";
+import BottomNav from "@/components/UI/BottomNav";
 import {
   FaEdit,
   FaTrash,
@@ -84,7 +84,7 @@ export default function BusesPage() {
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa]">
       <BottomNav />
 
-      <main className="flex-1 px-4 sm:px-6 md:px-8 pb-24 md:pb-6 max-w-screen-xl mx-auto w-full">
+      <main className="flex-1 px-4 sm:px-6 md:px-8 pb-24 md:pb-6 lg:ml-18">
         {/* Header */}
         <div className="bg-white p-4 mt-4 md:mt-8 rounded-lg shadow mb-6 max-w-5xl mx-auto w-full flex flex-col md:flex-row md:justify-between">
           <h1 className="text-xl font-semibold text-[#004aad] mb-4 md:mb-0">
