@@ -4,8 +4,11 @@ import { NavLink } from "./NavLink";
 import { AccountButton } from "./AccountButton";
 
 export function DesktopNavigation({ className = "", ...props }) {
-  const defaultNavigationItems = (
-    <>
+  return (
+    <ul
+      className={`hidden md:flex gap-[32px] items-center m-0 p-0 list-none ${className}`}
+      {...props}
+    >
       <li>
         <NavLink href="/">Home</NavLink>
       </li>
@@ -18,15 +21,6 @@ export function DesktopNavigation({ className = "", ...props }) {
       <li>
         <AccountButton />
       </li>
-    </>
-  );
-
-  return (
-    <ul
-      className={`hidden md:flex gap-[32px] items-center m-0 p-0 list-none ${className}`}
-      {...props}
-    >
-      {defaultNavigationItems}
     </ul>
   );
 }
