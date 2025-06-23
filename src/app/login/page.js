@@ -65,7 +65,7 @@ export default function Login() {
     setStep(1);
   };
   return (
-    <>
+    <main className="flex md:items-center justify-center h-fit md:min-h-screen pt-[6.25rem] md:p-0 px-5">
       {step === 1 && (
         <LoginPage onSubmit={handlePhoneSubmit} isLoading={isSendingOtp} />
       )}
@@ -78,6 +78,6 @@ export default function Login() {
           isResending={isSendingOtp}
         />
       )}
-    </>
+    </main>
   );
 }

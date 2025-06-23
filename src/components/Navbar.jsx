@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { cn } from "@/lib/utils";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["700"],
+});
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,7 +32,10 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-[24px] text-[#004aad] font-mont font-black"
+          className={cn(
+            "text-[24px] text-[#004aad] font-black",
+            montserrat.className
+          )}
         >
           smallbus
         </Link>
