@@ -1,13 +1,13 @@
-import { Navigation } from "@/components/navigation/navigation";
 import "./globals.css";
 import ReduxWrapper from "@/components/wrapper/redux-wrapper";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         <ReduxWrapper>
-          <Navigation />
+          <Navbar />
           {children}
         </ReduxWrapper>
       </body>
