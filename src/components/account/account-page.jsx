@@ -1,5 +1,5 @@
-import AccountTabs from "./account-tabs";
-import AccountHeader from "./account-header";
+import AccountTabs from "@/components/account/account-tabs";
+import AccountHeader from "@/components/account/account-header";
 
 export default function AccountPage() {
   return (

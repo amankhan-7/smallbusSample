@@ -1,8 +1,8 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
-import AccountForm from "./account-form";
-import BookingHistory from "./booking-history";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import AccountForm from "@/components/account/account-form";
+import BookingHistory from "@/components/account/booking-history";
 
 export default function AccountTabs() {
   return (

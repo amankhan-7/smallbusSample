@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import JourneyInfo from "./journey-info";
-import SeatLegend from "./seat-legend";
-import BusLayout from "./bus-layout";
-import BookingSummary from "./booking-summary";
+import JourneyInfo from "@/components/seats/journey-info";
+import SeatLegend from "@/components/seats/seat-legend";
+import BusLayout from "@/components/seats/bus-layout";
+import BookingSummary from "@/components/seats/booking-summary";
 
 export default function SeatSelection() {
   return (

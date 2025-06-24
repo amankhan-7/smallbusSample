@@ -11,7 +11,8 @@ import {
   selectSeat,
 } from "@/utils/redux/features/booking/bookingSlice";
 import { useGetBusDataQuery } from "@/utils/redux/api/bus";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 const SeatItem = memo(function SeatItem({
   seatItem,
@@ -38,20 +39,18 @@ const SeatItem = memo(function SeatItem({
     "hover:-translate-y-0.5 hover:shadow-lg hover:text-white",
 
     status === SEAT_STATUS.BOOKED &&
-      "bg-gray-400 text-white border-gray-500 cursor-not-allowed opacity-75 hover:translate-y-0 hover:shadow-none",
+    "bg-gray-400 text-white border-gray-500 cursor-not-allowed opacity-75 hover:translate-y-0 hover:shadow-none",
 
     status === SEAT_STATUS.SELECTED &&
-      "bg-primary border-primary text-white hover:bg-primary hover:text-white animate-selectedPulse",
+    "bg-primary border-primary text-white hover:bg-primary hover:text-white animate-selectedPulse",
 
     status === SEAT_STATUS.AVAILABLE &&
-      "hover:bg-white hover:border-primary hover:text-[#555] border hover:scale-105 active:scale-95",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    "hover:bg-white hover:border-primary hover:text-[#555] border hover:scale-105 active:scale-95",
+  ];
 
   return (
     <Button
-      className={className}
+      className={cn(...className)}
       onClick={() => onSeatClick(seatItem.id)}
       disabled={status === SEAT_STATUS.BOOKED || seatItem.type !== "seat"}
     >
@@ -176,18 +175,19 @@ const FrontRow = memo(function FrontRow({
         selectedSeats={selectedSeats}
       />
       <div className="flex flex-col items-center">
-
-      <div className="w-[36px] h-[36px] font-[0.8rem]  sm:w-[44px] sm:h-[44px] bg-[#f5f5f5] rounded-[0.5rem] border-2 border-[#999] position-relative flex items-center justify-center">
-        <div className="w-5 h-5  md:w-6 md:h-6 border-2 border-[#999] rounded-full"></div>
-      </div>
-      <div className="text-[0.75rem] text-[#999] mt-[5px]">Driver</div>
+        <div className="w-[36px] h-[36px] font-[0.8rem]  sm:w-[44px] sm:h-[44px] bg-[#f5f5f5] rounded-[0.5rem] border-2 border-[#999] position-relative flex items-center justify-center">
+          <div className="w-5 h-5  md:w-6 md:h-6 border-2 border-[#999] rounded-full"></div>
+        </div>
+        <div className="text-[0.75rem] text-[#999] mt-[5px]">Driver</div>
       </div>
     </div>
   );
 });
 
 export default function BusLayout() {
-  const { selectedSeats, selectedBusId } = useSelector((state) => state.booking);
+  const { selectedSeats, selectedBusId } = useSelector(
+    (state) => state.booking
+  );
   const dispatch = useDispatch();
 
   const {
@@ -209,7 +209,6 @@ export default function BusLayout() {
       return [];
     }
   }, [busData?.busLayout, busData?.rows]);
-
 
   const handleSeatClick = (seatId) => {
     if (selectedSeats.includes(seatId)) {
