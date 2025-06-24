@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import JourneyInfo from "@/components/seats/journey-info";
-import SeatLegend from "@/components/seats/seat-legend";
-import BusLayout from "@/components/seats/bus-layout";
-import BookingSummary from "@/components/seats/booking-summary";
+import JourneyInfoContainer from "@/components/seats/journey-info-container";
+import SeatLegendContainer from "@/components/seats/seat-legend-container";
+import BusLayoutContainer from "@/components/seats/bus-layout-container";
+import BookingSummaryContainer from "@/components/seats/booking-summary-container";
 
 export default function SeatSelection() {
   return (
@@ -14,10 +14,10 @@ export default function SeatSelection() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 flex flex-col">
-          <JourneyInfo />
-          <SeatLegend />
-          <BusLayout />
-          <BookingSummary />
+          <JourneyInfoContainer />
+          <SeatLegendContainer />
+          <BusLayoutContainer />
+          <BookingSummaryContainer />
         </CardContent>
       </Card>
     </main>
