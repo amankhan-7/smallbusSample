@@ -245,7 +245,7 @@ export default function PaymentPage() {
 
         {/* Payment Options */}
         <section className="bg-white rounded-[12px] p-6 mb-6 shadow">
-          <div className="mb-4 font-bold text-[1.5rem] text-primary text-[#004aad]">
+          <div className="mb-4 font-bold text-[1.5rem] text-primary">
             Payment Method
           </div>
 

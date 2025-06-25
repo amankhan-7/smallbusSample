@@ -12,19 +12,18 @@ const montserrat = Montserrat({
   weight: ["700"],
 });
 
-export default function Navbar() {
+export default function Navbar({
+  navItems = [],
+  logoText = "smallbus",
+  loginUrl = "/login",
+  showLogin = true,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
   }, [menuOpen]);
-
-  const navItems = [
-    { name: "Home", href: "/" },
-    { name: "My Trips", href: "/trips" },
-    { name: "Help", href: "/help" },
-  ];
 
   return (
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
@@ -37,7 +36,7 @@ export default function Navbar() {
             montserrat.className
           )}
         >
-          smallbus
+          {logoText}
         </Link>
 
         {/* Desktop Nav */}
@@ -55,12 +54,14 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
-          <Link
-            href="/login"
-            className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
-          >
-            <FaUser size={16} /> Login
-          </Link>
+          {showLogin && (
+            <Link
+              href={loginUrl}
+              className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
+            >
+              <FaUser size={16} /> Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -121,13 +122,15 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
-              <Link
-                href="/login"
-                className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
-                onClick={() => setMenuOpen(false)}
-              >
-                <FaUser size={16} /> Login
-              </Link>
+              {showLogin && (
+                <Link
+                  href={loginUrl}
+                  className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <FaUser size={16} /> Login
+                </Link>
+              )}
             </div>
           </div>
         </div>
