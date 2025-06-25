@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ButtonUI from "@/components/UI/ButtonUI";
+import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
 
 export default function BusesPage() {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import ButtonUI from "@/components/UI/ButtonUI";
+import ButtonUI from "@/components/ui/ButtonUI";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
 import { useBookSeatsMutation, useGetBusDataQuery } from "@/utils/redux/api/bus";
 import Link from "next/link";

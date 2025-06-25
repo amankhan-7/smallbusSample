@@ -10,7 +10,7 @@ import {
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
-import ButtonUI from "@/components/UI/ButtonUI";
+import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
 
 const cities = [
