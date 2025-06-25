@@ -1,26 +1,33 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { setBookingHistory } from "@/utils/redux/features/user/userSlice";
+import { useEffect, useState } from "react";
+import { hydrate } from "@/utils/redux/features/user/userSlice";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarX, IndianRupee } from "lucide-react";
-import { safeLocalStorage } from "@/lib/localStorage";
 import Link from "next/link";
 
 export default function BookingHistory() {
-  const bookingHistory = useSelector((state) => state.user.bookingHistory);
+  const { bookingHistory, isHydrated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    try {
-      const savedBookings = safeLocalStorage.getItem("bookingHistory") || "[]";
-      dispatch(setBookingHistory(savedBookings));
-    } catch (error) {
-      console.error("Error loading booking history:", error);
-      dispatch(setBookingHistory([]));
+    setIsMounted(true);
+    if (!isHydrated) {
+      dispatch(hydrate());
     }
-  }, [dispatch]);
+  }, [dispatch, isHydrated]);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!isMounted || !isHydrated) {
+    return (
+      <div className="flex items-center justify-center h-[300px]">
+        <div className="animate-pulse text-gray-500">Loading...</div>
+      </div>
+    );
+  }
 
   if (!bookingHistory || bookingHistory.length === 0) {
     return (
@@ -42,9 +49,9 @@ export default function BookingHistory() {
 
   return (
     <div>
-      {bookingHistory.map((booking) => (
+      {bookingHistory.length > 0 && bookingHistory.map((booking, index) => (
         <Card
-          key={booking.id}
+          key={index}
           className="mb-[15px] transition-transform hover:-translate-y-[2px] hover:shadow-[0_3px_8px_rgba(0,0,0,0.05)]"
         >
           <CardHeader className="p-[15px] bg-[--hover-bg] flex flex-row justify-between items-center space-y-0">

@@ -3,20 +3,33 @@ import { safeLocalStorage } from "@/lib/localStorage";
 const { createSlice } = require("@reduxjs/toolkit");
 
 const initialState = {
-  userInfo: safeLocalStorage.getItem("userInfo") || {
+  userInfo: {
     fullname: "",
     phone: "",
     email: "",
     profilePicture: null,
   },
-  bookingHistory: safeLocalStorage.getItem("bookingHistory", []),
-  isLoggedIn: safeLocalStorage.getItem("isLoggedIn") === "true",
+  bookingHistory: [],
+  isLoggedIn: false,
+  isHydrated: false,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    hydrate: (state) => {
+      const userInfo = safeLocalStorage.getItem("userInfo");
+      const bookingHistory = safeLocalStorage.getItem("bookingHistory", []);
+      const isLoggedIn = safeLocalStorage.getItem("isLoggedIn") === true;
+      
+      if (userInfo) {
+        state.userInfo = userInfo;
+      }
+      state.bookingHistory = bookingHistory;
+      state.isLoggedIn = isLoggedIn;
+      state.isHydrated = true;
+    },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
       state.isLoggedIn = true;
@@ -48,27 +61,16 @@ const userSlice = createSlice({
       safeLocalStorage.removeItem("bookingHistory");
       safeLocalStorage.removeItem("isLoggedIn");
     },
-    loadUserFromStorage: (state) => {
-      const userInfo = safeLocalStorage.getItem("userInfo");
-      const bookingHistory = safeLocalStorage.getItem("bookingHistory", []);
-      const isLoggedIn = safeLocalStorage.getItem("isLoggedIn") === true;
-
-      if (userInfo && isLoggedIn) {
-        state.userInfo = userInfo;
-        state.bookingHistory = bookingHistory;
-        state.isLoggedIn = true;
-      }
-    },
   },
 });
 
 export const {
+  hydrate,
   setUserInfo,
   updateUserInfo,
   setBookingHistory,
   addBooking,
   clearUserData,
-  loadUserFromStorage,
 } = userSlice.actions;
 
 export default userSlice.reducer;

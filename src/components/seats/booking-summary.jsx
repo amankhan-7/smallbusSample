@@ -38,21 +38,17 @@ const BookingSummary = memo(
     seatPrice = 0,
     onProceed,
     isLoading = false,
-    isBooking = false,
     className = "",
-    title = "Booking Summary",
-    proceedButtonText = "Continue to Payment",
-    bookingButtonText = "Booking...",
   }) => {
     const totalAmount = seatPrice * selectedSeats.length;
-    const canProceed = selectedSeats.length > 0 && !isBooking;
+    const canProceed = selectedSeats.length > 0;
 
     if (isLoading) {
       return (
         <div className={cn("p-5 md:p-6", className)}>
           <div className="mb-6">
             <h3 className="text-center text-primary text-[1.2rem] font-semibold md:text-[1.4rem]">
-              {title}
+              Booking Summary
             </h3>
           </div>
           <div className="text-center text-gray-500">
@@ -72,7 +68,7 @@ const BookingSummary = memo(
       >
         <div className="mb-6">
           <h3 className="flex justify-center text-primary items-center text-[1.2rem] font-semibold md:text-[1.4rem]">
-            {title}
+           Booking Summary
           </h3>
         </div>
         <div className="space-y-4 p-0 m-0">
@@ -117,7 +113,7 @@ const BookingSummary = memo(
             disabled={!canProceed}
             onClick={onProceed}
           >
-            {isBooking ? bookingButtonText : proceedButtonText}
+            Continue to Payment
           </Button>
         </div>
       </div>

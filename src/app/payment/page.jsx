@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import ButtonUI from '@/components/UI/ButtonUI'
+import ButtonUI from "@/components/UI/ButtonUI";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
+import { useBookSeatsMutation, useGetBusDataQuery } from "@/utils/redux/api/bus";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { addBooking } from "@/utils/redux/features/user/userSlice";
+import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
+import { useRouter } from "next/navigation";
+import { safeLocalStorage } from "@/lib/localStorage";
 
 export default function PaymentPage() {
   /*
@@ -17,6 +24,8 @@ export default function PaymentPage() {
   seatid: ["A1", "A2"]
 }));
 */
+
+  const { data, isLoading } = useGetBusDataQuery("bus-123");
   const [booking, setBooking] = useState({
     bus: "",
     from: "",
@@ -26,13 +35,32 @@ export default function PaymentPage() {
     timeofarrival: "",
     seatid: [],
   });
+  const dispatch = useDispatch();
+  const [bookSeats] = useBookSeatsMutation();
+  const { selectedSeats, selectedBusId } = useSelector((state) => state.booking);
+  const router = useRouter();
+
 
   useEffect(() => {
-    const data = localStorage.getItem("bookingInfo");
-    if (data) {
-      setBooking(JSON.parse(data));
+    const localData = safeLocalStorage.getItem("bookingInfo");
+    if (localData) {
+      setBooking(localData);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setBooking({
+        bus: data.busType,
+        from: data.from,
+        to: data.to,
+        date: data.date,
+        timeofdeparture: data.departureTime,
+        timeofarrival: data.arrivalTime,
+        seatid: data.seatid || ["A1", "A2"],
+      });
+    }
+  }, [isLoading, data]);
 
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -41,7 +69,7 @@ export default function PaymentPage() {
   const emailRef = useRef();
   const phoneRef = useRef();
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     const fields = [
       { ref: firstNameRef },
       { ref: lastNameRef },
@@ -68,19 +96,33 @@ export default function PaymentPage() {
       alert("Please fill in all required fields.");
       return;
     }
+    try {
+      console.log("Proceeding to payment with selected seats:", selectedSeats);
 
+      const result = await bookSeats({
+        id: selectedBusId, // Unique ID for the booking
+        seats: selectedSeats,
+      }).unwrap();
+
+      dispatch(addBooking(result.booking));
+      dispatch(resetBooking());
+      router.push("/account?tab=booking");
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert("Booking failed. Please try again.");
+    }
     alert("Payment Success (demo)");
   };
 
   return (
     <div className="bg-gray-100 min-h-screen">
       <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
-        <a
+        <Link
           href="#"
           className="inline-block py-1 text-[24px] text-[#004aad] no-underline font-mont font-black"
         >
           smallbus
-        </a>
+        </Link>
       </header>
 
       <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">

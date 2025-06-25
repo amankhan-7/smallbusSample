@@ -16,14 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { setUserInfo } from "@/utils/redux/features/user/userSlice";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { hydrate } from "@/utils/redux/features/user/userSlice";
 
 export default function AccountHeader() {
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const userInfo = useSelector((state) => state.user.userInfo);
+  const { userInfo, isHydrated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [mount, setMount] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const onProfilePictureSubmit = (data) => {
     try {
@@ -50,11 +49,11 @@ export default function AccountHeader() {
   };
 
   useEffect(() => {
-    const userInfoData = safeLocalStorage.getItem("userInfo");
-    if (userInfoData) {
-      dispatch(setUserInfo(userInfoData));
+    setIsMounted(true);
+    if (!isHydrated) {
+      dispatch(hydrate());
     }
-  }, [dispatch]);
+  }, [dispatch, isHydrated]);
 
   const handleFileChange = (file) => {
     if (file) {
@@ -67,11 +66,17 @@ export default function AccountHeader() {
       setAvatarPreview(null);
     }
   };
-  useEffect(() => {
-    setMount(true);
-  }, []);
-  if (!mount) {
-    return null;
+
+  if (!isMounted || !isHydrated) {
+    return (
+      <Card className="bg-white rounded-none p-[30px] mb-[20px] shadow-md flex gap-[30px] max-md:flex-col max-md:text-center max-md:gap-[15px]">
+        <CardContent className="flex p-0 flex-col items-center md:flex-row gap-[15px]">
+          <div className="flex items-center justify-center h-[100px]">
+            <div className="animate-pulse text-gray-500">Loading...</div>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
   return (
     <Card className="bg-white rounded-none p-[30px] mb-[20px] shadow-md flex gap-[30px] max-md:flex-col max-md:text-center max-md:gap-[15px]">
