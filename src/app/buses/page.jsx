@@ -41,7 +41,7 @@ export default function BusesPage() {
         </div>
 
         {/* Section 2: Available Buses */}
-        <section className="w-full space-y-6">
+        <section className="w-full space-y-6 animate-fadeInUp">
           <div className="w-full bg-white px-4 py-2.5 md:py-5 md:px-5 shadow-sm shadow-gray-400/50  space-y-3 md:max-w-9/10 md:mx-auto rounded-lg">
             <div className="flex justify-between items-center">
               <div>

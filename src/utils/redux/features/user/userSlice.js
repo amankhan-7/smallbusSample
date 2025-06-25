@@ -51,7 +51,7 @@ const userSlice = createSlice({
     loadUserFromStorage: (state) => {
       const userInfo = safeLocalStorage.getItem("userInfo");
       const bookingHistory = safeLocalStorage.getItem("bookingHistory", []);
-      const isLoggedIn = safeLocalStorage.getItem("isLoggedIn") === true;
+      const isLoggedIn = safeLocalStorage.getItem("isLoggedIn") === "true";
 
       if (userInfo && isLoggedIn) {
         state.userInfo = userInfo;

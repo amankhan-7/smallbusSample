@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
 
@@ -15,8 +15,7 @@ const montserrat = Montserrat({
 export default function Navbar({
   navItems = [],
   logoText = "smallbus",
-  loginUrl = "/login",
-  showLogin = true,
+  actionLink = null, // { href: /, label: Loginn, icon: <FaUser/> }
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -54,12 +53,13 @@ export default function Navbar({
               {item.name}
             </Link>
           ))}
-          {showLogin && (
+          {actionLink && (
             <Link
-              href={loginUrl}
+              href={actionLink.href}
               className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
             >
-              <FaUser size={16} /> Login
+              {actionLink.icon}
+              {actionLink.label}
             </Link>
           )}
         </div>
@@ -122,13 +122,14 @@ export default function Navbar({
                   {item.name}
                 </Link>
               ))}
-              {showLogin && (
+              {actionLink && (
                 <Link
-                  href={loginUrl}
+                  href={actionLink.href}
                   className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <FaUser size={16} /> Login
+                  {actionLink.icon}
+                  {actionLink.label}
                 </Link>
               )}
             </div>
