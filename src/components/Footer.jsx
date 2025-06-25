@@ -9,7 +9,7 @@ function Footer() {
         <div>
           <h3 className="text-xl font-semibold mb-5 text-gray-900">Company</h3>
           <ul className="space-y-3 text-[15px] text-gray-600">
-            <li>
+            {/* <li>
               <a href="#" className="hover:text-[#004aad]">About Us</a>
             </li>
             <li>
@@ -17,7 +17,7 @@ function Footer() {
             </li>
             <li>
               <a href="#" className="hover:text-[#004aad]">Blog</a>
-            </li>
+            </li> */}
           </ul>
         </div>
 

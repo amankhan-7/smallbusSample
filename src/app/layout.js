@@ -1,13 +1,13 @@
 import "./globals.css";
 import ReduxWrapper from "@/components/wrapper/redux-wrapper";
-import Navbar from "@/components/Navbar";
+import HomeNavbar from "@/components/HomeNavbar/HomeNavbar";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         <ReduxWrapper>
-          <Navbar />
+          <HomeNavbar />
           {children}
         </ReduxWrapper>
       </body>
