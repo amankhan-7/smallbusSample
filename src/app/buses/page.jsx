@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import ButtonUI from "@/components/UI/ButtonUI";
-import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 
 export default function BusesPage() {
@@ -97,7 +96,6 @@ export default function BusesPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

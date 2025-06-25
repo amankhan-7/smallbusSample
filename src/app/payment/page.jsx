@@ -3,8 +3,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import ButtonUI from "@/components/UI/ButtonUI";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
-import { useGetBusDataQuery } from "@/utils/redux/api/bus";
+import { useBookSeatsMutation, useGetBusDataQuery } from "@/utils/redux/api/bus";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { addBooking } from "@/utils/redux/features/user/userSlice";
+import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
+import { useRouter } from "next/navigation";
+import { safeLocalStorage } from "@/lib/localStorage";
 
 export default function PaymentPage() {
   /*
@@ -30,10 +35,16 @@ export default function PaymentPage() {
     timeofarrival: "",
     seatid: [],
   });
+  const dispatch = useDispatch();
+  const [bookSeats] = useBookSeatsMutation();
+  const { selectedSeats, selectedBusId } = useSelector((state) => state.booking);
+  const router = useRouter();
+
+
   useEffect(() => {
-    const localData = localStorage.getItem("bookingInfo");
+    const localData = safeLocalStorage.getItem("bookingInfo");
     if (localData) {
-      setBooking(JSON.parse(localData));
+      setBooking(localData);
     }
   }, []);
 
@@ -58,7 +69,7 @@ export default function PaymentPage() {
   const emailRef = useRef();
   const phoneRef = useRef();
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     const fields = [
       { ref: firstNameRef },
       { ref: lastNameRef },
@@ -85,7 +96,21 @@ export default function PaymentPage() {
       alert("Please fill in all required fields.");
       return;
     }
+    try {
+      console.log("Proceeding to payment with selected seats:", selectedSeats);
 
+      const result = await bookSeats({
+        id: selectedBusId, // Unique ID for the booking
+        seats: selectedSeats,
+      }).unwrap();
+
+      dispatch(addBooking(result.booking));
+      dispatch(resetBooking());
+      router.push("/account?tab=booking");
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert("Booking failed. Please try again.");
+    }
     alert("Payment Success (demo)");
   };
 

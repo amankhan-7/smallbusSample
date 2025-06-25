@@ -3,9 +3,9 @@ import { accountDetailSchema } from "@/utils/validations/form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUpdateUserMutation } from "@/utils/redux/api/user";
-import { updateUserInfo } from "@/utils/redux/features/user/userSlice";
+import { updateUserInfo, hydrate } from "@/utils/redux/features/user/userSlice";
 import {
   Form,
   FormControl,
@@ -19,9 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function AccountForm() {
-  const userInfo = useSelector((state) => state.user.userInfo);
+  const { userInfo, isHydrated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [isMounted, setIsMounted] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(accountDetailSchema),
@@ -33,14 +34,30 @@ export default function AccountForm() {
   });
 
   useEffect(() => {
-    if (userInfo) {
+    setIsMounted(true);
+    if (!isHydrated) {
+      dispatch(hydrate());
+    }
+  }, [dispatch, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated && userInfo) {
       form.reset({
         fullname: userInfo.fullname || "",
         phone: userInfo.phone || "",
         email: userInfo.email || "",
       });
     }
-  }, [userInfo, form]);
+  }, [userInfo, form, isHydrated]);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!isMounted || !isHydrated) {
+    return (
+      <div className="flex items-center justify-center h-[200px]">
+        <div className="animate-pulse text-gray-500">Loading...</div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (data) => {
     try {
