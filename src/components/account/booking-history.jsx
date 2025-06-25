@@ -3,8 +3,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setBookingHistory } from "@/utils/redux/features/user/userSlice";
-import { Card, CardHeader, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarX, IndianRupee } from "lucide-react";
 import { safeLocalStorage } from "@/lib/localStorage";
 import Link from "next/link";

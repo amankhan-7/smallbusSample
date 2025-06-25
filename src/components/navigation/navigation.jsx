@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Logo } from "./Logo";
-import { DesktopNavigation } from "./DesktopNavigation";
-import { MobileMenuToggle } from "./MobileMenuToggle";
-import { MobileOverlay } from "./MobileOverlay";
-import { MobileMenu } from "./MobileMenu";
+import { Logo } from "@/components/navigation/Logo";
+import { DesktopNavigation } from "@/components/navigation/DesktopNavigation";
+import { MobileMenuToggle } from "@/components/navigation/MobileMenuToggle";
+import { MobileOverlay } from "@/components/navigation/MobileOverlay";
+import { MobileMenu } from "@/components/navigation/MobileMenu";
 
 export function Navigation({ showBackLink = false, backTo = "/" }) {
   const [menuOpen, setMenuOpen] = useState(false);

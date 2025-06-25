@@ -1,16 +1,24 @@
-import { legendItems } from "@/constants/seat-selection";
+import { memo } from "react";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
 
-export default function SeatLegend() {
+const SeatLegend = memo(({
+  legendItems = [],
+  className = "",
+}) => {
+  if (!legendItems.length) {
+    return null;
+  }
+
   return (
-    <div className="flex flex-wrap justify-center gap-6 mb-[1.875rem] rounded-lg">
+    <div
+      className={cn(
+        "flex flex-wrap justify-center gap-6 mb-[1.875rem] rounded-lg",
+        className
+      )}
+    >
       {legendItems.map((item) => (
-        <div
-          key={item.status}
-          className="flex items-center gap-2 rounded-lg"
-        >
-          <span className={cn("w-5 h-5 border rounded ", item.className)}>
+        <div key={item.status} className="flex items-center gap-2 rounded-lg">
+          <span className={cn("w-5 h-5 border rounded", item.className)}>
             {item.icon}
           </span>
           <span className="text-[#666] text-[0.9rem]">{item.label}</span>
@@ -18,4 +26,6 @@ export default function SeatLegend() {
       ))}
     </div>
   );
-}
+});
+
+export default SeatLegend;

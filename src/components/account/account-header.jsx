@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -12,10 +12,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { setUserInfo } from "@/utils/redux/features/user/userSlice";
 import { safeLocalStorage } from "@/lib/localStorage";
 
@@ -130,7 +130,7 @@ export default function AccountHeader() {
             />
           </form>
         </Form>
-        <div className="flex flex-col justify-center item-center md:items-start">
+        <div className="flex flex-col justify-center items-center md:items-start">
           <h2 className="text-[1.5rem] font-bold text-[--text-color] mb-[5px]">
             {userInfo?.fullname || "User"}
           </h2>
