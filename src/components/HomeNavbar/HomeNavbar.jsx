@@ -12,7 +12,7 @@ export default function HomePage() {
       <Navbar
         navItems={navItems}
         logoText="smallbus"
-        loginUrl="/auth"
+        loginUrl="/login"
         showLogin={true}
       />
     </>

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import ButtonUI from '@/components/UI/ButtonUI'
+import ButtonUI from "@/components/UI/ButtonUI";
+import Footer from "@/components/Footer";
 
 export default function BusesPage() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -86,10 +87,13 @@ export default function BusesPage() {
               </span>
             </div>
 
-            <ButtonUI className="w-full hover:bg-[#00388a] mt-4 py-1.5">Select Seats</ButtonUI>
+            <ButtonUI className="w-full hover:bg-[#00388a] mt-4 py-1.5">
+              Select Seats
+            </ButtonUI>
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
