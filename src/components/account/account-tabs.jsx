@@ -1,12 +1,18 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AccountForm from "@/components/account/account-form";
 import BookingHistory from "@/components/account/booking-history";
 
 export default function AccountTabs() {
+  const searchParams = useSearchParams();
+  const tab = ["account", "booking"].includes(searchParams.get("tab"))
+    ? searchParams.get("tab")
+    : "account";
+
   return (
-    <Tabs className="gap-5" defaultValue="account">
+    <Tabs className="gap-5" defaultValue={tab}>
       <TabsList className="flex rounded-none bg-white h-fit w-full">
         <TabsTrigger
           value="account"

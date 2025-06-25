@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
+import { useSelector } from "react-redux";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -16,10 +17,10 @@ export default function Navbar({
   navItems = [],
   logoText = "smallbus",
   loginUrl = "/login",
-  showLogin = true,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const showLogin = !useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
