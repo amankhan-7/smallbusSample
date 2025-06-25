@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import ButtonUI from '@/components/UI/ButtonUI'
+import ButtonUI from "@/components/UI/ButtonUI";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
+import { useGetBusDataQuery } from "@/utils/redux/api/bus";
+import Link from "next/link";
 
 export default function PaymentPage() {
   /*
@@ -17,6 +19,8 @@ export default function PaymentPage() {
   seatid: ["A1", "A2"]
 }));
 */
+
+  const { data, isLoading } = useGetBusDataQuery("bus-123");
   const [booking, setBooking] = useState({
     bus: "",
     from: "",
@@ -26,13 +30,26 @@ export default function PaymentPage() {
     timeofarrival: "",
     seatid: [],
   });
-
   useEffect(() => {
-    const data = localStorage.getItem("bookingInfo");
-    if (data) {
-      setBooking(JSON.parse(data));
+    const localData = localStorage.getItem("bookingInfo");
+    if (localData) {
+      setBooking(JSON.parse(localData));
     }
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setBooking({
+        bus: data.busType,
+        from: data.from,
+        to: data.to,
+        date: data.date,
+        timeofdeparture: data.departureTime,
+        timeofarrival: data.arrivalTime,
+        seatid: data.seatid || ["A1", "A2"],
+      });
+    }
+  }, [isLoading, data]);
 
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -75,12 +92,12 @@ export default function PaymentPage() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
-        <a
+        <Link
           href="#"
           className="inline-block py-1 text-[24px] text-[#004aad] no-underline font-mont font-black"
         >
           smallbus
-        </a>
+        </Link>
       </header>
 
       <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
