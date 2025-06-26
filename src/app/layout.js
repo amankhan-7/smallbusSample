@@ -1,7 +1,7 @@
 import "./globals.css";
 import ReduxWrapper from "@/components/wrapper/redux-wrapper";
 import HomeNavbar from "@/components/HomeNavbar/HomeNavbar";
-import Footer from "@/components/Footer";
+import FooterWrapper from "@/components/wrapper/footer-wrapper";
 
 export default function RootLayout({ children }) {
   return (
@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
         <ReduxWrapper>
           <HomeNavbar />
           {children}
-          <Footer />
+          <FooterWrapper />
         </ReduxWrapper>
       </body>
     </html>
