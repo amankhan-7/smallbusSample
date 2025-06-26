@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import ButtonUI from '@/components/UI/ButtonUI'
+import ButtonUI from "@/components/UI/ButtonUI";
 import { Landmark, CreditCard, Smartphone } from "lucide-react";
+import { passengerSchema } from "@/utils/validations/form-validation";
 
 export default function PaymentPage() {
   /*
@@ -42,33 +43,41 @@ export default function PaymentPage() {
   const phoneRef = useRef();
 
   const handlePayment = () => {
-    const fields = [
-      { ref: firstNameRef },
-      { ref: lastNameRef },
-      { ref: ageRef },
-      { ref: genderRef },
-      { ref: emailRef },
-      { ref: phoneRef },
-    ];
+    const formData = {
+      firstName: firstNameRef.current.value.trim(),
+      lastName: lastNameRef.current.value.trim(),
+      age: ageRef.current.value.trim(),
+      gender: genderRef.current.value.trim(),
+      email: emailRef.current.value.trim(),
+      phone: phoneRef.current.value.trim(),
+    };
+    // Validate using Zod
+    const result = passengerSchema.safeParse(formData);
 
-    let allFilled = true;
+    const refs = {
+      firstName: firstNameRef,
+      lastName: lastNameRef,
+      age: ageRef,
+      gender: genderRef,
+      email: emailRef,
+      phone: phoneRef,
+    };
 
-    fields.forEach(({ ref }) => {
-      if (!ref.current.value.trim()) {
-        ref.current.classList.remove("focus:ring-blue-800");
-        ref.current.classList.add("ring-1", "ring-red-600");
-        allFilled = false;
-      } else {
-        ref.current.classList.remove("ring-1", "ring-red-600");
-        ref.current.classList.add("focus:ring-blue-800");
-      }
+    Object.values(refs).forEach((ref) => {
+      ref.current.classList.remove("ring-1", "ring-red-600");
     });
 
-    if (!allFilled) {
+    if (!result.success) {
+      result.error.errors.forEach((error) => {
+        const field = error.path[0];
+        const ref = refs[field];
+        if (ref && ref.current) {
+          ref.current.classList.add("ring-1", "ring-red-600");
+        }
+      });
       alert("Please fill in all required fields.");
       return;
     }
-
     alert("Payment Success (demo)");
   };
 
