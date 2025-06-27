@@ -106,7 +106,7 @@ export default function PaymentPage() {
 
       dispatch(addBooking(result.booking));
       dispatch(resetBooking());
-      router.push("/account?tab=booking");
+      router.push("/account?tab=bookingHistory");
     } catch (error) {
       console.error("Booking failed:", error);
       alert("Booking failed. Please try again.");
