@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +32,18 @@ export default function Navbar({
       dispatch(hydrate());
     }
   }, [dispatch, isHydrated]);
+
+  const actionLink = isLoggedIn
+    ? {
+        href: "/login",
+        label: "Login",
+        icon: <FaUser size={16} />,
+      }
+    : {
+        href: "/account",
+        label: "Account",
+        icon: <FaUserCircle size={18} />,
+      };
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
