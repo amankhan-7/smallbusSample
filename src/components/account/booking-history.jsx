@@ -10,19 +10,21 @@ import Link from "next/link";
 
 import { BookingFilter } from "@/components/account/booking-filter";
 import { BookingCard } from "@/components/account/booking-card";
+import { useRouter } from "next/navigation";
 
 export default function BookingHistory() {
   const { bookingHistory, isHydrated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [filter, setFilter] = useState("all");
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
     if (!isHydrated) dispatch(hydrate());
   }, [dispatch, isHydrated]);
 
-  const onBack = () => window.history.back();
+  const onBack = () => router.push('/account');
 
   if (!isMounted || !isHydrated) {
     return (

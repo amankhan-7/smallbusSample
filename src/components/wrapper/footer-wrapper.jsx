@@ -1,9 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Footer from "@/components/Footer";
 
-export default function FooterWrapper() {
+export default function FooterWrapper({children}) {
   const pathname = usePathname();
 
   const hideFooterPaths = ["/login"];
@@ -12,5 +11,9 @@ export default function FooterWrapper() {
     return null;
   }
 
-  return <Footer />;
+  return (
+    <>
+      {children}
+    </>
+  );
 }
