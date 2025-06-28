@@ -14,11 +14,7 @@ const montserrat = Montserrat({
   weight: ["700"],
 });
 
-export default function Navbar({
-  navItems = [],
-  logoText = "smallbus",
-  loginUrl = "/login",
-}) {
+export default function Navbar({ navItems = [], logoText = "smallbus" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
@@ -33,17 +29,20 @@ export default function Navbar({
     }
   }, [dispatch, isHydrated]);
 
-  const actionLink = isLoggedIn
-    ? {
-        href: "/login",
-        label: "Login",
-        icon: <FaUser size={16} />,
-      }
-    : {
-        href: "/account",
-        label: "Account",
-        icon: <FaUserCircle size={18} />,
-      };
+  let actionLink;
+  if (!isLoggedIn) {
+    actionLink = {
+      href: "/login",
+      label: "Login",
+      icon: <FaUser size={16} />,
+    };
+  } else {
+    actionLink = {
+      href: "/account",
+      label: "Account",
+      icon: <FaUserCircle size={18} />,
+    };
+  }
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";

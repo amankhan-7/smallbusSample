@@ -16,7 +16,7 @@ const LogoutButton = () => {
       <Button
         variant="outline"
         onClick={handleLogout}
-        className="w-full h-fit flex items-center justify-center gap-2 border-border bg-white text-primary font-medium rounded-md p-4 shadow-sm"
+        className="w-full h-fit flex items-center justify-center gap-2 border-border bg-white text-primary font-medium rounded-md p-4 shadow-sm cursor-pointer"
       >
         <LogOut className="w-5 h-5" />
         Logout
