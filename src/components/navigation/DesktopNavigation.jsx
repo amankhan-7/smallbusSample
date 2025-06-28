@@ -1,7 +1,7 @@
 "use client";
 
-import { NavLink } from "./NavLink";
-import { AccountButton } from "./AccountButton";
+import { NavLink } from "@/components/navigation/NavLink";
+import { AccountButton } from "@/components/navigation/AccountButton";
 
 export function DesktopNavigation({ className = "", ...props }) {
   return (

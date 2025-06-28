@@ -75,14 +75,14 @@ export default function PhonePage({ onSubmit }) {
                       I agree to the{" "}
                       <Link
                         href="#"
-                        className="text-primary hover:underline p-0 h-fit"
+                        className="text-primary hover:underline inline-block p-0 mt-1"
                       >
-                        Terms & Conditions{" "}
+                        Terms & Conditions
                       </Link>
-                      and{" "}
+                      {" "}and{" "}
                       <Link
                         href="#"
-                        className="text-primary hover:underline p-0 h-fit"
+                        className="text-primary hover:underline inline-block p-0 mt-1"
                       >
                         Privacy Policy
                       </Link>

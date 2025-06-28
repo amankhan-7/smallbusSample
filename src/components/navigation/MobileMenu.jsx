@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { NavLink } from "./NavLink";
-import { AccountButton } from "./AccountButton";
-import { BackLink } from "./BackLink";
+import { NavLink } from "@/components/navigation/NavLink";
+import { AccountButton } from "@/components/navigation/AccountButton";
+import { BackLink } from "@/components/navigation/BackLink";
 
 export function MobileMenu({
   isOpen,

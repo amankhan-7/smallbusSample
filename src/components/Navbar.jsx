@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
+import { useSelector, useDispatch } from "react-redux";
+import { hydrate } from "@/utils/redux/features/user/userSlice";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -15,10 +17,21 @@ const montserrat = Montserrat({
 export default function Navbar({
   navItems = [],
   logoText = "smallbus",
-  actionLink = null, // { href: /, label: Loginn, icon: <FaUser/> }
+  loginUrl = "/login",
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+  const { isLoggedIn, isHydrated } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (!isHydrated) {
+      dispatch(hydrate());
+    }
+  }, [dispatch, isHydrated]);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
@@ -53,7 +66,7 @@ export default function Navbar({
               {item.name}
             </Link>
           ))}
-          {actionLink && (
+          {isMounted && isHydrated && !isLoggedIn && (
             <Link
               href={actionLink.href}
               className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
@@ -122,7 +135,7 @@ export default function Navbar({
                   {item.name}
                 </Link>
               ))}
-              {actionLink && (
+              {isMounted && isHydrated && !isLoggedIn && (
                 <Link
                   href={actionLink.href}
                   className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"

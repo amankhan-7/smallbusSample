@@ -11,7 +11,8 @@ import {
 
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
-import ButtonUI from "@/components/UI/ButtonUI";
+import ButtonUI from "@/components/ui/ButtonUI";
+import { useRouter } from "next/navigation";
 
 const cities = [
   { name: "Patna", state: "Bihar" },
@@ -44,6 +45,7 @@ function Hero() {
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
+  const router = useRouter();
 
   const wrapperRef = useRef(null);
   const dateInputRef = useRef(null);
@@ -84,6 +86,7 @@ function Hero() {
     const toCity = formData.get("to");
     const travelDate = formData.get("date");
     console.log({ fromCity, toCity, travelDate });
+    router.push(`/buses`);
   };
 
   return (

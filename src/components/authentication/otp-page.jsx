@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import CodeInput from "@/components/ui/code-input";
@@ -18,7 +18,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import { signInOTPSchema } from "@/utils/validations/form-validation";
 
 export default function OTPPage({ onBack, onSubmit, onResend }) {

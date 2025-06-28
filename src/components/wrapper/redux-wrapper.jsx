@@ -3,13 +3,13 @@ import { store } from "@/utils/redux/store";
 import { Provider } from "react-redux";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { loadUserFromStorage } from "@/utils/redux/features/user/userSlice";
+import { hydrate } from "@/utils/redux/features/user/userSlice";
 
 function UserLoader({ children }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadUserFromStorage());
+    dispatch(hydrate());
   }, [dispatch]);
 
   return children;

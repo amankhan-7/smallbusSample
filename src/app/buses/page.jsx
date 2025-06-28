@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import ButtonUI from "@/components/UI/ButtonUI";
-import Footer from "@/components/Footer";
+import ButtonUI from "@/components/ui/ButtonUI";
+import { useRouter } from "next/navigation";
 
 export default function BusesPage() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
+  const router = useRouter();
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -87,13 +88,14 @@ export default function BusesPage() {
               </span>
             </div>
 
-            <ButtonUI className="w-full hover:bg-[#00388a] mt-4 py-1.5">
+            <ButtonUI onClick={() => {
+              router.push("/seats");
+            }} className="w-full hover:bg-[#00388a] mt-4 py-1.5">
               Select Seats
             </ButtonUI>
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

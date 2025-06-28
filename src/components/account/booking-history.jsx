@@ -1,30 +1,57 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { setBookingHistory } from "@/utils/redux/features/user/userSlice";
-import { Card, CardHeader, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { ArrowRight, CalendarX, IndianRupee } from "lucide-react";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { useEffect, useState } from "react";
+import { hydrate } from "@/utils/redux/features/user/userSlice";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CalendarX } from "lucide-react";
 import Link from "next/link";
 
-export default function BookingHistory() {
-  const bookingHistory = useSelector((state) => state.user.bookingHistory);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    try {
-      const savedBookings = safeLocalStorage.getItem("bookingHistory") || "[]";
-      dispatch(setBookingHistory(savedBookings));
-    } catch (error) {
-      console.error("Error loading booking history:", error);
-      dispatch(setBookingHistory([]));
-    }
-  }, [dispatch]);
+import { BookingFilter } from "@/components/account/booking-filter";
+import { BookingCard } from "@/components/account/booking-card";
+import { useRouter } from "next/navigation";
 
-  if (!bookingHistory || bookingHistory.length === 0) {
+export default function BookingHistory() {
+  const { bookingHistory, isHydrated } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const [isMounted, setIsMounted] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (!isHydrated) dispatch(hydrate());
+  }, [dispatch, isHydrated]);
+
+  const onBack = () => router.push('/account');
+
+  if (!isMounted || !isHydrated) {
     return (
-      <div className="flex flex-col items-center justify-center h-[300px]">
+      <div className="flex items-center justify-center h-[300px]">
+        <div className="animate-pulse text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
+  const filtered = bookingHistory?.filter((b) =>
+    filter === "all" ? true : b.status === filter
+  );
+
+  return (
+    <div>
+      <h3 className="mb-[15px] text-primary text-lg font-semibold">
+        Your Bookings
+      </h3>
+
+      <BookingFilter value={filter} onChange={setFilter} />
+
+      {filtered.length > 0 ? (
+        filtered.map((booking, idx) => (
+          <BookingCard key={idx} booking={booking} />
+        ))
+      ) : (
+      <Card className="flex flex-col items-center justify-center h-[300px]">
         <CalendarX className="text-[3rem] text-[#ddd] mb-[15px] mx-auto" />
         <h3 className="text-xl font-medium mb-[8px]">No Booking History</h3>
         <p className="mb-[15px]">You haven't made any bookings yet.</p>
@@ -36,70 +63,14 @@ export default function BookingHistory() {
             Book Now
           </Link>
         </Button>
+      </Card>
+      )}
+
+      <div className="mt-6">
+        <Button variant="outline" onClick={onBack} className="w-full py-4 min-h-fit">
+          Back to Account
+        </Button>
       </div>
-    );
-  }
-
-  return (
-    <div>
-      {bookingHistory.map((booking) => (
-        <Card
-          key={booking.id}
-          className="mb-[15px] transition-transform hover:-translate-y-[2px] hover:shadow-[0_3px_8px_rgba(0,0,0,0.05)]"
-        >
-          <CardHeader className="p-[15px] bg-[--hover-bg] flex flex-row justify-between items-center space-y-0">
-            <div className="font-[500] text-[--text-color]">
-              Booking #{booking.id}
-            </div>
-            <div
-              className={`px-[10px] py-[4px] text-[0.8rem] font-[500] uppercase text-white rounded ${
-                booking.status === "confirmed"
-                  ? "bg-[#28a745]"
-                  : booking.status === "pending"
-                  ? "bg-[#ffc107]"
-                  : "bg-[#dc3545]"
-              }`}
-            >
-              {booking.status}
-            </div>
-          </CardHeader>
-
-          <CardContent className="p-[15px]">
-            <div className="flex justify-between items-center mb-[10px]">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{booking.from}</span>
-                <ArrowRight className="w-4 h-4 text-gray-500" />
-                <span className="font-medium">{booking.to}</span>
-              </div>
-              <div className="text-[#666] text-[0.9rem]">
-                {new Date(booking.bookingDate).toLocaleDateString()}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 text-[0.9rem]">
-              <div>
-                <span className="text-[#666]">Seats: </span>
-                <span className="font-medium">{booking.seats.join(", ")}</span>
-              </div>
-              <div>
-                <span className="text-[#666]">Departure: </span>
-                <span className="font-medium">{booking.departureTime}</span>
-              </div>
-              <div>
-                <span className="text-[#666]">Date: </span>
-                <span className="font-medium">{booking.date}</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-[#666]">Total: </span>
-                <span className="font-medium flex items-center">
-                  <IndianRupee className="w-3 h-3" />
-                  {booking.totalAmount}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
     </div>
   );
 }

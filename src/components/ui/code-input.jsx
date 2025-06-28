@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
-import { Input } from "./input";
+import { Input } from "@/components/ui/input";
 
 export default function CodeInput({ length = 4, onChange, className }) {
   const [otp, setOtp] = useState(new Array(length).fill(""));
@@ -38,7 +38,9 @@ export default function CodeInput({ length = 4, onChange, className }) {
   };
 
   return (
-    <main className={cn("flex space-x-2 justify-center items-center", className)}>
+    <main
+      className={cn("flex space-x-2 justify-center items-center", className)}
+    >
       {otp.map((dig, idx) => (
         <Input
           key={idx}
