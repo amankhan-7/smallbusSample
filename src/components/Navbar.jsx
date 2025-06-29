@@ -14,7 +14,7 @@ const montserrat = Montserrat({
   weight: ["700"],
 });
 
-export default function Navbar({ navItems = [], logoText = "smallbus" }) {
+export default function Navbar({ navItems = [], logoText = "smallbus"}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
@@ -28,7 +28,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
       dispatch(hydrate());
     }
   }, [dispatch, isHydrated]);
-
+  console.log(isLoggedIn)
   let actionLink;
   if (!isLoggedIn) {
     actionLink = {
@@ -77,7 +77,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
               {item.name}
             </Link>
           ))}
-          {isMounted && isHydrated && !isLoggedIn && (
+          {isMounted && isHydrated && (
             <Link
               href={actionLink.href}
               className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
@@ -146,7 +146,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
                   {item.name}
                 </Link>
               ))}
-              {isMounted && isHydrated && !isLoggedIn && (
+              {isMounted && isHydrated && (
                 <Link
                   href={actionLink.href}
                   className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"

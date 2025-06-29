@@ -15,6 +15,9 @@ import { addBooking } from "@/utils/redux/features/user/userSlice";
 import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
 import { useRouter } from "next/navigation";
 import { safeLocalStorage } from "@/lib/localStorage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { passengerSchema } from "@/utils/validations/form-validation";
 
 export default function PaymentPage() {
   const { data, isLoading } = useGetBusDataQuery("bus-123");
@@ -54,47 +57,24 @@ export default function PaymentPage() {
     }
   }, [isLoading, data]);
 
-  // Refs for form fields
-  const refs = {
-    firstNameRef: useRef(),
-    lastNameRef: useRef(),
-    ageRef: useRef(),
-    genderRef: useRef(),
-    emailRef: useRef(),
-    phoneRef: useRef(),
-  };
+  const form = useForm({
+    resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      age: "",
+      gender: "",
+      email: "",
+      phone: "",
+    },
+  });
 
-  const handlePayment = async () => {
-    const result = {
-      success:
-        refs.firstNameRef.current?.value && refs.lastNameRef.current?.value,
-      error: { errors: [] },
-    };
-
-    const refMap = {
-      firstName: refs.firstNameRef,
-      lastName: refs.lastNameRef,
-      age: refs.ageRef,
-      gender: refs.genderRef,
-      email: refs.emailRef,
-      phone: refs.phoneRef,
-    };
-
-    Object.values(refMap).forEach((ref) =>
-      ref.current?.classList.remove("ring-1", "ring-red-600")
-    );
-
-    if (!result.success) {
-      Object.values(refMap).forEach((ref) =>
-        ref.current?.classList.add("ring-1", "ring-red-600")
-      );
-      alert("Please fill in all required fields.");
-      return;
-    }
+  const handlePassengerSubmit = async () => {
+    console.log("Passenger Data Submitted:", data);
 
     try {
       console.log("Proceeding to payment with selected seats:", selectedSeats);
-      
+
       const result = await bookSeats({
         id: selectedBusId,
         seats: selectedSeats,
@@ -123,10 +103,13 @@ export default function PaymentPage() {
 
       <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
         <BookingSummary booking={booking} />
-        <PassengerForm refs={refs} />
+        <PassengerForm form={form} />
         {/* <PaymentOptions /> */}
         <TotalSection />
-        <ButtonUI onClick={handlePayment} className="w-full py-1.5">
+        <ButtonUI
+          onClick={() => form.handleSubmit(handlePassengerSubmit)()}
+          className="w-full py-1.5"
+        >
           Make Payment
         </ButtonUI>
       </main>

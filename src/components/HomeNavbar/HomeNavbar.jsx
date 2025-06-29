@@ -16,7 +16,6 @@ export default function HomeNavbar() {
       <Navbar
         navItems={navItems}
         logoText="smallbus"
-        loginUrl="/login"
       />
     </>
   );
