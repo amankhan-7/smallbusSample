@@ -6,8 +6,9 @@ import {
   FaRegCalendarAlt,
   FaExchangeAlt,
   FaSearch,
+  FaLocationArrow
 } from "react-icons/fa";
-import { FaLocationCrosshairs } from "react-icons/fa6";
+
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
 import ButtonUI from "@/components/ui/ButtonUI";
@@ -111,7 +112,7 @@ function Hero() {
                 FROM
               </label>
               <div className="relative">
-                <FaLocationCrosshairs
+                <FaLocationArrow
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#004aad]"
                   size={18}
                 />

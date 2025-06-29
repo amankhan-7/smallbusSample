@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,11 +14,7 @@ const montserrat = Montserrat({
   weight: ["700"],
 });
 
-export default function Navbar({
-  navItems = [],
-  logoText = "smallbus",
-  loginUrl = "/login",
-}) {
+export default function Navbar({ navItems = [], logoText = "smallbus" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
@@ -32,6 +28,21 @@ export default function Navbar({
       dispatch(hydrate());
     }
   }, [dispatch, isHydrated]);
+
+  let actionLink;
+  if (!isLoggedIn) {
+    actionLink = {
+      href: "/login",
+      label: "Login",
+      icon: <FaUser size={16} />,
+    };
+  } else {
+    actionLink = {
+      href: "/account",
+      label: "Account",
+      icon: <FaUserCircle size={18} />,
+    };
+  }
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
@@ -68,10 +79,11 @@ export default function Navbar({
           ))}
           {isMounted && isHydrated && !isLoggedIn && (
             <Link
-              href={loginUrl}
+              href={actionLink.href}
               className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
             >
-              <FaUser size={16} /> Login
+              {actionLink.icon}
+              {actionLink.label}
             </Link>
           )}
         </div>
@@ -136,11 +148,12 @@ export default function Navbar({
               ))}
               {isMounted && isHydrated && !isLoggedIn && (
                 <Link
-                  href={loginUrl}
+                  href={actionLink.href}
                   className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <FaUser size={16} /> Login
+                  {actionLink.icon}
+                  {actionLink.label}
                 </Link>
               )}
             </div>
