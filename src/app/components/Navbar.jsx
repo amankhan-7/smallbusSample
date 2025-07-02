@@ -68,7 +68,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="#help"
+                href="/help"
                 className="text-gray-600 hover:text-[#004aad] font-medium text-sm transition-colors"
               >
                 Help
@@ -77,7 +77,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/login"
-                className="flex items-center bg-[#004aad] text-white rounded-lg px-4 py-2.5 font-medium text-sm hover:bg-[#003580] transition-colors"
+                className="flex items-center gap-2 bg-[#004aad] text-white rounded-lg px-4 py-2.5 font-medium text-sm hover:bg-[#003580] transition-colors"
               >
                 <i className="fas fa-user-circle"></i>
                 Login
