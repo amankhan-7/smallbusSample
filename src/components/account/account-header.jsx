@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 import Image from "next/image";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 
 const AccountHeader = () => {
