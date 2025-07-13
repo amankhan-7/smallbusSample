@@ -36,7 +36,7 @@ export const busApiSlice = apiSlice.injectEndpoints({
     }),
 
     bookSeats: builder.mutation({
-      queryFn: async ({ id, seats, paymentId }) => {
+      queryFn: async ({ id, seats}) => {
         try {
           const currentBookedSeats = safeLocalStorage.getItem(
             "bookedSeats",
@@ -56,7 +56,6 @@ export const busApiSlice = apiSlice.injectEndpoints({
             bookingDate: new Date().toISOString(),
             totalAmount: seats.length * mockBusData.seatPrice,
             status: "confirmed",
-            paymentId,
           };
           bookingHistory.push(newBooking);
           safeLocalStorage.setItem("bookingHistory", bookingHistory);
@@ -74,5 +73,4 @@ export const busApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetBusDataQuery,
   useBookSeatsMutation,
-  useCreateRazorpayOrderMutation,
 } = busApiSlice;

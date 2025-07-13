@@ -21,7 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { passengerSchema } from "@/utils/validations/form-validation";
 import { PaymentOptions } from "@/components/payment/PaymentOptions";
 import {
-  useCreateRazorpayOrderMutation,
+  useLockSeatsForBookingMutation,
+  useConfirmBookingPaymentMutation,
   useGetPaymentMethodsQuery,
   useGetPaymentDetailsMutation,
   useGetRefundDetailsMutation,
@@ -34,7 +35,7 @@ export default function PaymentPage() {
     bus: "",
     from: "",
     to: "",
-    date: "",
+    date: "", 
     timeofdeparture: "",
     timeofarrival: "",
     seatid: [],
@@ -57,7 +58,7 @@ export default function PaymentPage() {
     if (!isLoading && data) {
       setBooking({
         bus: data.busType,
-        from: data.from,
+        from: data.from, 
         to: data.to,
         date: data.date,
         timeofdeparture: data.departureTime,
@@ -82,53 +83,61 @@ export default function PaymentPage() {
 
   const [processing, setProcessing] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-  const [createOrder] = useCreateRazorpayOrderMutation();
+
+  const [confirmPayment] = useConfirmBookingPaymentMutation();
+  const [lockSeats] = useLockSeatsForBookingMutation();
 
   const handlePassengerSubmit = async (formData) => {
     if (selectedOption === "razorpay") {
       console.log("Processing Razorpay payment...");
 
-      const amount = booking.price * booking.seatid.length + 50;
-      setProcessing(true);
-
-      // Generate unique identifiers
-      const receipt = `rcpt_${Date.now()}`;
-      const bookingReference = `SBUS-${selectedBusId}-${Date.now()}`;
-
       try {
-        // 1. Create Razorpay Order from backend
-        const order = await createOrder({
-          amount,
-          receipt,
-          bookingReference,
-        }).unwrap();
-        console.log("Razorpay order created:", order);
+        setProcessing(true);
+        console.log("Locking seats and creating Razorpay order…");
 
-        // 2. Razorpay options
+        const lockRes = await lockSeats({
+          busId: selectedBusId,
+          seatNumbers: selectedSeats,
+          userId: currentUser?._id, // or however you're storing the logged-in user
+          passengerDetails: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            age: formData.age,
+            gender: formData.gender,
+            email: formData.email,
+            phone: formData.phone,
+          },
+        }).unwrap();
+
+        const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
+
+        console.log("Seats locked:", lockedSeats);
+
         const options = {
-          key: order.keyId,
-          amount: order.amount,
-          currency: order.currency,
+          key: paymentOrder.keyId,
+          amount: paymentOrder.amount,
+          currency: paymentOrder.currency,
           name: "SmallBus",
           description: "Bus seat booking",
-          order_id: order.orderId,
+          order_id: paymentOrder.orderId,
           handler: async (response) => {
             try {
-              // 3. Confirm seat booking on successful payment
-              const result = await bookSeats({
-                id: selectedBusId,
-                seats: selectedSeats,
+              const confirmRes = await confirmPayment({
+                bookingId,
                 paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                paymentMethod: "upi",
               }).unwrap();
 
-              dispatch(addBooking(result.booking));
+              dispatch(addBooking(confirmRes.booking));
               dispatch(resetBooking());
               router.push("/account?tab=bookingHistory");
             } catch (err) {
-              console.error("Booking failed:", err);
+              console.error("Booking confirmation failed:", err);
               alert(
                 "Payment succeeded, but booking failed. Please contact support."
               );
+            } finally {oloooo
               setProcessing(false);
             }
           },
@@ -140,27 +149,18 @@ export default function PaymentPage() {
           theme: { color: "#004aad" },
         };
 
-        // 4. Open Razorpay Checkout
         const rzp = new window.Razorpay(options);
 
-        // Handle payment failure
-        rzp.on("payment.failed", function (response) {
-          console.error("Razorpay Payment Failed:", response.error);
-
-          alert(`Payment Failed
-Reason: ${response.error.description}
-Code: ${response.error.code}
-Step: ${response.error.step}
-Order ID: ${response.error.metadata?.order_id || "N/A"}
-Payment ID: ${response.error.metadata?.payment_id || "N/A"}
-      `);
+        rzp.on("payment.failed", (response) => {
+          console.error("Razorpay payment failed:", response.error);
+          alert(`Payment Failed\nReason: ${response.error.description}`);
           setProcessing(false);
         });
 
         rzp.open();
-      } catch (error) {
-        console.error("Payment initialization failed:", error);
-        alert("Unable to start payment. Please try again later.");
+      } catch (err) {
+        console.error("Seat lock or Razorpay setup failed:", err);
+        alert(err?.data?.message || "Unable to lock seats or start payment.");
         setProcessing(false);
       }
     }

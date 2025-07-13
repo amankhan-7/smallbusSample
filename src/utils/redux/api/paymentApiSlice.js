@@ -1,64 +1,79 @@
 // src/redux/services/paymentApiSlice.js
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const paymentApiSlice = createApi({
   reducerPath: "paymentApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://smallbusserver.devtab.xyz/api/v1/consumer" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://smallbusserver.devtab.xyz/api/v1/consumer",
+  }),
   tagTypes: ["Payment"],
+
   endpoints: (builder) => ({
-    // Create Razorpay Order
-    createRazorpayOrder: builder.mutation({
-      query: ({ amount, receipt, bookingReference }) => {
-        const amountInPaise = Math.round(amount * 100);
-        return {
-          url: "/create-order",
-          method: "POST",
-          body: { amount: amountInPaise, receipt, bookingReference },
-        };
-      },
-      transformResponse: (res) => res?.data,
-      transformErrorResponse: (err) => err?.data || "Order creation failed",
+    //Lock seats and get Razorpay payment order
+    lockSeatsForBooking: builder.mutation({
+      query: ({ busId, seatNumbers, userId, passengerDetails = {} }) => ({
+        url: "/lock-seats",
+        method: "POST",
+        body: { busId, seatNumbers, userId, passengerDetails },
+      }),
+      transformResponse: (res) => res?.data ?? null,
       invalidatesTags: ["Payment"],
     }),
 
-    //Get Payment Methods
-    getPaymentMethods: builder.query({
-      query: () => "/methods",
-      transformResponse: (res) => res?.data,
-      providesTags: ["Payment"],
+    //Confirm Razorpay payment after successful checkout
+    confirmBookingPayment: builder.mutation({
+      query: ({ bookingId, paymentId, orderId, signature, paymentMethod = "upi" }) => ({
+        url: "/confirm-booking",
+        method: "POST",
+        body: { bookingId, paymentId, orderId, signature, paymentMethod },
+      }),
+      transformResponse: (res) => res?.data ?? null,
+      invalidatesTags: ["Payment"],
     }),
 
-    //Get Payment Details
+    //Get payment methods from Razorpay (POST even though it's read-only)
+    getPaymentMethods: builder.query({
+      query: () => ({
+        url: "/get-payment-methods",
+        method: "POST",
+      }),
+      transformResponse: (res) => res?.data ?? null,
+    }),
+
+    //Fetch Razorpay payment details
     getPaymentDetails: builder.mutation({
       query: ({ paymentId }) => ({
-        url: "/payment-details",
+        url: "/get-payment-details",
         method: "POST",
         body: { paymentId },
       }),
-      transformResponse: (res) => res?.data,
+      transformResponse: (res) => res?.data ?? null,
     }),
 
-    //Get Refund Details
+    //Fetch refund details by refundId
     getRefundDetails: builder.mutation({
       query: ({ refundId }) => ({
-        url: "/refund-details",
+        url: "/get-refund-details",
         method: "POST",
         body: { refundId },
       }),
-      transformResponse: (res) => res?.data,
+      transformResponse: (res) => res?.data ?? null,
     }),
 
-    //Razorpay Health Check
+    //Razorpay health check
     getRazorpayHealth: builder.query({
-      query: () => "/health",
-      transformResponse: (res) => res?.data,
+      query: () => ({
+        url: "/razorpay-health",
+        method: "POST",
+      }),
+      transformResponse: (res) => res?.data ?? null,
     }),
   }),
 });
 
 export const {
-  useCreateRazorpayOrderMutation,
+  useLockSeatsForBookingMutation,
+  useConfirmBookingPaymentMutation,
   useGetPaymentMethodsQuery,
   useGetPaymentDetailsMutation,
   useGetRefundDetailsMutation,
