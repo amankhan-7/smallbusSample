@@ -32,10 +32,11 @@ import {
 export default function PaymentPage() {
   const { data, isLoading } = useGetBusDataQuery({ id: "bus-123" });
   const [booking, setBooking] = useState({
+    id: "",
     bus: "",
     from: "",
     to: "",
-    date: "", 
+    date: "",
     timeofdeparture: "",
     timeofarrival: "",
     seatid: [],
@@ -48,17 +49,22 @@ export default function PaymentPage() {
   const { selectedSeats, selectedBusId } = useSelector(
     (state) => state.booking
   );
+const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const localData = safeLocalStorage.getItem("bookingInfo");
     if (localData) setBooking(localData);
+
+    const userInfo = safeLocalStorage.getItem("userInfo");
+    if (userInfo) setCurrentUser(userInfo);
   }, []);
 
   useEffect(() => {
     if (!isLoading && data) {
       setBooking({
+        id:data.id,
         bus: data.busType,
-        from: data.from, 
+        from: data.from,
         to: data.to,
         date: data.date,
         timeofdeparture: data.departureTime,
@@ -87,7 +93,9 @@ export default function PaymentPage() {
   const [confirmPayment] = useConfirmBookingPaymentMutation();
   const [lockSeats] = useLockSeatsForBookingMutation();
 
+
   const handlePassengerSubmit = async (formData) => {
+    console.log("Form submitted:", formData);
     if (selectedOption === "razorpay") {
       console.log("Processing Razorpay payment...");
 
@@ -96,9 +104,9 @@ export default function PaymentPage() {
         console.log("Locking seats and creating Razorpay order…");
 
         const lockRes = await lockSeats({
-          busId: selectedBusId,
-          seatNumbers: selectedSeats,
-          userId: currentUser?._id, // or however you're storing the logged-in user
+          busId: booking.id,
+          seatNumbers: booking.seatid,
+          userId: currentUser?.id,
           passengerDetails: {
             name: `${formData.firstName} ${formData.lastName}`,
             age: formData.age,
@@ -111,6 +119,12 @@ export default function PaymentPage() {
         const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
 
         console.log("Seats locked:", lockedSeats);
+
+        if (!window.Razorpay) {
+          alert("Razorpay failed to load. Please try again.");
+          setProcessing(false);
+          return;
+        }
 
         const options = {
           key: paymentOrder.keyId,
@@ -137,7 +151,7 @@ export default function PaymentPage() {
               alert(
                 "Payment succeeded, but booking failed. Please contact support."
               );
-            } finally {oloooo
+            } finally {
               setProcessing(false);
             }
           },
@@ -165,6 +179,7 @@ export default function PaymentPage() {
       }
     }
   };
+    const onSubmit = form.handleSubmit(handlePassengerSubmit);
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -191,7 +206,7 @@ export default function PaymentPage() {
         />
         <TotalSection booking={booking} />
         <ButtonUI
-          onClick={() => form.handleSubmit(handlePassengerSubmit)()}
+           onClick={onSubmit}
           className="w-full py-1.5"
           disabled={processing}
         >
