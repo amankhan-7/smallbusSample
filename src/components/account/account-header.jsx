@@ -3,15 +3,17 @@ import React, { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
+import { Input } from "../ui/input";
+import { getUserDisplayName, formatPhoneNumber } from "@/utils/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 const AccountHeader = () => {
   const fileInputRef = useRef(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const userInfo = useSelector((state) => state.user.userInfo);
-  const { fullname = "User Name", phone = "+91 912345678" } = userInfo;
+  const {user} = useAuth()
 
+  const displayName = getUserDisplayName(user);
+  const formattedPhone = formatPhoneNumber(user?.phone);
 
   const handlePictureClick = () => {
     fileInputRef.current?.click();
@@ -24,6 +26,7 @@ const AccountHeader = () => {
       setImageUrl(url);
     }
   };
+
 
   return (
     <Card className="flex p-4 bg-card items-center flex-row shadow-sm mb-2">
@@ -52,11 +55,13 @@ const AccountHeader = () => {
             />
           </div>
 
-          <div className="flex items-center justify-center px-0 gap-0 flex-col">
+          <div className="flex items-start justify-center px-0 gap-0 flex-col">
             <div className="font-semibold text-lg text-foreground">
-              {fullname}
+              {displayName}
             </div>
-            <div className="text-sm text-muted-foreground">{phone}</div>
+            <div className="text-sm text-muted-foreground">
+              {formattedPhone}
+            </div>
           </div>
         </div>
       </CardContent>

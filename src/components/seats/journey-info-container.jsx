@@ -1,22 +1,25 @@
 "use client";
-import { useGetBusDataQuery } from "@/utils/redux/api/bus";
+import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
 import { useSelector } from "react-redux";
 import JourneyInfo from "@/components/seats/journey-info";
+import { useSearchParams } from "next/navigation";
 
 export default function JourneyInfoContainer() {
-  const selectedBusId = useSelector((state) => state.booking.selectedBusId);
-  const { data: bookingData, isLoading } = useGetBusDataQuery({
-    id: selectedBusId,
+  const busId = useSearchParams().get("busId");
+  const { data: busDetailsResponse, isLoading } = useGetBusDetailsQuery({
+    busId,
   });
+
+  const busData = busDetailsResponse?.bus;
 
   return (
     <JourneyInfo
-      from={bookingData?.from}
-      to={bookingData?.to}
-      departureTime={bookingData?.departureTime}
-      arrivalTime={bookingData?.arrivalTime}
-      date={bookingData?.date}
-      busType={bookingData?.busType}
+      from={busData?.routeFrom}
+      to={busData?.routeTo}
+      departureTime={busData?.departureTime}
+      arrivalTime={busData?.arrivalTime}
+      date={busData?.date}
+      busType={busData?.busName}
       isLoading={isLoading}
     />
   );

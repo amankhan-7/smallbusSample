@@ -42,8 +42,6 @@ export default function PaymentPage() {
     seatid: [],
     price: "",
   });
-
-  const dispatch = useDispatch();
   const router = useRouter();
   const [bookSeats] = useBookSeatsMutation();
   const { selectedSeats, selectedBusId } = useSelector(

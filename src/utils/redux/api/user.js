@@ -1,64 +1,113 @@
-import { safeLocalStorage } from "@/lib/localStorage";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
-      queryFn: async (data) => {
-        try {
-          const { phone, otp } = data;
-          if (otp === "1234") {
-            const userData = {
-              id: 1,
-              fullname: "",
-              phone,
-              email: "",
-              profilePicture: null,
-            };
-
-            safeLocalStorage.setItem("userInfo", userData);
-            safeLocalStorage.setItem("isLoggedIn", "true");
-
-            return { data: userData };
-          } else {
-            return { error: { status: 400, data: "Invalid OTP" } };
-          }
-        } catch (error) {
-          return { error: { status: 500, data: "Login failed" } };
-        }
-      },
-      invalidatesTags: ["User"],
+    initiateLogin: builder.mutation({
+      query: ({ phoneNumber }) => ({
+        url: `/initiate-login`,
+        method: "POST",
+        body: { phoneNumber },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
     }),
 
-    updateUser: builder.mutation({
-      queryFn: async (data) => {
-        try {
-          const currentUser = safeLocalStorage.getItem("userInfo", {});
-          const updatedUser = { ...currentUser, ...data };
-
-          safeLocalStorage.setItem("userInfo", updatedUser);
-
-          return { data: updatedUser };
-        } catch (error) {
-          return { error: { status: 500, data: "Update failed" } };
-        }
-      },
-      invalidatesTags: ["User"],
+    verifyOtp: builder.mutation({
+      query: ({ phoneNumber, otp, purpose }) => ({
+        url: `/verify-otp`,
+        method: "POST",
+        body: { phoneNumber, otp, purpose },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: (_res, _err, _args) => [{ type: "User", id: "CURRENT" }],
     }),
-    sendOtp: builder.mutation({
-      queryFn: async (data) => {
-        try {
-          const { phone } = data;
-          console.log(`OTP sent to ${phone}: 1234`);
 
-          return { data: { message: "OTP sent successfully", phone } };
-        } catch (error) {
-          return { error: { status: 500, data: "Failed to send OTP" } };
-        }
-      },
+    register: builder.mutation({
+      query: ({ phoneNumber, firstName, lastName }) => ({
+        url: `/register`,
+        method: "POST",
+        body: { phoneNumber, firstName, lastName },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+
+    getUserProfile: builder.query({
+      query: ({ userId }) => ({
+        url: `/get-profile`,
+        method: "POST",
+        body: { userId },
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: `/refresh-token`,
+        method: "POST",
+      }),
+      transformResponse: (res) => res.data,
+    }),
+
+    logout: builder.mutation({
+      query: () => ({
+        url: `/logout`,
+        method: "POST",
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+
+    resetAccount: builder.mutation({
+      query: ({ phoneNumber, verificationData }) => ({
+        url: `/reset-account`,
+        method: "POST",
+        body: { phoneNumber, verificationData },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+
+    setPin: builder.mutation({
+      query: ({ userId, pin }) => ({
+        url: `/set-pin`,
+        method: "POST",
+        body: { userId, pin },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+
+    updateUserProfile: builder.mutation({
+      query: ({ userId, firstName, lastName, email }) => ({
+        url: `/update-profile`,
+        method: "POST",
+        body: { userId, firstName, lastName, email },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
+    }),
+    deleteAccount: builder.mutation({
+      query: ({ userId }) => ({
+        url: `/delete-account`,
+        method: "POST",
+        body: { userId },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: [{ type: "User", id: "CURRENT" }],
     }),
   }),
 });
 
-export const { useLoginMutation, useUpdateUserMutation, useSendOtpMutation } =
-  userApiSlice;
+export const {
+  useInitiateLoginMutation,
+  useVerifyOtpMutation,
+  useResetAccountMutation,
+  useSetPinMutation,
+  useUpdateUserProfileMutation,
+  useGetUserProfileQuery,
+  useRefreshTokenMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+} = userApiSlice;

@@ -67,7 +67,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
                 <FormItem className="my-[1.5625rem] mt-[1.875rem] flex flex-row items-center justify-center">
                   <FormControl>
                     <CodeInput
-                      length={4}
+                      length={5}
                       value={field.value}
                       onChange={field.onChange}
                     />
@@ -78,7 +78,7 @@ export default function OTPPage({ onBack, onSubmit, onResend }) {
             />
             <Button
               type="submit"
-              disabled={form.watch("otp")?.length !== 4}
+              disabled={form.watch("otp")?.length !== 5}
               className="w-full h-fit font-medium md:text-[1.1rem] tracking-[0.5px] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 p-3.5 md:p-4 mt-2.5 cursor-pointer"
             >
               Verify & Login
