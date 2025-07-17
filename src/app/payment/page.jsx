@@ -27,6 +27,7 @@ import {
 } from "@/utils/redux/api/paymentApiSlice";
 import { useAuth } from "@/hooks/useAuth";
 import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
+import AuthGuard from "@/components/auth/AuthGuard";
 
 export default function PaymentPage() {
   const searchParams = useSearchParams();
@@ -87,7 +88,6 @@ export default function PaymentPage() {
 
   const [confirmPayment] = useConfirmBookingPaymentMutation();
   const [lockSeats] = useLockSeatsForBookingMutation();
-
 
   const handlePassengerSubmit = async (formData) => {
     console.log("Form submitted:", formData);
@@ -174,50 +174,52 @@ export default function PaymentPage() {
       }
     }
   };
-    const onSubmit = form.handleSubmit(handlePassengerSubmit);
+  const onSubmit = form.handleSubmit(handlePassengerSubmit);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Razorpay script */}
-      <Script
-        src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="afterInteractive"
-      />
-      <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
-        <Link
-          href="#"
-          className="inline-block py-1 text-[24px] text-[#004aad] no-underline font-mont font-black"
-        >
-          smallbus
-        </Link>
-      </header>
+    <AuthGuard redirectTo="/login" requireAuth>
+      <div className="bg-gray-100 min-h-screen">
+        {/* Razorpay script */}
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
+        <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
+          <Link
+            href="#"
+            className="inline-block py-1 text-[24px] text-[#004aad] no-underline font-mont font-black"
+          >
+            smallbus
+          </Link>
+        </header>
 
-      <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[400px]">
-            <div className="animate-pulse text-gray-500">
-              Loading payment details...
+        <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[400px]">
+              <div className="animate-pulse text-gray-500">
+                Loading payment details...
+              </div>
             </div>
-          </div>
-        ) : (
-          <>
-            <BookingSummary booking={booking} />
-            <PassengerForm form={form} />
-            <PaymentOptions
-              selectedOption={selectedOption}
-              onSelect={setSelectedOption}
-            />
-            <TotalSection booking={booking} />
-            <CustomButton
-              onClick={onSubmit}
-              className="w-full py-1.5"
-              disabled={processing || isLoading}
-            >
-              {processing ? "Processing..." : "Make Payment"}
-            </CustomButton>
-          </>
-        )}
-      </main>
-    </div>
+          ) : (
+            <>
+              <BookingSummary booking={booking} />
+              <PassengerForm form={form} />
+              <PaymentOptions
+                selectedOption={selectedOption}
+                onSelect={setSelectedOption}
+              />
+              <TotalSection booking={booking} />
+              <CustomButton
+                onClick={onSubmit}
+                className="w-full py-1.5"
+                disabled={processing || isLoading}
+              >
+                {processing ? "Processing..." : "Make Payment"}
+              </CustomButton>
+            </>
+          )}
+        </main>
+      </div>
+    </AuthGuard>
   );
 }
