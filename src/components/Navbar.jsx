@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
-import { useSelector, useDispatch } from "react-redux";
-import { hydrate } from "@/utils/redux/features/user/userSlice";
+import { useAuth } from "@/hooks/useAuth";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -16,19 +15,12 @@ const montserrat = Montserrat({
 
 export default function Navbar({ navItems = [], logoText = "smallbus" }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
   const pathname = usePathname();
-  const { isLoggedIn, isHydrated } = useSelector((state) => state.user);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!isHydrated) {
-      dispatch(hydrate());
-    }
-  }, [dispatch, isHydrated]);
 
   let actionLink;
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     actionLink = {
       href: "/login",
       label: "Login",

@@ -10,14 +10,14 @@ import {
   useBookSeatsMutation,
   useGetBusDataQuery,
 } from "@/utils/redux/api/bus";
-import { useDispatch, useSelector } from "react-redux";
-import { addBooking } from "@/utils/redux/features/user/userSlice";
-import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
-import { useRouter } from "next/navigation";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PaymentPage() {
-  const { data, isLoading } = useGetBusDataQuery("bus-123");
+  const searchParams = useSearchParams();
+  const busId = searchParams.get("busId");
+  const { data, isLoading } = useGetBusDataQuery({ busId }, {
+    skip: !busId,
+  });
   const [booking, setBooking] = useState({
     bus: "",
     from: "",
@@ -27,18 +27,8 @@ export default function PaymentPage() {
     timeofarrival: "",
     seatid: [],
   });
-
-  const dispatch = useDispatch();
   const router = useRouter();
   const [bookSeats] = useBookSeatsMutation();
-  const { selectedSeats, selectedBusId } = useSelector(
-    (state) => state.booking
-  );
-
-  useEffect(() => {
-    const localData = safeLocalStorage.getItem("bookingInfo");
-    if (localData) setBooking(localData);
-  }, []);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -95,12 +85,10 @@ export default function PaymentPage() {
     try {
       console.log("Proceeding to payment with selected seats:", selectedSeats);
       
-      const result = await bookSeats({
+      await bookSeats({
         id: selectedBusId,
         seats: selectedSeats,
       }).unwrap();
-      dispatch(addBooking(result.booking));
-      dispatch(resetBooking());
       router.push("/account?tab=bookingHistory");
     } catch (error) {
       console.error("Booking failed:", error);

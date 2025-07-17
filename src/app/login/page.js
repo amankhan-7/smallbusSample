@@ -1,69 +1,136 @@
 "use client";
 import OTPPage from "@/components/authentication/otp-page";
 import LoginPage from "@/components/authentication/phone-page";
-import { setUserInfo } from "@/utils/redux/features/user/userSlice";
-import { useSendOtpMutation, useLoginMutation } from "@/utils/redux/api/user";
-import { use, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import RegisterPage from "@/components/authentication/register-page";
 
-export default function Login() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import AuthGuard from "@/components/auth/AuthGuard";
+import {
+  useInitiateLoginMutation,
+  useRegisterMutation,
+  useVerifyOtpMutation,
+} from "@/utils/redux/api/user";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/utils/redux/slices/authSlice";
+
+function LoginComponent() {
   const [step, setStep] = useState(1);
   const [phoneData, setPhoneData] = useState(null);
-  const dispatch = useDispatch();
   const router = useRouter();
-  const { userInfo, isLoggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const [sendOtp, { isLoading: isSendingOtp }] = useSendOtpMutation();
-  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+  const [initiateLogin, { isLoading: isSendingOtp }] =
+    useInitiateLoginMutation();
+  const [verifyOtp, { isLoading: isLoggingIn }] = useVerifyOtpMutation();
+  const [register] = useRegisterMutation();
 
   const handleResendOTP = async () => {
     try {
-      await sendOtp({ phone: phoneData.phone }).unwrap();
+      const result = await initiateLogin({
+        phoneNumber: phoneData.phone,
+      }).unwrap();
+
+      if (result.success) {
+        console.log("OTP resent successfully");
+      } else {
+        alert(result.message || "Failed to resend OTP. Please try again.");
+      }
     } catch (error) {
       console.error("Failed to resend OTP:", error);
-      alert("Failed to resend OTP. Please try again.");
+
+      if (error?.data?.message) {
+        alert(error.data.message);
+      } else if (error?.message) {
+        alert(error.message);
+      } else {
+        alert("Failed to resend OTP. Please try again.");
+      }
     }
   };
 
   const handlePhoneSubmit = async (data) => {
     try {
-      await sendOtp({ phone: data.phone }).unwrap();
-      setPhoneData(data);
-      setStep(2);
+      const result = await initiateLogin({ phoneNumber: data.phone }).unwrap();
+
+      if (result.success) {
+        setPhoneData(data);
+        setStep(2);
+      } else {
+        alert(result.message || "Failed to send OTP. Please try again.");
+      }
     } catch (error) {
-      console.error("Failed to send OTP:", error);
-      alert("Failed to send OTP. Please try again.");
+      console.warn("Failed to send OTP:", error);
+      if (error.status === 404 || error.data.message?.includes("not found")) {
+        setPhoneData(data);
+        setStep(3);
+      }
     }
   };
-  useEffect(() => {
-    console.log("userInfo:", userInfo);
-    console.log("isLoggedIn:", isLoggedIn);
-    if (userInfo && isLoggedIn === true) {
-      router.push("/");
-    }
-  }, [router, userInfo, isLoggedIn]);
 
   const handleOTPSubmit = async ({ otp }) => {
     try {
       console.log("OTP submitted:", otp);
-      const result = await login({
-        phone: phoneData.phone,
+      const result = await verifyOtp({
+        phoneNumber: phoneData.phone,
         otp,
+        purpose: "login",
+      }).unwrap();
+      console.log("OTP verification result:", result);
+
+      if (result.success) {
+        dispatch(setCredentials({ user: result.user }));
+        router.push("/");
+      } else {
+        alert(result.message || "Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      if (error?.data?.message) {
+        alert(error.data.message);
+      } else if (error?.message) {
+        alert(error.message);
+      } else {
+        alert("Invalid OTP. Please try again.");
+      }
+    }
+  };
+
+  const handleRegisterSubmit = async (data) => {
+    console.log("Registering with data:", data);
+    try {
+      const result = await register({
+        phoneNumber: phoneData.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
       }).unwrap();
 
-      dispatch(setUserInfo(result));
-      router.push("/");
+      console.log("Registration result:", result);
+
+      setPhoneData({
+        phoneNumber: phoneData.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      });
+      setStep(1);
     } catch (error) {
-      console.log("Login failed:", error);
-      console.error("Login failed:", error);
-      alert("Invalid OTP. Please try again.");
+      console.error("Registration failed:", error);
+
+      if (error?.data?.message) {
+        alert(error.data.message);
+      } else if (error?.message) {
+        alert(error.message);
+      } else {
+        alert("Failed to register. Please try again.");
+      }
     }
   };
 
   const handleBack = () => {
     setStep(1);
   };
+
   return (
     <main className="flex md:items-center justify-center h-fit md:min-h-screen pt-[6.25rem] md:p-0 px-5">
       {step === 1 && (
@@ -78,6 +145,17 @@ export default function Login() {
           isResending={isSendingOtp}
         />
       )}
+      {step === 3 && (
+        <RegisterPage onBack={handleBack} onSubmit={handleRegisterSubmit} />
+      )}
     </main>
+  );
+}
+
+export default function Login() {
+  return (
+    <AuthGuard requireAuth={false}>
+      <LoginComponent />
+    </AuthGuard>
   );
 }

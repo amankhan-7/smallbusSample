@@ -3,6 +3,7 @@ import JourneyInfoContainer from "@/components/seats/journey-info-container";
 import SeatLegendContainer from "@/components/seats/seat-legend-container";
 import BusLayoutContainer from "@/components/seats/bus-layout-container";
 import BookingSummaryContainer from "@/components/seats/booking-summary-container";
+import { Suspense } from "react";
 
 export default function SeatSelection() {
   return (
@@ -14,10 +15,18 @@ export default function SeatSelection() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 flex flex-col">
-          <JourneyInfoContainer />
-          <SeatLegendContainer />
-          <BusLayoutContainer />
-          <BookingSummaryContainer />
+          <Suspense fallback={<div>Loading...</div>}>
+            <JourneyInfoContainer />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SeatLegendContainer />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <BusLayoutContainer />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <BookingSummaryContainer />
+          </Suspense>
         </CardContent>
       </Card>
     </main>

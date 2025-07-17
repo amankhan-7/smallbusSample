@@ -1,16 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { clearUserData } from "@/utils/redux/features/user/userSlice";
 import { LogOut } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useAuth } from "@/hooks/useAuth";
 
 const LogoutButton = () => {
-  const dispatch = useDispatch();
-  const handleLogout = () => {
-    dispatch(clearUserData());
+  const { logout: handleLogout } = useAuth();
 
-    console.log("User logged out");
-  };
   return (
     <div className="my-6">
       <Button

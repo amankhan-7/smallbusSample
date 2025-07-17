@@ -62,7 +62,7 @@ const BookingSummary = memo(
     return (
       <div
         className={cn(
-          "p-5 md:p-6 gap-0 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-200",
+          "p-5 md:p-6 gap-0 ",
           className
         )}
       >
@@ -105,7 +105,7 @@ const BookingSummary = memo(
 
           <Button
             className={cn(
-              "w-full h-fit m-0 p-3 md:p-[0.9375rem] md:text-[1.1rem] font-medium text-[1rem] mt-[0.9375rem] md:mt-[1.5625rem] hover:text-white text-white disabled:opacity-100 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-200",
+              "w-full h-fit m-0 p-3 md:p-[0.9375rem] md:text-[1.1rem] font-medium text-[1rem] mt-[0.9375rem] md:mt-[1.5625rem] hover:text-white text-white disabled:opacity-100 ",
               canProceed
                 ? "bg-primary hover:bg-secondary"
                 : "bg-[#ccc] cursor-not-allowed"
