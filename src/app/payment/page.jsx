@@ -88,7 +88,6 @@ export default function PaymentPage() {
   const [confirmPayment] = useConfirmBookingPaymentMutation();
   const [lockSeats] = useLockSeatsForBookingMutation();
 
-
   const handlePassengerSubmit = async (formData) => {
     console.log("Form submitted:", formData);
     if (selectedOption === "razorpay") {
@@ -99,6 +98,9 @@ export default function PaymentPage() {
         console.log("Locking seats and creating Razorpay order…");
 
         const lockRes = await lockSeats({
+          //busId: "6873917df0f512604104a5ac",
+          //seatNumbers: [23],
+          //userId: "687381bdde342e5ef6b0c4d4",
           busId,
           seatNumbers: booking.seatid,
           userId: currentUser?.id,
@@ -114,6 +116,7 @@ export default function PaymentPage() {
         const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
 
         console.log("Seats locked:", lockedSeats);
+        console.log("paymentOrder:", paymentOrder);
 
         if (!window.Razorpay) {
           alert("Razorpay failed to load. Please try again.");
@@ -129,12 +132,18 @@ export default function PaymentPage() {
           description: "Bus seat booking",
           order_id: paymentOrder.orderId,
           handler: async (response) => {
+            const {
+              razorpay_payment_id,
+              razorpay_order_id,
+              razorpay_signature,
+            } = response;
+            console.log("Razorpay payment response:", response);
             try {
               const confirmRes = await confirmPayment({
                 bookingId,
-                paymentId: response.razorpay_payment_id,
-                orderId: response.razorpay_order_id,
-                signature: response.razorpay_signature,
+                paymentId: razorpay_payment_id,
+                orderId: razorpay_order_id,
+                signature: razorpay_signature,
                 paymentMethod: "upi",
               }).unwrap();
 
@@ -172,9 +181,11 @@ export default function PaymentPage() {
         alert(err?.data?.message || "Unable to lock seats or start payment.");
         setProcessing(false);
       }
+    } else {
+      alert("Select the given Payment Option");
     }
   };
-    const onSubmit = form.handleSubmit(handlePassengerSubmit);
+  const onSubmit = form.handleSubmit(handlePassengerSubmit);
 
   return (
     <div className="bg-gray-100 min-h-screen">
