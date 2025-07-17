@@ -92,7 +92,7 @@ function Hero() {
       alert("Please fill in all fields.");
       return;
     }
-    router.push(`/buses?from=${encodeURIComponent(fromCity)}&to=${encodeURIComponent(toCity)}&date=${travelDate}`);
+    router.push(`/buses?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&travelDate=${travelDate}`);
   };
 
   return (

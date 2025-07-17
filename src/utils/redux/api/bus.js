@@ -35,8 +35,8 @@ export const busApiSlice = apiSlice.injectEndpoints({
     }),
 
     getPopularRoutes: builder.query({
-      query: () => ({ url: `/get-popular-routes`, method: "GET" }),
-      transformResponse: (res) => res.data,
+      query: () => ({ url: `/popular-routes`, method: "GET" }),
+      transformResponse: (res) => res.data.popularRoutes,
       providesTags: () => [{ type: "PopularRoutes", id: "LIST" }],
     }),
 
