@@ -36,7 +36,7 @@ export const busApiSlice = apiSlice.injectEndpoints({
     }),
 
     bookSeats: builder.mutation({
-      queryFn: async ({ id, seats }) => {
+      queryFn: async ({ id, seats}) => {
         try {
           const currentBookedSeats = safeLocalStorage.getItem(
             "bookedSeats",
@@ -70,4 +70,7 @@ export const busApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetBusDataQuery, useBookSeatsMutation } = busApiSlice;
+export const {
+  useGetBusDataQuery,
+  useBookSeatsMutation,
+} = busApiSlice;
