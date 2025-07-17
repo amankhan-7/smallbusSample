@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import ButtonUI from "@/components/ui/ButtonUI";
 import BookingSummary from "@/components/payment/BookingSummary";
 import PassengerForm from "@/components/payment/PassengerForm";
@@ -15,10 +16,23 @@ import { addBooking } from "@/utils/redux/features/user/userSlice";
 import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
 import { useRouter } from "next/navigation";
 import { safeLocalStorage } from "@/lib/localStorage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { passengerSchema } from "@/utils/validations/form-validation";
+import { PaymentOptions } from "@/components/payment/PaymentOptions";
+import {
+  useLockSeatsForBookingMutation,
+  useConfirmBookingPaymentMutation,
+  useGetPaymentMethodsQuery,
+  useGetPaymentDetailsMutation,
+  useGetRefundDetailsMutation,
+  useGetRazorpayHealthQuery,
+} from "@/utils/redux/api/paymentApiSlice";
 
 export default function PaymentPage() {
-  const { data, isLoading } = useGetBusDataQuery("bus-123");
+  const { data, isLoading } = useGetBusDataQuery({ id: "bus-123" });
   const [booking, setBooking] = useState({
+    id: "",
     bus: "",
     from: "",
     to: "",
@@ -26,6 +40,7 @@ export default function PaymentPage() {
     timeofdeparture: "",
     timeofarrival: "",
     seatid: [],
+    price: "",
   });
 
   const dispatch = useDispatch();
@@ -34,15 +49,20 @@ export default function PaymentPage() {
   const { selectedSeats, selectedBusId } = useSelector(
     (state) => state.booking
   );
+const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const localData = safeLocalStorage.getItem("bookingInfo");
     if (localData) setBooking(localData);
+
+    const userInfo = safeLocalStorage.getItem("userInfo");
+    if (userInfo) setCurrentUser(userInfo);
   }, []);
 
   useEffect(() => {
     if (!isLoading && data) {
       setBooking({
+        id:data.id,
         bus: data.busType,
         from: data.from,
         to: data.to,
@@ -50,68 +70,124 @@ export default function PaymentPage() {
         timeofdeparture: data.departureTime,
         timeofarrival: data.arrivalTime,
         seatid: data.seatid || ["A1", "A2"],
+        price: data.seatPrice,
       });
     }
   }, [isLoading, data]);
 
-  // Refs for form fields
-  const refs = {
-    firstNameRef: useRef(),
-    lastNameRef: useRef(),
-    ageRef: useRef(),
-    genderRef: useRef(),
-    emailRef: useRef(),
-    phoneRef: useRef(),
-  };
+  const form = useForm({
+    resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      age: "",
+      gender: "",
+      email: "",
+      phone: "",
+    },
+  });
 
-  const handlePayment = async () => {
-    const result = {
-      success:
-        refs.firstNameRef.current?.value && refs.lastNameRef.current?.value,
-      error: { errors: [] },
-    };
+  const [processing, setProcessing] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
 
-    const refMap = {
-      firstName: refs.firstNameRef,
-      lastName: refs.lastNameRef,
-      age: refs.ageRef,
-      gender: refs.genderRef,
-      email: refs.emailRef,
-      phone: refs.phoneRef,
-    };
+  const [confirmPayment] = useConfirmBookingPaymentMutation();
+  const [lockSeats] = useLockSeatsForBookingMutation();
 
-    Object.values(refMap).forEach((ref) =>
-      ref.current?.classList.remove("ring-1", "ring-red-600")
-    );
 
-    if (!result.success) {
-      Object.values(refMap).forEach((ref) =>
-        ref.current?.classList.add("ring-1", "ring-red-600")
-      );
-      alert("Please fill in all required fields.");
-      return;
+  const handlePassengerSubmit = async (formData) => {
+    console.log("Form submitted:", formData);
+    if (selectedOption === "razorpay") {
+      console.log("Processing Razorpay payment...");
+
+      try {
+        setProcessing(true);
+        console.log("Locking seats and creating Razorpay order…");
+
+        const lockRes = await lockSeats({
+          busId: booking.id,
+          seatNumbers: booking.seatid,
+          userId: currentUser?.id,
+          passengerDetails: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            age: formData.age,
+            gender: formData.gender,
+            email: formData.email,
+            phone: formData.phone,
+          },
+        }).unwrap();
+
+        const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
+
+        console.log("Seats locked:", lockedSeats);
+
+        if (!window.Razorpay) {
+          alert("Razorpay failed to load. Please try again.");
+          setProcessing(false);
+          return;
+        }
+
+        const options = {
+          key: paymentOrder.keyId,
+          amount: paymentOrder.amount,
+          currency: paymentOrder.currency,
+          name: "SmallBus",
+          description: "Bus seat booking",
+          order_id: paymentOrder.orderId,
+          handler: async (response) => {
+            try {
+              const confirmRes = await confirmPayment({
+                bookingId,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                paymentMethod: "upi",
+              }).unwrap();
+
+              dispatch(addBooking(confirmRes.booking));
+              dispatch(resetBooking());
+              router.push("/account?tab=bookingHistory");
+            } catch (err) {
+              console.error("Booking confirmation failed:", err);
+              alert(
+                "Payment succeeded, but booking failed. Please contact support."
+              );
+            } finally {
+              setProcessing(false);
+            }
+          },
+          prefill: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            contact: formData.phone,
+          },
+          theme: { color: "#004aad" },
+        };
+
+        const rzp = new window.Razorpay(options);
+
+        rzp.on("payment.failed", (response) => {
+          console.error("Razorpay payment failed:", response.error);
+          alert(`Payment Failed\nReason: ${response.error.description}`);
+          setProcessing(false);
+        });
+
+        rzp.open();
+      } catch (err) {
+        console.error("Seat lock or Razorpay setup failed:", err);
+        alert(err?.data?.message || "Unable to lock seats or start payment.");
+        setProcessing(false);
+      }
     }
-
-    try {
-      console.log("Proceeding to payment with selected seats:", selectedSeats);
-      
-      const result = await bookSeats({
-        id: selectedBusId,
-        seats: selectedSeats,
-      }).unwrap();
-      dispatch(addBooking(result.booking));
-      dispatch(resetBooking());
-      router.push("/account?tab=bookingHistory");
-    } catch (error) {
-      console.error("Booking failed:", error);
-      alert("Booking failed. Please try again.");
-    }
-
-    alert("Payment Success (demo)");
   };
+    const onSubmit = form.handleSubmit(handlePassengerSubmit);
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      {/* Razorpay script */}
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
+      />
       <header className="text-center py-2 bg-white shadow fixed w-full top-0 z-[1000]">
         <Link
           href="#"
@@ -123,11 +199,18 @@ export default function PaymentPage() {
 
       <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
         <BookingSummary booking={booking} />
-        <PassengerForm refs={refs} />
-        {/* <PaymentOptions /> */}
-        <TotalSection />
-        <ButtonUI onClick={handlePayment} className="w-full py-1.5">
-          Make Payment
+        <PassengerForm form={form} />
+        <PaymentOptions
+          selectedOption={selectedOption}
+          onSelect={setSelectedOption}
+        />
+        <TotalSection booking={booking} />
+        <ButtonUI
+           onClick={onSubmit}
+          className="w-full py-1.5"
+          disabled={processing}
+        >
+          {processing ? "Processing..." : "Make Payment"}
         </ButtonUI>
       </main>
     </div>
