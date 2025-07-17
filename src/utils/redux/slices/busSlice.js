@@ -5,6 +5,7 @@ const initialState = {
   selectedSeats: [],
   currentBusSchedule: [],
   currentRoutes: { from: "", to: "", date: "" },
+  bookings: [],
 };
 
 const busSlice = createSlice({
@@ -42,11 +43,28 @@ const busSlice = createSlice({
     clearCurrentRoutes: (state) => {
       state.currentRoutes = { from: "", to: "", date: "" };
     },
+    addBooking: (state, action) => {
+      state.bookings.push(action.payload);
+    },
+    resetBooking: (state) => {
+      state.selectedSeats = [];
+      state.busDetails = null;
+    },
   },
 });
 
-export const { setCurrentBusDetails, clearCurrentBusDetails, selectSeat, deselectSeat, resetSelectedSeats, setCurrentBusSchedule, clearCurrentBusSchedule, setCurrentRoutes } =
-  busSlice.actions;
+export const {
+  setCurrentBusDetails,
+  clearCurrentBusDetails,
+  selectSeat,
+  deselectSeat,
+  resetSelectedSeats,
+  setCurrentBusSchedule,
+  clearCurrentBusSchedule,
+  setCurrentRoutes,
+  addBooking,
+  resetBooking,
+} = busSlice.actions;
 
 export default busSlice.reducer;
 

@@ -1,36 +1,41 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Script from "next/script";
-import ButtonUI from "@/components/ui/ButtonUI";
+import CustomButton from "@/components/ui/ButtonUI";
 import BookingSummary from "@/components/payment/BookingSummary";
 import PassengerForm from "@/components/payment/PassengerForm";
 import TotalSection from "@/components/payment/TotalSection";
 import {
-  useBookSeatsMutation,
-  useGetBusDataQuery,
+  useGetBusDetailsQuery,
+  useLockSeatsForBookingMutation,
+  useConfirmBookingPaymentMutation,
 } from "@/utils/redux/api/bus";
-import { useDispatch, useSelector } from "react-redux";
-import { addBooking } from "@/utils/redux/features/user/userSlice";
-import { resetBooking } from "@/utils/redux/features/booking/bookingSlice";
-import { useRouter } from "next/navigation";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { useSelector, useDispatch } from "react-redux";
+import { addBooking, resetBooking } from "@/utils/redux/slices/busSlice";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passengerSchema } from "@/utils/validations/form-validation";
 import { PaymentOptions } from "@/components/payment/PaymentOptions";
 import {
-  useLockSeatsForBookingMutation,
-  useConfirmBookingPaymentMutation,
   useGetPaymentMethodsQuery,
   useGetPaymentDetailsMutation,
   useGetRefundDetailsMutation,
   useGetRazorpayHealthQuery,
 } from "@/utils/redux/api/paymentApiSlice";
+import { useAuth } from "@/hooks/useAuth";
+import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
 
 export default function PaymentPage() {
-  const { data, isLoading } = useGetBusDataQuery({ id: "bus-123" });
+  const searchParams = useSearchParams();
+  const busId = searchParams.get("busId");
+
+  const { data, isLoading } = useGetBusDetailsQuery(
+    { busId },
+    { skip: !busId }
+  );
   const [booking, setBooking] = useState({
     id: "",
     bus: "",
@@ -43,32 +48,24 @@ export default function PaymentPage() {
     price: "",
   });
   const router = useRouter();
-  const [bookSeats] = useBookSeatsMutation();
-  const { selectedSeats, selectedBusId } = useSelector(
-    (state) => state.booking
-  );
-const [currentUser, setCurrentUser] = useState(null);
+  const dispatch = useDispatch();
+  const selectedSeats = [23];
+
+  const currentUser = useAuth().user;
 
   useEffect(() => {
-    const localData = safeLocalStorage.getItem("bookingInfo");
-    if (localData) setBooking(localData);
-
-    const userInfo = safeLocalStorage.getItem("userInfo");
-    if (userInfo) setCurrentUser(userInfo);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading && data) {
+    if (!isLoading && data?.bus) {
+      const busData = data.bus;
       setBooking({
-        id:data.id,
-        bus: data.busType,
-        from: data.from,
-        to: data.to,
-        date: data.date,
-        timeofdeparture: data.departureTime,
-        timeofarrival: data.arrivalTime,
-        seatid: data.seatid || ["A1", "A2"],
-        price: data.seatPrice,
+        id: busData.id,
+        bus: busData.busName,
+        from: busData.routeFrom,
+        to: busData.routeTo,
+        date: busData.date,
+        timeofdeparture: busData.departureTime,
+        timeofarrival: busData.arrivalTime,
+        seatid: selectedSeats.length > 0 ? selectedSeats : [],
+        price: busData.seatPrice || busData.price,
       });
     }
   }, [isLoading, data]);
@@ -102,7 +99,7 @@ const [currentUser, setCurrentUser] = useState(null);
         console.log("Locking seats and creating Razorpay order…");
 
         const lockRes = await lockSeats({
-          busId: booking.id,
+          busId,
           seatNumbers: booking.seatid,
           userId: currentUser?.id,
           passengerDetails: {
@@ -127,7 +124,7 @@ const [currentUser, setCurrentUser] = useState(null);
         const options = {
           key: paymentOrder.keyId,
           amount: paymentOrder.amount,
-          currency: paymentOrder.currency,
+          currency: "INR",
           name: "SmallBus",
           description: "Bus seat booking",
           order_id: paymentOrder.orderId,
@@ -196,20 +193,30 @@ const [currentUser, setCurrentUser] = useState(null);
       </header>
 
       <main className="max-w-[720px] mx-auto pt-[90px] pb-[50px] px-4">
-        <BookingSummary booking={booking} />
-        <PassengerForm form={form} />
-        <PaymentOptions
-          selectedOption={selectedOption}
-          onSelect={setSelectedOption}
-        />
-        <TotalSection booking={booking} />
-        <ButtonUI
-           onClick={onSubmit}
-          className="w-full py-1.5"
-          disabled={processing}
-        >
-          {processing ? "Processing..." : "Make Payment"}
-        </ButtonUI>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[400px]">
+            <div className="animate-pulse text-gray-500">
+              Loading payment details...
+            </div>
+          </div>
+        ) : (
+          <>
+            <BookingSummary booking={booking} />
+            <PassengerForm form={form} />
+            <PaymentOptions
+              selectedOption={selectedOption}
+              onSelect={setSelectedOption}
+            />
+            <TotalSection booking={booking} />
+            <CustomButton
+              onClick={onSubmit}
+              className="w-full py-1.5"
+              disabled={processing || isLoading}
+            >
+              {processing ? "Processing..." : "Make Payment"}
+            </CustomButton>
+          </>
+        )}
       </main>
     </div>
   );

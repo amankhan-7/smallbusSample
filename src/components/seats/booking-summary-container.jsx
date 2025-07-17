@@ -28,7 +28,7 @@ export default function BookingSummaryContainer() {
   const handleProceed = async () => {
     try {
       console.log("Proceeding to payment with selected seats:", selectedSeats);
-      router.push("/payment");
+      router.push(`/payment?busId=${busId}`);
     } catch (error) {
       console.error("Booking failed:", error);
       alert("Booking failed. Please try again.");
