@@ -1,28 +1,22 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+import ReduxWrapper from "@/components/wrapper/redux-wrapper";
+import HomeNavbar from "@/components/HomeNavbar/HomeNavbar";
+import FooterWrapper from "@/components/wrapper/footer-wrapper";
+import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar />
-        {children}
-        <Footer />
+      <body>
+        <ReduxWrapper>
+          <HomeNavbar />
+          <div className="overflow-hidden">{children}</div>
+          <FooterWrapper>
+            <Footer />
+          </FooterWrapper>
+          <Toaster />
+        </ReduxWrapper>
       </body>
     </html>
   );

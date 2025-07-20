@@ -1,9 +1,9 @@
-import Privacy from "./privacy/page";
+import Hero from "@/components/Hero";
 
-export default function Home() {
+export default function HeroSearch() {
   return (
-    <>
-      <Privacy />
-    </>
+    <main>
+      <Hero />
+    </main>
   );
 }

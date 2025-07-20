@@ -1,0 +1,200 @@
+"use client";
+import OTPPage from "@/components/authentication/otp-page";
+import LoginPage from "@/components/authentication/phone-page";
+import RegisterPage from "@/components/authentication/register-page";
+import AuthGuard from "@/components/wrapper/AuthGuard";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import {
+  useInitiateLoginMutation,
+  useRegisterMutation,
+  useVerifyOtpMutation,
+} from "@/utils/redux/api/user";
+import { setCredentials } from "@/utils/redux/slices/authSlice";
+
+const STEPS = {
+  PHONE: 1,
+  OTP: 2,
+  REGISTER: 3,
+};
+
+function LoginComponent() {
+  const [step, setStep] = useState(STEPS.PHONE);
+  const [phoneData, setPhoneData] = useState(null);
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [initiateLogin, { isLoading: isSendingOtp }] =
+    useInitiateLoginMutation();
+  const [verifyOtp, { isLoading: isLoggingIn }] = useVerifyOtpMutation();
+  const [register] = useRegisterMutation();
+
+  const handleError = (error, defaultMessage) => {
+    if (error?.data?.message) {
+      toast.error(error.data.message);
+    } else if (error?.message) {
+      toast.error(error.message);
+    } else {
+      toast.error(defaultMessage);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      const result = await initiateLogin({
+        phoneNumber: phoneData.phone,
+      }).unwrap();
+
+      if (result.success) {
+        toast.success("OTP resent successfully");
+      } else {
+        toast.error(
+          result.message || "Failed to resend OTP. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Failed to resend OTP:", error);
+      handleError(error, "Failed to resend OTP. Please try again.");
+    }
+  };
+  const handlePhoneSubmit = async (data) => {
+    try {
+      const result = await initiateLogin({ phoneNumber: data.phone }).unwrap();
+
+      if (result) {
+        setPhoneData(data);
+        setStep(STEPS.OTP);
+      } else {
+        toast.error(result.message || "Failed to send OTP. Please try again.");
+      }
+    } catch (error) {
+      console.warn("Failed to send OTP:", error);
+      if (error.status === 404 || error.data?.message?.includes("not found")) {
+        setPhoneData(data);
+        setStep(STEPS.REGISTER);
+      } else {
+        handleError(error, "Failed to send OTP. Please try again.");
+      }
+    }
+  };
+
+  const handleOTPSubmit = async ({ otp }) => {
+    try {
+      console.log("OTP submitted:", otp);
+      const result = await verifyOtp({
+        phoneNumber: phoneData.phone,
+        otp,
+        purpose: "login",
+      }).unwrap();
+      console.log("OTP verification result:", result);
+
+      if (result) {
+        dispatch(setCredentials({ user: result.user }));
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        toast.error(result.message || "Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      handleError(error, "Invalid OTP. Please try again.");
+    }
+  };
+
+  const handleRegisterSubmit = async (data) => {
+    console.log("Registering with data:", data);
+    try {
+      const result = await register({
+        phoneNumber: phoneData.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      }).unwrap();
+
+      console.log("Registration result:", result);
+
+      if (result) {
+        setPhoneData({
+          phone: phoneData.phone,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        });
+
+        try {
+          const otpResult = await initiateLogin({
+            phoneNumber: phoneData.phone,
+          }).unwrap();
+
+          if (otpResult) {
+            toast.success("Registration successful! Please verify OTP.");
+            setStep(STEPS.OTP);
+          } else {
+            toast.error(
+              otpResult.message || "Failed to send OTP. Please try again."
+            );
+          }
+        } catch (error) {
+          console.error("Failed to send OTP after registration:", error);
+          toast.error(
+            "Registration successful but failed to send OTP. Please try logging in."
+          );
+          setStep(STEPS.PHONE);
+        }
+      } else {
+        toast.error(result.message || "Failed to register. Please try again.");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+      handleError(error, "Failed to register. Please try again.");
+    }
+  };
+  const handleBack = () => {
+    setStep(STEPS.PHONE);
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case STEPS.PHONE:
+        return (
+          <LoginPage onSubmit={handlePhoneSubmit} isLoading={isSendingOtp} />
+        );
+
+      case STEPS.OTP:
+        return (
+          <OTPPage
+            onSubmit={handleOTPSubmit}
+            onBack={handleBack}
+            onResend={handleResendOTP}
+            isLoading={isLoggingIn}
+            isResending={isSendingOtp}
+          />
+        );
+
+      case STEPS.REGISTER:
+        return (
+          <RegisterPage onBack={handleBack} onSubmit={handleRegisterSubmit} />
+        );
+
+      default:
+        return (
+          <LoginPage onSubmit={handlePhoneSubmit} isLoading={isSendingOtp} />
+        );
+    }
+  };
+
+  return (
+    <main className="flex md:items-center justify-center h-fit md:min-h-screen pt-[6.25rem] md:p-0 px-5">
+      {renderStep()}
+    </main>
+  );
+}
+
+export default function Login() {
+  return (
+    <AuthGuard requireAuth={false}>
+      <LoginComponent />
+    </AuthGuard>
+  );
+}
