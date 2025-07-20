@@ -2,10 +2,11 @@
 import { accountDetailSchema } from "@/utils/validations/form-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { useUpdateUserMutation } from "@/utils/redux/api/user";
-import { updateUserInfo, hydrate } from "@/utils/redux/features/user/userSlice";
+import {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+} from "@/utils/redux/api/user";
 import {
   Form,
   FormControl,
@@ -19,18 +20,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AccountForm() {
-  const { userInfo, isHydrated } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [updateUser, { isLoading }] = useUpdateUserProfileMutation();
+  const { user: userInfo, updateUser:updateUserInfo } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(accountDetailSchema),
     defaultValues: {
-      fullname: "",
+      firstName: "",
+      lastName: "",
       phone: "",
       email: "",
     },
@@ -38,23 +40,20 @@ export default function AccountForm() {
 
   useEffect(() => {
     setIsMounted(true);
-    if (!isHydrated) {
-      dispatch(hydrate());
-    }
-  }, [dispatch, isHydrated]);
+  }, []);
 
   useEffect(() => {
-    if (isHydrated && userInfo) {
+    if (userInfo) {
       form.reset({
-        fullname: userInfo.fullname || "",
+        firstName: userInfo.firstName || "",
+        lastName: userInfo.lastName || "",
         phone: userInfo.phone || "",
         email: userInfo.email || "",
       });
     }
-  }, [userInfo, form, isHydrated]);
+  }, [userInfo]);
 
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!isMounted || !isHydrated) {
+  if (!isMounted) {
     return (
       <div className="flex items-center justify-center h-[200px]">
         <div className="animate-pulse text-gray-500">Loading...</div>
@@ -64,8 +63,17 @@ export default function AccountForm() {
 
   const handleFormSubmit = async (data) => {
     try {
-      const result = await updateUser(data).unwrap();
-      dispatch(updateUserInfo(result));
+      const result = await updateUser({
+        ...data,
+        userId: userInfo.id,
+      }).unwrap();
+      console.log("Account updated successfully:", result);
+      updateUserInfo({
+        ...userInfo,
+        firstName: result.firstName,
+        lastName: result.lastName,
+        email: result.email,
+      });
       alert("Account updated successfully!");
     } catch (error) {
       console.error("Error updating account:", error);
@@ -75,7 +83,8 @@ export default function AccountForm() {
 
   const onCancel = () => {
     form.reset({
-      fullname: userInfo.fullname || "",
+      firstName: userInfo.firstName || "",
+      lastName: userInfo.lastName || "",
       phone: userInfo.phone || "",
       email: userInfo.email || "",
     });
@@ -94,28 +103,50 @@ export default function AccountForm() {
             onSubmit={form.handleSubmit(handleFormSubmit)}
             className="flex flex-col mb-[1.25rem] max-md:flex-col max-md:gap-[1.25rem]"
           >
-            <FormField
-              control={form.control}
-              name="fullname"
-              render={({ field }) => (
-                <FormItem className="mb-[1.25rem]">
-                  <FormLabel className="block mb-[0.5rem] font-semibold text-base leading-6 text-[var(--text-color)]">
-                    Full Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Your full name"
-                      className="w-full px-[0.9375rem] py-[0.75rem] border border-[var(--border-color)] text-base transition-colors focus-visible:border focus-visible:border-primary 
-                          min-h-fit
+            <div className="flex flex-row justify-between w-full gap-[1.25rem]">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem className="mb-[1.25rem] w-full">
+                    <FormLabel className="block mb-[0.5rem] font-semibold text-base leading-6 text-[var(--text-color)]">
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Your first name"
+                        className="w-full px-[0.9375rem] py-[0.75rem] border border-[var(--border-color)] text-base transition-colors focus-visible:border focus-visible:border-primary 
+                      min-h-fit
                           "
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="mb-[1.25rem] w-full">
+                    <FormLabel className="block mb-[0.5rem] font-semibold text-base leading-6 text-[var(--text-color)]">
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Your last name"
+                        className="w-full px-[0.9375rem] py-[0.75rem] border border-[var(--border-color)] text-base transition-colors focus-visible:border focus-visible:border-primary 
+                      min-h-fit
+                      "
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="phone"

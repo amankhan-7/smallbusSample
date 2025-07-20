@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import bookingReducer from "./features/booking/bookingSlice";
-import userReducer from "./features/user/userSlice";
 import { apiSlice } from "./api/apiSlice";
+import authReducer from "./slices/authSlice";
+import busReducer from "./slices/busSlice";
 
 export const store = configureStore({
   reducer: {
-    booking: bookingReducer,
-    user: userReducer,
+    auth: authReducer,
+    bus: busReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

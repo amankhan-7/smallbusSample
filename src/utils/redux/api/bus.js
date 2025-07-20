@@ -1,73 +1,161 @@
-import { safeLocalStorage } from "@/lib/localStorage";
 import { apiSlice } from "./apiSlice";
-const mockBusData = {
-  id: "bus-123",
-  from: "Pune",
-  to: "Patna",
-  date: "Sun, 3 Jun",
-  busType: "AC Seater Express",
-  busLayout: "3-column",
-  departureTime: "18:30",
-  arrivalTime: "00:00",
-  rows: 8,
-  totalSeats: 32,
-  seatPrice: 899,
-  bookedSeats: ["A2", "B1", "C3", "D2"],
-};
 
 export const busApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getBusData: builder.query({
-      queryFn: async ({ id }) => {
-        try {
-          const bookedSeats = safeLocalStorage.getItem("bookedSeats", []);
-          const busData = {
-            ...mockBusData,
-            bookedSeats: [...mockBusData.bookedSeats, ...bookedSeats],
-          };
-
-          return { data: busData };
-        } catch (error) {
-          return { error: { status: 500, data: "Failed to fetch bus data" } };
-        }
-      },
-      providesTags: (result, error, { id }) =>
-        result ? [{ type: "Bus", id }] : [],
+    searchBuses: builder.query({
+      query: ({ fromCity, toCity, travelDate }) => ({
+        url: `/search-buses`,
+        method: "POST",
+        body: { fromCity, toCity, travelDate },
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { fromCity, toCity, travelDate }) => [
+        { type: "Bus", id: `${fromCity}-${toCity}-${travelDate}` },
+      ],
     }),
 
-    bookSeats: builder.mutation({
-      queryFn: async ({ id, seats }) => {
-        try {
-          const currentBookedSeats = safeLocalStorage.getItem(
-            "bookedSeats",
-            []
-          );
-          const newBookedSeats = [...currentBookedSeats, ...seats];
-          safeLocalStorage.setItem("bookedSeats", newBookedSeats);
+    getBusDetails: builder.query({
+      query: ({ busId }) => ({
+        url: `/buses/${busId}`,
+        method: "GET",
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { busId }) => [{ type: "Bus", id: busId }],
+    }),
 
-          const currentUser = safeLocalStorage.getItem("userInfo", {});
-          const bookingHistory = safeLocalStorage.getItem("bookingHistory", []);
+    getAvailableSeats: builder.query({
+      query: ({ busId }) => ({
+        url: `/buses/${busId}/seats`,
+        method: "GET",
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { busId }) => [
+        { type: "AvailableSeats", id: busId },
+      ],
+    }),
 
-          const newBooking = {
-            id: Date.now(),
-            busId: id,
-            seats,
-            ...mockBusData,
-            bookingDate: new Date().toISOString(),
-            totalAmount: seats.length * mockBusData.seatPrice,
-            status: "confirmed",
-          };
-          bookingHistory.push(newBooking);
-          safeLocalStorage.setItem("bookingHistory", bookingHistory);
+    getPopularRoutes: builder.query({
+      query: () => ({ url: `/popular-routes`, method: "GET" }),
+      transformResponse: (res) => res.data.popularRoutes,
+      providesTags: () => [{ type: "PopularRoutes", id: "LIST" }],
+    }),
 
-          return { data: { booking: newBooking, bookedSeats: newBookedSeats } };
-        } catch (error) {
-          return { error: { status: 500, data: "Booking failed" } };
-        }
+    getBusSchedule: builder.mutation({
+      query: ({ fromCity, toCity, travelDate }) => {
+        return {
+          url: `/bus-schedule?fromCity=${fromCity}&toCity=${toCity}&date=${travelDate}`,
+          method: "GET",
+        };
       },
-      invalidatesTags: (result, error, { id }) => [{ type: "Bus", id }],
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { fromCity, toCity, travelDate }) => [
+        { type: "BusSchedule", id: `${fromCity}-${toCity}-${travelDate}` },
+      ],
+    }),
+
+    lockSeatsForBooking: builder.mutation({
+      query: ({ busId, seatNumbers, userId, passengerDetails }) => ({
+        url: `/lock-seats`,
+        method: "POST",
+        body: { busId, seatNumbers, userId, passengerDetails },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: (_res, _err, { busId }) => [{ type: "Bus", id: busId }],
+    }),
+
+    confirmBookingPayment: builder.mutation({
+      query: ({ bookingId, paymentId, orderId, signature, paymentMethod }) => ({
+        url: `/confirm-booking`,
+        method: "POST",
+        body: { bookingId, paymentId, orderId, signature, paymentMethod },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: (_res, _err, { bookingId }) => [
+        { type: "Booking", id: bookingId },
+      ],
+    }),
+
+    cancelBooking: builder.mutation({
+      query: ({ bookingId, userId }) => ({
+        url: `/cancel-booking`,
+        method: "POST",
+        body: { bookingId, userId },
+      }),
+      transformResponse: (res) => res.data,
+      invalidatesTags: (_res, _err, { bookingId }) => [
+        { type: "Booking", id: bookingId },
+      ],
+    }),
+
+    getSeatMap: builder.query({
+      query: ({ busId }) => ({
+        url: `/buses/${busId}/seat-map`,
+        method: "GET",
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { busId }) => [{ type: "SeatMap", id: busId }],
+    }),
+
+    getBusAvailableSeats: builder.query({
+      query: ({ busId }) => ({
+        url: `/buses/${busId}/available-seats`,
+        method: "GET",
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { busId }) => [
+        { type: "BusAvailableSeats", id: busId },
+      ],
+    }),
+
+    getBookingDetails: builder.query({
+      query: ({ bookingId }) => ({
+        url: `/get-booking-details`,
+        method: "POST",
+        body: { bookingId },
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { bookingId }) => [
+        { type: "BookingDetails", id: bookingId },
+      ],
+    }),
+
+    getBookingHistory: builder.mutation({
+      query: ({ userId, status, fromDate, limit }) => ({
+        url: `/get-booking-history`,
+        method: "POST",
+        body: { userId, status, fromDate, limit },
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { userId }) => [
+        { type: "Booking", id: userId },
+      ],
+    }),
+    getBookingStats: builder.query({
+      query: ({ userId }) => ({
+        url: `/get-booking-stats`,
+        method: "POST",
+        body: { userId },
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: (_res, _err, { userId }) => [
+        { type: "BookingStats", id: userId },
+      ],
     }),
   }),
 });
 
-export const { useGetBusDataQuery, useBookSeatsMutation } = busApiSlice;
+export const {
+  useSearchBusesQuery,
+  useGetBusDetailsQuery,
+  useGetAvailableSeatsQuery,
+  useGetPopularRoutesQuery,
+  useGetBusScheduleMutation,
+  useLockSeatsForBookingMutation,
+  useConfirmBookingPaymentMutation,
+  useCancelBookingMutation,
+  useGetSeatMapQuery,
+  useGetBusAvailableSeatsQuery,
+  useGetBookingDetailsQuery,
+  useGetBookingHistoryMutation,
+  useGetBookingStatsQuery,
+} = busApiSlice;

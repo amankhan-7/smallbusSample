@@ -6,31 +6,20 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { Montserrat } from "next/font/google";
-import { useSelector, useDispatch } from "react-redux";
-import { hydrate } from "@/utils/redux/features/user/userSlice";
+import { useAuth } from "@/hooks/useAuth";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["700"],
 });
 
-export default function Navbar({ navItems = [], logoText = "smallbus" }) {
+export default function Navbar({ navItems = [], logoText = "smallbus"}) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const { isAuthenticated } = useAuth();
   const pathname = usePathname();
-  const { isLoggedIn, isHydrated } = useSelector((state) => state.user);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    setIsMounted(true);
-    if (!isHydrated) {
-      dispatch(hydrate());
-    }
-  }, [dispatch, isHydrated]);
 
   let actionLink;
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     actionLink = {
       href: "/login",
       label: "Login",
@@ -50,7 +39,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
 
   return (
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
-      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
@@ -77,15 +66,14 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
               {item.name}
             </Link>
           ))}
-          {isMounted && isHydrated && !isLoggedIn && (
-            <Link
-              href={actionLink.href}
-              className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
-            >
-              {actionLink.icon}
-              {actionLink.label}
-            </Link>
-          )}
+
+          <Link
+            href={actionLink.href}
+            className="px-3 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
+          >
+            {actionLink.icon}
+            {actionLink.label}
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -104,7 +92,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
           />
           <FaTimes
             size={26}
-            className={`pt-5 absolute transition-all duration-300 ease-in-out transform ${
+            className={` absolute transition-all duration-300 ease-in-out transform ${
               menuOpen
                 ? "opacity-100 scale-100 rotate-0"
                 : "opacity-0 scale-90 -rotate-45"
@@ -146,16 +134,15 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
                   {item.name}
                 </Link>
               ))}
-              {isMounted && isHydrated && !isLoggedIn && (
-                <Link
-                  href={actionLink.href}
-                  className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {actionLink.icon}
-                  {actionLink.label}
-                </Link>
-              )}
+
+              <Link
+                href={actionLink.href}
+                className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                {actionLink.icon}
+                {actionLink.label}
+              </Link>
             </div>
           </div>
         </div>

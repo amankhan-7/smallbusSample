@@ -6,6 +6,7 @@ import AccountForm from "@/components/account/account-form";
 import BookingHistory from "@/components/account/booking-history";
 import { useSearchParams, useRouter } from "next/navigation";
 import LogoutButton from "@/components/account/logout-button";
+import { Suspense } from "react";
 
 const MenuItem = ({ label, description, Icon, onClick }) => (
   <Button
@@ -69,4 +70,10 @@ const AccountMenu = () => {
   );
 };
 
-export default AccountMenu;
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountMenu />
+    </Suspense>
+  );
+}

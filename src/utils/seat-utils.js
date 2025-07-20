@@ -1,40 +1,48 @@
 import { SEAT_STATUS } from "@/constants/seat-selection";
-export function generateSeatLayout({ busLayout, rows }) {
+
+export function generateSeatLayout({ seatMap, totalSeats }) {
+  if (!seatMap || !Array.isArray(seatMap)) {
+    return [];
+  }
+
   const seats = [];
-  
-  const rowLabels = Array.from({ length: rows }, (_, i) =>
-    String.fromCharCode(65 + i)
-  );
+  const seatsPerRow = 4; // Default to 4 seats per row (2+2 layout)
+  const numberOfRows = Math.ceil(totalSeats / seatsPerRow);
 
-  for (let row = 0; row < rows; row++) {
-    const rowLabel = rowLabels[row];
+  for (let row = 0; row < numberOfRows; row++) {
     const rowSeats = [];
+    const startSeatNumber = row * seatsPerRow + 1;
+    const endSeatNumber = Math.min(
+      startSeatNumber + seatsPerRow - 1,
+      totalSeats
+    );
 
-    if (busLayout === "3-column") {
-      rowSeats.push(createSeatItem(`${rowLabel}1`, 1));
-      rowSeats.push(createSeatItem(`${rowLabel}2`, 2));
-      rowSeats.push(createSeatItem(`${rowLabel}3`, 3));
-    } else {
-
-      rowSeats.push(createSeatItem(`${rowLabel}1`, 1));
-      rowSeats.push(createSeatItem(`${rowLabel}2`, 2));
-      rowSeats.push(createSeatItem(`${rowLabel}3`, 3));
-      rowSeats.push(createSeatItem(`${rowLabel}4`, 4));
+    for (
+      let seatNumber = startSeatNumber;
+      seatNumber <= endSeatNumber;
+      seatNumber++
+    ) {
+      const seatData = seatMap.find((seat) => seat.seatNumber === seatNumber);
+      if (seatData) {
+        rowSeats.push(
+          createSeatItem(seatData._id, seatNumber, seatData.status)
+        );
+      }
     }
 
-    seats.push(rowSeats);
+    if (rowSeats.length > 0) {
+      seats.push(rowSeats);
+    }
   }
 
   return seats;
 }
 
-
-function createSeatItem(id, position) {
+function createSeatItem(id, seatNumber, status = "available") {
   return {
     type: "seat",
     id,
-    position,
+    seatNumber,
+    status,
   };
 }
-
-

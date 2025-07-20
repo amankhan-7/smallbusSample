@@ -6,14 +6,13 @@ import {
   FaRegCalendarAlt,
   FaExchangeAlt,
   FaSearch,
-  FaLocationArrow
+  FaLocationArrow,
 } from "react-icons/fa";
 
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
 import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
-
 const cities = [
   { name: "Patna", state: "Bihar" },
   { name: "Delhi", state: "Delhi" },
@@ -55,7 +54,7 @@ function Hero() {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const deafaultBookingDate = tomorrow.toISOString().split("T")[0];
+  const defaultBookingDate = tomorrow.toISOString().split("T")[0];
 
   //on clicking outside of wrapped DOM clear states
   useEffect(() => {
@@ -79,14 +78,17 @@ function Hero() {
     setActiveInput(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const fromCity = formData.get("from");
     const toCity = formData.get("to");
     const travelDate = formData.get("date");
-    console.log({ fromCity, toCity, travelDate });
-    router.push(`/buses`);
+    if (!fromCity || !toCity || !travelDate) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    router.push(`/buses?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&travelDate=${travelDate}`);
   };
 
   return (
@@ -251,8 +253,8 @@ function Hero() {
                 type="date"
                 id="date"
                 name="date"
-                min={deafaultBookingDate}
-                defaultValue={deafaultBookingDate}
+                min={defaultBookingDate}
+                defaultValue={defaultBookingDate}
                 className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-md text-base focus:outline-none focus:border-[#004aad] focus:ring-4 focus:ring-[#004aad]/20 transition-all cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
               />
             </div>
