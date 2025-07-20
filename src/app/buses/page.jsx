@@ -1,29 +1,47 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import ButtonUI from "@/components/ui/ButtonUI";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEncryptedSearchParams } from "@/hooks/useEncryptedSearchParams";
+import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 
-export default function BusesPage() {
+function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const encryptedParams = useEncryptedSearchParams();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
+  const [searchData, setSearchData] = useState({
+    from: null,
+    to: null,
+    date: null,
+  });
 
-  const from = searchParams.get("fromCity");
-  const to = searchParams.get("toCity");
-  const date = searchParams.get("travelDate");
+  // Decrypt search parameters
+  useEffect(() => {
+    const decryptParams = async () => {
+      const from = await encryptedParams.get("fromCity");
+      const to = await encryptedParams.get("toCity");
+      const date = await encryptedParams.get("travelDate");
+
+      setSearchData({ from, to, date });
+    };
+
+    decryptParams();
+  }, [encryptedParams]);
 
   const [getBusSchedule, { isLoading, isError }] = useGetBusScheduleMutation();
 
   useEffect(() => {
     const fetchBusSchedule = async () => {
+      if (!searchData.from || !searchData.to || !searchData.date) return;
+
       try {
         const response = await getBusSchedule({
-          fromCity: from,
-          toCity: to,
-          travelDate: date,
+          fromCity: searchData.from,
+          toCity: searchData.to,
+          travelDate: searchData.date,
         }).unwrap();
         response.schedule && setCurrentBusSchedule(response.schedule);
       } catch (error) {
@@ -32,7 +50,7 @@ export default function BusesPage() {
     };
 
     fetchBusSchedule();
-  }, [from, to, getBusSchedule]);
+  }, [searchData.from, searchData.to, searchData.date, getBusSchedule]);
 
   const sortedSchedule = useMemo(() => {
     const schedule = [...currentBusSchedule];
@@ -62,10 +80,10 @@ export default function BusesPage() {
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>
             <h2 className="text-base md:text-xl text-black font-bold mb-1">
-              {from} → {to}
+              {searchData.from} → {searchData.to}
             </h2>
             <p className="text-xs text-gray-600">
-              {new Date(date).toLocaleDateString("en-GB", {
+              {new Date(searchData.date).toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -107,11 +125,7 @@ export default function BusesPage() {
             !isError &&
             sortedSchedule.length > 0 &&
             sortedSchedule.map((bus, index) => (
-              <BusCard
-                key={bus._id}
-                bus={bus}
-                router={router}
-              />
+              <BusCard key={bus._id} bus={bus} router={router} />
             ))}
           {!isLoading && !isError && sortedSchedule.length === 0 && (
             <p className="text-center text-gray-600">
@@ -158,11 +172,28 @@ function BusCard({ bus, router }) {
         </div>
       </div>
       <ButtonUI
-        onClick={() => router.push(`/seats?busId=${bus._id}`)}
+        onClick={async () => {
+          const encryptedUrl = await createSeatSelectionUrl(bus._id);
+          router.push(encryptedUrl);
+        }}
         className="w-full hover:bg-[#00388a] mt-4 py-1.5"
       >
         Select Seats
       </ButtonUI>
     </div>
+  );
+}
+
+export default function BusesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          Loading buses...
+        </div>
+      }
+    >
+      <BusesContent />
+    </Suspense>
   );
 }

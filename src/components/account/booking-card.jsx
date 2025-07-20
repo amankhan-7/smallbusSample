@@ -64,7 +64,7 @@ export function BookingCard({ booking }) {
                 {booking.fromCity}
               </div>
               <div className="text-[0.9rem] text-[var(--text-secondary)]">
-                {booking.busId.departureTime || "--"}
+                {booking.busId?.departureTime || "--"}
               </div>
             </div>
             <div className="flex mr-5 items-center">
@@ -73,7 +73,7 @@ export function BookingCard({ booking }) {
             <div className="flex-1">
               <div className="font-medium text-[1.1rem]">{booking.toCity}</div>
               <div className="text-[0.9rem] text-[var(--text-secondary)]">
-                {booking.busId.arrivalTime || "--"}
+                {booking.busId?.arrivalTime || "--"}
               </div>
             </div>
           </div>

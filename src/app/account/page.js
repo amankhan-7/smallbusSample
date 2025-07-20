@@ -1,5 +1,5 @@
 import AccountPage from "@/components/account/account-page";
-import AuthGuard from "@/components/auth/AuthGuard";
+import AuthGuard from "@/components/wrapper/AuthGuard";
 
 export default function Account() {
   return (

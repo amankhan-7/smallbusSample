@@ -8,6 +8,7 @@ import {
   FaSearch,
   FaLocationArrow,
 } from "react-icons/fa";
+import { createBusSearchUrl } from "@/utils/navigation";
 
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
@@ -88,7 +89,14 @@ function Hero() {
       alert("Please fill in all fields.");
       return;
     }
-    router.push(`/buses?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&travelDate=${travelDate}`);
+
+    const encryptedUrl = await createBusSearchUrl({
+      fromCity,
+      toCity,
+      travelDate,
+    });
+
+    router.push(encryptedUrl);
   };
 
   return (
