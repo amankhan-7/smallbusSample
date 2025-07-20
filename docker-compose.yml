@@ -1,0 +1,33 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    
+    container_name: nextjs-dev
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+    
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+
+    command: npm run dev
+
+
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: nextjs-prod
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env.production
