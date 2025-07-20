@@ -9,7 +9,7 @@ export async function createBusSearchUrl(searchData) {
 }
 
 export async function createSeatSelectionUrl(busId) {
-  return await createEncryptedUrl("/seat-selection", {
+  return await createEncryptedUrl("/seat", {
     busId: busId,
   });
 }

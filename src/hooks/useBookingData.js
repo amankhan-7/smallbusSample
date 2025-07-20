@@ -15,7 +15,7 @@ export const useBookingData = (data, isLoading) => {
       const seats = selectedSeats || [];
       if(seats.length === 0) {
         console.warn("No seats selected for booking.");
-        router.push("/");
+        router.push("/account?tab=bookingHistory");
         return;
       }
       const busData = data.bus;

@@ -1,11 +1,11 @@
 
 'use client'
 import { useState } from 'react'
-import HelpHeader from '../components/help/HelpHeader'
-import SearchSection from '../components/help/SearchSection'
-import ContactCard from '../components/help/ContactCard'
-import FAQCategory from '../components/help/FAQCategory'
-import CallbackModal from '../components/help/CallbackModal'
+import HelpHeader from '@/components/help/HelpHeader'
+import SearchSection from '@/components/help/SearchSection'
+import ContactCard from '@/components/help/ContactCard'
+import FAQCategory from '@/components/help/FAQCategory'
+import CallbackModal from '@/components/help/CallbackModal'
 
 const HelpCenter = () => {
   const [searchTerm, setSearchTerm] = useState('')

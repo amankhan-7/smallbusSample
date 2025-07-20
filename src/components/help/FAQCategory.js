@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { ChevronDown } from 'lucide-react';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,8 +13,7 @@ const FAQItem = ({ question, answer }) => {
         <span className="text-sm font-normal text-gray-900 whitespace-nowrap flex-grow">
           {question}
         </span>
-        <FontAwesomeIcon
-          icon={faChevronDown}
+        <ChevronDown
           className={`text-gray-500 transition-transform duration-300 ${
             isOpen ? 'rotate-180' : ''
           }`}

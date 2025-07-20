@@ -44,7 +44,6 @@ export const usePaymentHandlers = (
       }).unwrap();
 
       router.push("/account?tab=bookingHistory");
-      dispatch(resetBooking());
     } catch (err) {
       console.error("Booking confirmation failed:", err);
       alert("Payment succeeded, but booking failed. Please contact support.");
