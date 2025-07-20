@@ -95,6 +95,9 @@ export async function encryptParam(plaintext) {
 export async function decryptParam(encryptedData) {
   try {
     if (!encryptedData) return "";
+    if (!isLikelyEncrypted(encryptedData)) {
+      return encryptedData;
+    }
 
     // Restore base64 padding and convert from URL-safe
     let base64 = encryptedData.replace(/-/g, "+").replace(/_/g, "/");
@@ -129,6 +132,11 @@ export async function decryptParam(encryptedData) {
     console.error("Decryption error:", error);
     return encryptedData; // Fallback to original data if decryption fails
   }
+}
+
+function isLikelyEncrypted(data) {
+  const base64UrlPattern = /^[A-Za-z0-9_-]+$/;
+  return base64UrlPattern.test(data) && data.length > 20;
 }
 
 /**

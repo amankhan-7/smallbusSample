@@ -4,16 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
-import { cn } from "@/lib/utils";
-import { Montserrat } from "next/font/google";
 import { useAuth } from "@/hooks/useAuth";
+import Image from "next/image";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["700"],
-});
-
-export default function Navbar({ navItems = [], logoText = "smallbus"}) {
+export default function Navbar({ navItems = [], logoText = "smallbus" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
@@ -41,14 +35,8 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
       <nav className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className={cn(
-            "text-[24px] text-[#004aad] font-black",
-            montserrat.className
-          )}
-        >
-          {logoText}
+        <Link href="/">
+          <Image src="logo.svg" alt="Logo" width={120} height={50} />
         </Link>
 
         {/* Desktop Nav */}

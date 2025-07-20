@@ -3,46 +3,52 @@
 import React, { useEffect, useMemo, useState, Suspense } from "react";
 import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
-import { useEncryptedSearchParams } from "@/hooks/useEncryptedSearchParams";
+import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
   const router = useRouter();
-  const encryptedParams = useEncryptedSearchParams();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
-  const [searchData, setSearchData] = useState({
-    from: null,
-    to: null,
-    date: null,
-  });
 
-  // Decrypt search parameters
-  useEffect(() => {
-    const decryptParams = async () => {
-      const from = await encryptedParams.get("fromCity");
-      const to = await encryptedParams.get("toCity");
-      const date = await encryptedParams.get("travelDate");
-
-      setSearchData({ from, to, date });
-    };
-
-    decryptParams();
-  }, [encryptedParams]);
+  // Use individual hooks for each parameter to avoid infinite loops
+  const { value: fromCity, isLoading: isLoadingFrom } =
+    useDecryptedParam("fromCity");
+  const { value: toCity, isLoading: isLoadingTo } = useDecryptedParam("toCity");
+  const { value: travelDate, isLoading: isLoadingDate } =
+    useDecryptedParam("travelDate");
 
   const [getBusSchedule, { isLoading, isError }] = useGetBusScheduleMutation();
 
+  const isDecrypting = isLoadingFrom || isLoadingTo || isLoadingDate;
+
   useEffect(() => {
     const fetchBusSchedule = async () => {
-      if (!searchData.from || !searchData.to || !searchData.date) return;
+      // Don't fetch if still decrypting or missing required parameters
+      if (isDecrypting || !fromCity || !toCity || !travelDate) {
+        console.log("Skipping bus schedule fetch:", {
+          isDecrypting,
+          fromCity,
+          toCity,
+          travelDate,
+        });
+        return;
+      }
+
+      console.log("Fetching bus schedule with params:", {
+        fromCity,
+        toCity,
+        travelDate,
+      });
 
       try {
         const response = await getBusSchedule({
-          fromCity: searchData.from,
-          toCity: searchData.to,
-          travelDate: searchData.date,
+          fromCity,
+          toCity,
+          travelDate,
         }).unwrap();
+        console.log("Bus schedule response:", response);
         response.schedule && setCurrentBusSchedule(response.schedule);
       } catch (error) {
         console.error("Failed to fetch bus schedule:", error);
@@ -50,8 +56,7 @@ function BusesContent() {
     };
 
     fetchBusSchedule();
-  }, [searchData.from, searchData.to, searchData.date, getBusSchedule]);
-
+  }, [fromCity, toCity, travelDate, isDecrypting, getBusSchedule]);
   const sortedSchedule = useMemo(() => {
     const schedule = [...currentBusSchedule];
     switch (sortOption) {
@@ -74,16 +79,55 @@ function BusesContent() {
     router.push("/");
   };
 
+  // Show loading state while decrypting parameters
+  if (isDecrypting) {
+    return (
+      <div className="bg-gray-100 min-h-screen">
+        <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004aad] mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading search results...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show error state if required parameters are missing
+  if (!fromCity || !toCity || !travelDate) {
+    return (
+      <div className="bg-gray-100 min-h-screen">
+        <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                Invalid search parameters. Please try again.
+              </p>
+              <button
+                onClick={() => router.push("/")}
+                className="px-4 py-2 bg-[#004aad] text-white rounded hover:bg-[#00348a] transition"
+              >
+                Go Back to Search
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>
             <h2 className="text-base md:text-xl text-black font-bold mb-1">
-              {searchData.from} → {searchData.to}
+              {fromCity} → {toCity}
             </h2>
             <p className="text-xs text-gray-600">
-              {new Date(searchData.date).toLocaleDateString("en-GB", {
+              {new Date(travelDate).toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",

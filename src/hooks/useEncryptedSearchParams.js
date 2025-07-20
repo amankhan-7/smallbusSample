@@ -93,19 +93,25 @@ export function useEncryptedSearchParams() {
 export function useDecryptedParam(key) {
   const searchParams = useSearchParams();
   const [value, setValue] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const encryptedValue = searchParams.get(key);
 
   useEffect(() => {
     const decryptValue = async () => {
-      const encryptedValue = searchParams.get(key);
+      console.log(`Decrypting parameter '${key}' with value:`, encryptedValue);
+
       if (!encryptedValue) {
+        console.log(`No value found for parameter '${key}'`);
         setValue(null);
+        setIsLoading(false);
         return;
       }
 
       setIsLoading(true);
       try {
         const decryptedValue = await decryptParam(encryptedValue);
+        console.log(`Decrypted '${key}':`, decryptedValue);
         setValue(decryptedValue);
       } catch (error) {
         console.error(`Failed to decrypt parameter '${key}':`, error);
@@ -116,7 +122,7 @@ export function useDecryptedParam(key) {
     };
 
     decryptValue();
-  }, [key, searchParams]);
+  }, [key, encryptedValue]); // Only depend on key and encryptedValue
 
   return { value, isLoading };
 }
