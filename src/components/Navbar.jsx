@@ -92,7 +92,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
           />
           <FaTimes
             size={26}
-            className={`pt-5 absolute transition-all duration-300 ease-in-out transform ${
+            className={` absolute transition-all duration-300 ease-in-out transform ${
               menuOpen
                 ? "opacity-100 scale-100 rotate-0"
                 : "opacity-0 scale-90 -rotate-45"

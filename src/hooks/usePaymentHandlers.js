@@ -7,7 +7,6 @@ import {
   validateRazorpayAvailability,
   formatPaymentError,
   createPrefillData,
-  logPaymentStep,
 } from "@/utils/payment-utils";
 
 export const usePaymentHandlers = (
@@ -21,7 +20,6 @@ export const usePaymentHandlers = (
 
   const createRazorpayOrder = async (formData, booking, busId) => {
     setProcessing(true);
-    logPaymentStep("Locking seats and creating Razorpay order");
 
     const lockRes = await lockSeats({
       busId,
@@ -31,7 +29,6 @@ export const usePaymentHandlers = (
     }).unwrap();
 
     const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
-    logPaymentStep("Seats locked", lockedSeats);
 
     return { bookingId, paymentOrder };
   };
@@ -90,12 +87,11 @@ export const usePaymentHandlers = (
 
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", onFailure);
+    rzp.on("payment.success", onSuccess);
     rzp.open();
   };
 
   const processPayment = async (formData, booking, busId) => {
-    logPaymentStep("Form submitted", formData);
-    logPaymentStep("Processing Razorpay payment");
 
     try {
       const { bookingId, paymentOrder } = await createRazorpayOrder(

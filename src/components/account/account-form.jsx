@@ -24,7 +24,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function AccountForm() {
   const [updateUser, { isLoading }] = useUpdateUserProfileMutation();
-  const { user: userInfo } = useAuth();
+  const { user: userInfo, updateUser:updateUserInfo } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
@@ -67,6 +67,13 @@ export default function AccountForm() {
         ...data,
         userId: userInfo.id,
       }).unwrap();
+      console.log("Account updated successfully:", result);
+      updateUserInfo({
+        ...userInfo,
+        firstName: result.firstName,
+        lastName: result.lastName,
+        email: result.email,
+      });
       alert("Account updated successfully!");
     } catch (error) {
       console.error("Error updating account:", error);

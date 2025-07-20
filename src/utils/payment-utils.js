@@ -22,6 +22,3 @@ export const createPrefillData = (formData) => ({
   contact: formData.phone,
 });
 
-export const logPaymentStep = (step, data = null) => {
-  console.log(`Payment Step: ${step}`, data ? data : '');
-};
