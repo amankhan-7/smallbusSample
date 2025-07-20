@@ -28,7 +28,7 @@ function Footer() {
           </div>
 
           {/* Download App */}
-          <div className="mt-10 sm:mt-0">
+          {/* <div className="mt-10 sm:mt-0">
             <h3 className="text-xl font-semibold mb-5 text-gray-900">Download App</h3>
             <div className="flex flex-col gap-3">
               <a
@@ -44,7 +44,7 @@ function Footer() {
                 <FaApple size={21} /> App Store
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
