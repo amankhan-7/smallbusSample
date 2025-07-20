@@ -98,12 +98,12 @@ export default function PaymentPage() {
         console.log("Locking seats and creating Razorpay order…");
 
         const lockRes = await lockSeats({
-          //busId: "6873917df0f512604104a5ac",
-          //seatNumbers: [23],
-          //userId: "687381bdde342e5ef6b0c4d4",
-          busId,
-          seatNumbers: booking.seatid,
-          userId: currentUser?.id,
+          busId: "6873917df0f512604104a5ac",
+          seatNumbers: [12],
+          userId: "687381bdde342e5ef6b0c4d4",
+          // busId,
+          // seatNumbers: booking.seatid,
+          // userId: currentUser?.id,
           passengerDetails: {
             name: `${formData.firstName} ${formData.lastName}`,
             age: formData.age,
@@ -114,9 +114,7 @@ export default function PaymentPage() {
         }).unwrap();
 
         const { bookingId, lockExpiresAt, lockedSeats, paymentOrder } = lockRes;
-
-        console.log("Seats locked:", lockedSeats);
-        console.log("paymentOrder:", paymentOrder);
+        console.log(paymentOrder, "Seates Loacked for 5 min");
 
         if (!window.Razorpay) {
           alert("Razorpay failed to load. Please try again.");
@@ -165,13 +163,21 @@ export default function PaymentPage() {
             contact: formData.phone,
           },
           theme: { color: "#004aad" },
+          modal: {
+            ondismiss: function () {
+              console.log("Checkout form closed");
+              setProcessing(false);
+            },
+          },
         };
 
         const rzp = new window.Razorpay(options);
 
         rzp.on("payment.failed", (response) => {
           console.error("Razorpay payment failed:", response.error);
-          alert(`Payment Failed\nReason: ${response.error.description}`);
+          alert(
+            `Payment Failed for now\nReason: ${response.error.description}`
+          );
           setProcessing(false);
         });
 
@@ -179,6 +185,7 @@ export default function PaymentPage() {
       } catch (err) {
         console.error("Seat lock or Razorpay setup failed:", err);
         alert(err?.data?.message || "Unable to lock seats or start payment.");
+      } finally {
         setProcessing(false);
       }
     } else {
@@ -189,7 +196,7 @@ export default function PaymentPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Razorpay script */}
+      {/* Razorpay script  */}
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
         strategy="afterInteractive"
