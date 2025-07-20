@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, Suspense } from "react";
-import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
+import { Button } from "@/components/ui/button";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -215,7 +215,7 @@ function BusCard({ bus, router }) {
           <p className="text-xs">Arrival</p>
         </div>
       </div>
-      <ButtonUI
+      <Button
         onClick={async () => {
           const encryptedUrl = await createSeatSelectionUrl(bus._id);
           router.push(encryptedUrl);
@@ -223,7 +223,7 @@ function BusCard({ bus, router }) {
         className="w-full hover:bg-[#00388a] mt-4 py-1.5"
       >
         Select Seats
-      </ButtonUI>
+      </Button>
     </div>
   );
 }

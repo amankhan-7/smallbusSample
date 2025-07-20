@@ -1,6 +1,6 @@
 import React from "react";
-import { Button } from "./ui/button";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function AuthRedirectLoading() {
   return (
