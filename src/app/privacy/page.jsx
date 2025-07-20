@@ -1,4 +1,5 @@
-import LegalDocument from '../components/LegalDocument';
+
+import LegalDocument from '@/components/LegalDocument';
 import { privacyContent } from '@/data/legal/privacy';
 
 

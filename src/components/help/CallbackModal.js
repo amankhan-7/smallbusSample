@@ -46,7 +46,7 @@ const CallbackModal = ({ isOpen, onClose }) => {
         </button>
         <h3 className="text-xl font-semibold mb-2">Request a Callback</h3>
         <p className="text-gray-600 mb-6">
-          Fill in your details and we'll call you back within 24 hours.
+          Fill in your details and we&apos;ll call you back within 24 hours.
         </p>
 
         <div>
