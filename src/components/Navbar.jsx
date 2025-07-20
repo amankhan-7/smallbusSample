@@ -39,7 +39,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
 
   return (
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
-      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"

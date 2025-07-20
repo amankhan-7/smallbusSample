@@ -1,7 +1,3 @@
-"use client";
-import { useSelector } from "react-redux";
-import { FaUser } from "react-icons/fa";
-import { MdAccountCircle } from "react-icons/md";
 import Navbar from "@/components/Navbar";
 
 const navItems = [

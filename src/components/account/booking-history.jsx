@@ -14,30 +14,19 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function BookingHistory() {
   const { user, isAuthenticated } = useAuth();
-  const [getBookingHistory, { data, isLoading }] = useGetBookingHistoryMutation();
-  const [isMounted, setIsMounted] = useState(false);
+  const [getBookingHistory, { data, isLoading }] =
+    useGetBookingHistoryMutation();
   const [filter, setFilter] = useState("all");
   const router = useRouter();
   const bookingHistory = data?.bookings || [];
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  useEffect(() => {
     if (isAuthenticated && user?.id) {
-      getBookingHistory({ userId: user.id, fromDate: new Date(), limit: 10 });
+      getBookingHistory({ userId: user.id, limit: 10 });
     }
-  }, [isAuthenticated, user, filter, getBookingHistory]);
+  }, [isAuthenticated, user, getBookingHistory]);
 
   const onBack = () => router.push("/account");
-
-  if (!isMounted || isLoading) {
-    return (
-      <div className="flex items-center justify-center h-[300px]">
-        <div className="animate-pulse text-gray-500">Loading...</div>
-      </div>
-    );
-  }
 
   if (!isAuthenticated) {
     return (
@@ -66,7 +55,13 @@ export default function BookingHistory() {
 
       <BookingFilter value={filter} onChange={setFilter} />
 
-      {filtered.length > 0 ? (
+      {isLoading ? (
+        <Card className="flex flex-col items-center justify-center h-[300px]">
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="animate-pulse text-gray-500">Loading...</div>
+          </div>
+        </Card>
+      ) : filtered.length > 0 ? (
         filtered.map((booking, idx) => (
           <BookingCard key={idx} booking={booking} />
         ))
@@ -85,7 +80,6 @@ export default function BookingHistory() {
           </Button>
         </Card>
       )}
-
       <div className="mt-6">
         <Button
           variant="outline"

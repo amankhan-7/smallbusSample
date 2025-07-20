@@ -13,10 +13,6 @@ import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
 import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
-// import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
-// import { useDispatch } from "react-redux";
-// import { setCurrentBusSchedule, setCurrentRoutes } from "@/utils/redux/slices/busSlice";
-
 const cities = [
   { name: "Patna", state: "Bihar" },
   { name: "Delhi", state: "Delhi" },
