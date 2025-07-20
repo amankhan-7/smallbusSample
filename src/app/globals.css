@@ -152,6 +152,15 @@
     animation: selectedPulse 2s infinite;
   }
 
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;

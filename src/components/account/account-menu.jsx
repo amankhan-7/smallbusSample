@@ -70,8 +70,10 @@ const AccountMenu = () => {
   );
 };
 
-export default (
-  <Suspense fallback={<div>Loading...</div>}>
-    <AccountMenu />
-  </Suspense>
-);
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountMenu />
+    </Suspense>
+  );
+}

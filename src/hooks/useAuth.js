@@ -4,6 +4,7 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
   selectIsLoading,
+  setCredentials,
 } from "@/utils/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -23,11 +24,18 @@ export const useAuth = () => {
     router.push("/login");
   }, [dispatch, logout, router]);
 
+  const updateUser = useCallback(
+    (data) => {
+      return dispatch(setCredentials({user: data}));
+    },
+    [dispatch]
+  );
 
   return {
     user,
     isAuthenticated,
     isLoading: isLoading || isLogoutLoading,
     logout: handleLogout,
+    updateUser,
   };
 };

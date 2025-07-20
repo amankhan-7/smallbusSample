@@ -2,6 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import AuthRedirectLoading from "../AuthRediectLoading";
 
 const AuthGuard = ({ children, requireAuth = true, redirectTo = "/login" }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -23,11 +24,11 @@ const AuthGuard = ({ children, requireAuth = true, redirectTo = "/login" }) => {
   }
 
   if (requireAuth && !isAuthenticated) {
-    return null;
+    return <AuthRedirectLoading />;
   }
 
   if (!requireAuth && isAuthenticated) {
-    return null;
+    return <AuthRedirectLoading />;
   }
 
   return children;

@@ -11,9 +11,9 @@ export default function BusesPage() {
   const searchParams = useSearchParams();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
 
-  const from = searchParams.get("from") || "Delhi";
-  const to = searchParams.get("to") || "Mumbai";
-  const date = searchParams.get("date") || new Date().toISOString();
+  const from = searchParams.get("fromCity");
+  const to = searchParams.get("toCity");
+  const date = searchParams.get("travelDate");
 
   const [getBusSchedule, { isLoading, isError }] = useGetBusScheduleMutation();
 

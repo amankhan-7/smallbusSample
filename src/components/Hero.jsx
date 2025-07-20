@@ -13,10 +13,6 @@ import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
 import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
-// import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
-// import { useDispatch } from "react-redux";
-// import { setCurrentBusSchedule, setCurrentRoutes } from "@/utils/redux/slices/busSlice";
-
 const cities = [
   { name: "Patna", state: "Bihar" },
   { name: "Delhi", state: "Delhi" },
@@ -92,7 +88,7 @@ function Hero() {
       alert("Please fill in all fields.");
       return;
     }
-    router.push(`/buses?from=${encodeURIComponent(fromCity)}&to=${encodeURIComponent(toCity)}&date=${travelDate}`);
+    router.push(`/buses?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&travelDate=${travelDate}`);
   };
 
   return (

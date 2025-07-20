@@ -1,6 +1,10 @@
-"use client";
 import AccountPage from "@/components/account/account-page";
+import AuthGuard from "@/components/auth/AuthGuard";
 
 export default function Account() {
-  return <AccountPage />;
+  return (
+    <AuthGuard redirectTo="/login" requireAuth>
+      <AccountPage />
+    </AuthGuard>
+  );
 }

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Define protected routes that require authentication
 const protectedRoutes = [
   "/account",
   "/payment",
@@ -8,8 +7,8 @@ const protectedRoutes = [
 
 export function middleware(request) {
   const { nextUrl, cookies } = request;
-  const accessToken = cookies.get("accessToken")?.value;
-  const refreshToken = cookies.get("refreshToken")?.value;
+  const accessToken = cookies.get("accessToken");
+  const refreshToken = cookies.get("refreshToken");
 
   const isAuthenticated = !!(accessToken || refreshToken);
   const isProtectedRoute = protectedRoutes.some((route) =>
