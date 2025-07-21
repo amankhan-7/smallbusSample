@@ -7,14 +7,15 @@ export const PAYMENT_CONFIG = {
   DEFAULT_PAYMENT_METHOD: "upi",
 };
 
-export const FORM_DEFAULTS = {
-  firstName: "",
-  lastName: "",
-  age: "",
-  gender: "",
-  email: "",
-  phone: "",
-};
+export const formDefaults = (data) => {
+  return {
+  firstName: data?.firstName || "",
+  lastName: data?.lastName || "",
+  age: data?.age || "",
+  gender: data?.gender || "",
+  email: data?.email || "",
+  phone: data?.phone || "",
+}};
 
 export const BOOKING_INITIAL_STATE = {
   id: "",

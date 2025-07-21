@@ -1,34 +1,58 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import ButtonUI from "@/components/ui/ButtonUI";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
+import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem } from "@/components/UI/select";
+import { Button } from "@/components/ui/button";
+import { useBusRouteSEO } from "@/hooks/useSEO";
 
-export default function BusesPage() {
+function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
-
-  const from = searchParams.get("fromCity");
-  const to = searchParams.get("toCity");
-  const date = searchParams.get("travelDate");
+  const { value: fromCity, isLoading: isLoadingFrom } =
+    useDecryptedParam("fromCity");
+  const { value: toCity, isLoading: isLoadingTo } = useDecryptedParam("toCity");
+  const { value: travelDate, isLoading: isLoadingDate } =
+    useDecryptedParam("travelDate");
 
   const [getBusSchedule, { isLoading, isError }] = useGetBusScheduleMutation();
 
+  const isDecrypting = isLoadingFrom || isLoadingTo || isLoadingDate;
+
+  useBusRouteSEO(fromCity, toCity, travelDate, currentBusSchedule);
+
   useEffect(() => {
     const fetchBusSchedule = async () => {
+      if (isDecrypting || !fromCity || !toCity || !travelDate) {
+        console.log("Skipping bus schedule fetch:", {
+          isDecrypting,
+          fromCity,
+          toCity,
+          travelDate,
+        });
+        return;
+      }
+
+      console.log("Fetching bus schedule with params:", {
+        fromCity,
+        toCity,
+        travelDate,
+      });
+
       try {
         const response = await getBusSchedule({
-          fromCity: from,
-          toCity: to,
-          travelDate: date,
+          fromCity,
+          toCity,
+          travelDate,
         }).unwrap();
+        console.log("Bus schedule response:", response);
         response.schedule && setCurrentBusSchedule(response.schedule);
       } catch (error) {
         console.error("Failed to fetch bus schedule:", error);
@@ -36,8 +60,7 @@ export default function BusesPage() {
     };
 
     fetchBusSchedule();
-  }, [from, to, getBusSchedule]);
-
+  }, [fromCity, toCity, travelDate, isDecrypting, getBusSchedule]);
   const sortedSchedule = useMemo(() => {
     const schedule = [...currentBusSchedule];
     switch (sortOption) {
@@ -75,6 +98,42 @@ export default function BusesPage() {
     console.log("Form submitted:", data);
     setShowPopup(false);
   };
+  if (isDecrypting) {
+    return (
+      <div className="bg-gray-100 min-h-screen">
+        <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004aad] mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading search results...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!fromCity || !toCity || !travelDate) {
+    return (
+      <div className="bg-gray-100 min-h-screen">
+        <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                Invalid search parameters. Please try again.
+              </p>
+              <button
+                onClick={() => router.push("/")}
+                className="px-4 py-2 bg-[#004aad] text-white rounded hover:bg-[#00348a] transition"
+              >
+                Go Back to Search
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -82,10 +141,10 @@ export default function BusesPage() {
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>
             <h2 className="text-base md:text-xl text-black font-bold mb-1">
-              {from} → {to}
+              {fromCity} → {toCity}
             </h2>
             <p className="text-xs text-gray-600">
-              {new Date(date).toLocaleDateString("en-GB", {
+              {new Date(travelDate).toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -193,12 +252,29 @@ function BusCard({ bus, router }) {
           <p className="text-xs">Arrival</p>
         </div>
       </div>
-      <ButtonUI
-        onClick={() => router.push(`/seats?busId=${bus._id}`)}
+      <Button
+        onClick={async () => {
+          const encryptedUrl = await createSeatSelectionUrl(bus._id);
+          router.push(encryptedUrl);
+        }}
         className="w-full hover:bg-[#00388a] mt-4 py-1.5"
       >
         Select Seats
-      </ButtonUI>
+      </Button>
     </div>
+  );
+}
+
+export default function BusesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          Loading buses...
+        </div>
+      }
+    >
+      <BusesContent />
+    </Suspense>
   );
 }

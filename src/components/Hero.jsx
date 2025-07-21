@@ -8,11 +8,13 @@ import {
   FaSearch,
   FaLocationArrow,
 } from "react-icons/fa";
+import { createBusSearchUrl } from "@/utils/navigation";
 
 import Features from "@/components/Features";
 import PopularRoutes from "@/components/PopularRoutes";
 import ButtonUI from "@/components/ui/ButtonUI";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const cities = [
   { name: "Patna", state: "Bihar" },
   { name: "Delhi", state: "Delhi" },
@@ -85,10 +87,17 @@ function Hero() {
     const toCity = formData.get("to");
     const travelDate = formData.get("date");
     if (!fromCity || !toCity || !travelDate) {
-      alert("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
-    router.push(`/buses?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&travelDate=${travelDate}`);
+
+    const encryptedUrl = await createBusSearchUrl({
+      fromCity,
+      toCity,
+      travelDate,
+    });
+
+    router.push(encryptedUrl);
   };
 
   return (

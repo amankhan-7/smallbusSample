@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { clearAuth } from "@/utils/redux/slices/authSlice";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { safeLocalStorage } from "@/utils/localStorage";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 

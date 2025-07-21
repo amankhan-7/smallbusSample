@@ -65,8 +65,8 @@ export default function PopularRoutes() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious className="z-99" />
+            <CarouselNext className="z-99" />
           </Carousel>
         )}
       </div>

@@ -1,14 +1,18 @@
 "use client";
+import React, { Suspense } from "react";
 import { Card } from "@/components/ui/card";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
+import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
+import { createPaymentUrl } from "@/utils/navigation";
 import BookingSummary from "./booking-summary";
 import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
 
-export default function BookingSummaryContainer() {
+function BookingSummaryContent() {
   const selectedSeats = useSelector(selectSelectedSeats);
-  const busId = useSearchParams().get("busId");
+  const { value: busId, isLoading: isDecryptingBusId } =
+    useDecryptedParam("busId");
   const {
     data: busDetailsResponse,
     isLoading,
@@ -18,7 +22,7 @@ export default function BookingSummaryContainer() {
       busId,
     },
     {
-      skip: !busId,
+      skip: !busId || isDecryptingBusId,
     }
   );
   const router = useRouter();
@@ -28,10 +32,11 @@ export default function BookingSummaryContainer() {
   const handleProceed = async () => {
     try {
       console.log("Proceeding to payment with selected seats:", selectedSeats);
-      router.push(`/payment?busId=${busId}`);
+      const encryptedUrl = await createPaymentUrl(busId);
+      router.push(encryptedUrl);
     } catch (error) {
       console.error("Booking failed:", error);
-      alert("Booking failed. Please try again.");
+      toast.error("Booking failed. Please try again.");
     }
   };
 
@@ -44,5 +49,13 @@ export default function BookingSummaryContainer() {
         isLoading={isLoading}
       />
     </Card>
+  );
+}
+
+export default function BookingSummaryContainer() {
+  return (
+    <Suspense fallback={<div>Loading booking summary...</div>}>
+      <BookingSummaryContent />
+    </Suspense>
   );
 }

@@ -3,21 +3,20 @@ import { memo, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { generateSeatLayout } from "@/utils/seat-utils";
 import { useDispatch, useSelector } from "react-redux";
-// import { Separator } from "@/components/ui/separator";
 import BusRow from "@/components/seats/bus-row";
-// import BusFrontRow from "@/components/seats/bus-front-row";
-// import BusLastRow from "@/components/seats/bus-last-row";
 import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
 import {
   deselectSeat,
   selectSeat,
   selectSelectedSeats,
 } from "@/utils/redux/slices/busSlice";
-import { useSearchParams } from "next/navigation";
+import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
+import { Suspense } from "react";
 
-const BusLayout = memo(
+const BusLayoutContent = memo(
   ({ selectedSeats = [], onSeatClick, className = "" }) => {
-    const busId = useSearchParams().get("busId");
+    const { value: busId, isLoading: isDecryptingBusId } =
+      useDecryptedParam("busId");
     const {
       data: busDetailsResponse,
       isLoading,
@@ -25,7 +24,7 @@ const BusLayout = memo(
     } = useGetBusDetailsQuery(
       { busId },
       {
-        skip: !busId,
+        skip: !busId || isDecryptingBusId,
         refetchOnMountOrArgChange: true,
       }
     );
@@ -90,12 +89,6 @@ const BusLayout = memo(
         className={`mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] w-full rounded-xl will-change-transform ${className}`}
       >
         <CardContent className="space-y-2 p-0">
-          {/* <BusFrontRow
-            bookedSeats={bookedSeats}
-            selectedSeats={selectedSeats}
-            onSeatClick={onSeatClick}
-          />
-          <Separator className="mb-[2.5rem]" /> */}
           {seatLayout.map((rowSeats, rowIndex) => (
             <div
               key={rowIndex}
@@ -110,12 +103,6 @@ const BusLayout = memo(
               />
             </div>
           ))}
-          {/* <div className="w-full h-px my-[1.875rem] bg-gray-200 mx-4"></div>
-          <BusLastRow
-            bookedSeats={bookedSeats}
-            selectedSeats={selectedSeats}
-            onSeatClick={onSeatClick}
-          /> */}
         </CardContent>
       </Card>
     );
@@ -134,6 +121,20 @@ export default function BusLayoutContainer() {
   };
 
   return (
-    <BusLayout selectedSeats={selectedSeats} onSeatClick={handleSeatClick} />
+    <Suspense fallback={<div>Loading bus layout...</div>}>
+      <BusLayoutContent
+        selectedSeats={selectedSeats}
+        onSeatClick={handleSeatClick}
+      />
+    </Suspense>
   );
 }
+
+const BusLayout = ({ selectedSeats, onSeatClick }) => {
+  return (
+    <BusLayoutContent
+      selectedSeats={selectedSeats}
+      onSeatClick={handleSeatClick}
+    />
+  );
+};

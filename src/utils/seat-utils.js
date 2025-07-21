@@ -6,7 +6,7 @@ export function generateSeatLayout({ seatMap, totalSeats }) {
   }
 
   const seats = [];
-  const seatsPerRow = 4; // Default to 4 seats per row (2+2 layout)
+  const seatsPerRow = 4;
   const numberOfRows = Math.ceil(totalSeats / seatsPerRow);
 
   for (let row = 0; row < numberOfRows; row++) {
