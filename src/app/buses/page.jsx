@@ -6,14 +6,24 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/UI/select";
+import ReactDOM from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectContent, SelectItem } from "@/components/UI/select";
+import { notifyFormSchema } from "@/utils/validations/form-validation";
 
 export default function BusesPage() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   const from = searchParams.get("fromCity");
   const to = searchParams.get("toCity");
@@ -38,6 +48,13 @@ export default function BusesPage() {
     fetchBusSchedule();
   }, [from, to, getBusSchedule]);
 
+  const sortOptions = [
+    "Price: Low to High",
+    "Price: High to Low",
+    "Departure Time",
+    "Rating",
+  ];
+
   const sortedSchedule = useMemo(() => {
     const schedule = [...currentBusSchedule];
     switch (sortOption) {
@@ -60,24 +77,36 @@ export default function BusesPage() {
     router.push("/");
   };
 
-  const [showPopup, setShowPopup] = useState(false);
-
+  useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showPopup]);
   const form = useForm({
+    resolver: zodResolver(notifyFormSchema),
     defaultValues: {
-      name: "",
+      fullName: "",
       email: "",
-      routeFrom: "",
-      routeTo: "",
       phone: "",
     },
   });
-  const handleBusRequest = () => {
+  const handleBusRequest = (data) => {
     console.log("Form submitted:", data);
     setShowPopup(false);
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div
+      className={cn(
+        "min-h-screen transition-all duration-300",
+        showPopup ? "relative opacity-20" : "bg-gray-100"
+      )}
+    >
       <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>
@@ -100,19 +129,25 @@ export default function BusesPage() {
           </button>
         </section>
         <div className="flex justify-normal items-center mb-6 md:max-w-9/10 md:mx-auto">
-          <label className="text-xs md:text-base font-medium text-gray-600">
+          <label className="text-xs md:text-base font-medium text-gray-600 mr-3">
             Sort by:
           </label>
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="rounded px-2 py-1.5 md:text-sm shadow-sm ml-3 text-xs"
-          >
-            <option key="price-low-high">Price: Low to High</option>
-            <option key="price-high-low">Price: High to Low</option>
-            <option key="departure-time">Departure Time</option>
-            <option key="rating">Rating</option>
-          </select>
+          <Select value={sortOption} onValueChange={setSortOption}>
+            <SelectTrigger className="w-[170px] focus:outline-none focus:ring-1 focus:ring-primary">
+              <SelectValue placeholder="Select sort option" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem
+                  key={option}
+                  value={option}
+                  className="cursor-pointer data-[highlighted]:bg-primary data-[highlighted]:text-white"
+                >
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <section className="w-full space-y-6 animate-fadeInUp md:max-w-9/10 md:mx-auto">
           {isLoading && (
@@ -122,38 +157,42 @@ export default function BusesPage() {
             <p className="text-center text-red-600">
               Could not fetch results. Please try again later.
             </p>
-          )} 
+          )}
           {!isLoading &&
             !isError &&
             sortedSchedule.length > 0 &&
             sortedSchedule.map((bus, index) => (
               <BusCard key={bus._id} bus={bus} router={router} />
             ))}
-          {!isLoading && !isError && sortedSchedule.length === 0  && (
-            <div className="flex flex-col items-center pt-20">
-               <p className="text-center text-gray-600 lg:text-xl pb-3">
-               No buses found for this route on the selected date.
-             </p>
-            <button
-              onClick={() => setShowPopup(true)}
-              className="border border-[#004aad] text-[#004aad] text-xs px-2 py-1 md:px-3 md:py-1.5 md:text-sm w-30 rounded bg-white hover:bg-gray-50 transition font-medium"
-            >
-              Notify Me
-            </button>
-          </div>
-          )}
-          {showPopup && (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <NotifyForm
-                  
-                  form={form}
-                  onCancel={() => setShowPopup(false)}
-                  onSubmit={form.handleSubmit(handleBusRequest)}
-                />
+          {!isLoading &&
+            !isError &&
+            sortedSchedule.length === 0 &&
+            !showPopup && (
+              <div className="flex flex-col items-center pt-20">
+                <p className="text-center text-gray-600 lg:text-xl pb-3">
+                  No buses found for this route on the selected date.
+                </p>
+                <button
+                  onClick={() => setShowPopup(true)}
+                  className="border border-[#004aad] text-[#004aad] text-xs px-2 py-1 md:px-3 md:py-1.5 md:text-sm w-30 rounded bg-white hover:bg-gray-50 transition font-medium cursor-pointer"
+                >
+                  Notify Me
+                </button>
               </div>
-            </div>
-          )}
+            )}
+          {showPopup &&
+            ReactDOM.createPortal(
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 overflow-y-auto">
+                <div className="relative">
+                  <NotifyForm
+                    form={form}
+                    onCancel={() => setShowPopup(false)}
+                    onSubmit={form.handleSubmit(handleBusRequest)}
+                  />
+                </div>
+              </div>,
+              document.body
+            )}
         </section>
       </main>
     </div>

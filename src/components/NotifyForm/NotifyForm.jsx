@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-export default function RouteFormPopup({ form, onSubmit, onCancel, bus }) {
+export default function RouteFormPopup({ form, onSubmit, onCancel }) {
   return (
-    <div className="fixed inset-0 pt-75 lg:pt-50 flex items-center justify-center">
+    <div className="fixed inset-0 pt-20 flex items-center justify-center">
       <div className="bg-white rounded-[12px] p-6 shadow-lg w-[90%] max-w-xl">
         <h2 className="text-[#004aad] mb-4 text-xl md:text-2xl font-bold">
           Enter Your Details
@@ -26,7 +26,7 @@ export default function RouteFormPopup({ form, onSubmit, onCancel, bus }) {
             {/* Name */}
             <FormField
               control={form.control}
-              name="name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-slate-700">
@@ -35,7 +35,7 @@ export default function RouteFormPopup({ form, onSubmit, onCancel, bus }) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="John Doe"
+                      placeholder="Ashok Raj"
                       className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800"
                     />
                   </FormControl>
@@ -93,15 +93,15 @@ export default function RouteFormPopup({ form, onSubmit, onCancel, bus }) {
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm"
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-[#004aad] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition"
+                className="bg-[#004aad] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition cursor-pointer"
               >
-                Submit
+                Notify Me
               </button>
             </div>
           </form>
