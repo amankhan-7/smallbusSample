@@ -8,7 +8,7 @@ import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectContent, SelectItem } from "@/components/UI/select";
+import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
