@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
+import NotifyForm from "@/components/NotifyForm/NotifyForm";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Select, SelectContent, SelectItem } from "@/components/UI/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
 
@@ -79,6 +83,21 @@ function BusesContent() {
     router.push("/");
   };
 
+  const [showPopup, setShowPopup] = useState(false);
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      routeFrom: "",
+      routeTo: "",
+      phone: "",
+    },
+  });
+  const handleBusRequest = () => {
+    console.log("Form submitted:", data);
+    setShowPopup(false);
+  };
   if (isDecrypting) {
     return (
       <div className="bg-gray-100 min-h-screen">
@@ -162,17 +181,37 @@ function BusesContent() {
             <p className="text-center text-red-600">
               Could not fetch results. Please try again later.
             </p>
-          )}
+          )} 
           {!isLoading &&
             !isError &&
             sortedSchedule.length > 0 &&
             sortedSchedule.map((bus, index) => (
               <BusCard key={bus._id} bus={bus} router={router} />
             ))}
-          {!isLoading && !isError && sortedSchedule.length === 0 && (
-            <p className="text-center text-gray-600">
-              No buses found for this route on the selected date.
-            </p>
+          {!isLoading && !isError && sortedSchedule.length === 0  && (
+            <div className="flex flex-col items-center pt-20">
+               <p className="text-center text-gray-600 lg:text-xl pb-3">
+               No buses found for this route on the selected date.
+             </p>
+            <button
+              onClick={() => setShowPopup(true)}
+              className="border border-[#004aad] text-[#004aad] text-xs px-2 py-1 md:px-3 md:py-1.5 md:text-sm w-30 rounded bg-white hover:bg-gray-50 transition font-medium"
+            >
+              Notify Me
+            </button>
+          </div>
+          )}
+          {showPopup && (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <NotifyForm
+                  
+                  form={form}
+                  onCancel={() => setShowPopup(false)}
+                  onSubmit={form.handleSubmit(handleBusRequest)}
+                />
+              </div>
+            </div>
           )}
         </section>
       </main>

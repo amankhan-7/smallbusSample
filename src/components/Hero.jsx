@@ -101,7 +101,7 @@ function Hero() {
   };
 
   return (
-    <div className="font-inter h-587 md:h-428 lg:h-342 mt-7 bg-gradient-to-b from-white via-gray-50 to-gray-100 text-gray-900 leading-relaxed">
+    <div className="font-inter h-587 md:h-428 lg:h-342 mt-1 lg:mt-6 bg-gradient-to-b from-white via-gray-50 to-gray-100 text-gray-900 leading-relaxed">
       <section className="pt-24 pb-8 text-center">
         <div className="max-w-xl mx-auto px-4">
           <h1 className="text-3xl md:text-[45px] font-bold mb-6 text-black">
