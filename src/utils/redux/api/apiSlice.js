@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { clearAuth } from "@/utils/redux/slices/authSlice";
-import { safeLocalStorage } from "@/lib/localStorage";
+import { safeLocalStorage } from "@/utils/localStorage";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,7 +17,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
-    console.log("Token expired, attempting to refresh...");
     const refreshResult = await baseQuery(
       {
         url: "/refresh-token",
@@ -28,10 +27,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     );
 
     if (refreshResult?.data?.success) {
-      console.log("Token refreshed successfully");
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.log("Token refresh failed, clearing auth state");
       api.dispatch(clearAuth());
       safeLocalStorage.removeItem("user");
     }

@@ -39,7 +39,6 @@ const BusRow = memo(
       );
     }
 
-    // Default 2+2 layout
     return (
       <>
         <div className="flex gap-2">

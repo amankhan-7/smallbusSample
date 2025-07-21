@@ -9,15 +9,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+import { DialogClose } from "../ui/dialog";
 
-export default function RouteFormPopup({ form, onSubmit, onCancel }) {
+export default function RouteFormPopup({ form, onSubmit }) {
   return (
-    <div className="fixed inset-0 pt-20 flex items-center justify-center">
-      <div className="bg-white rounded-[12px] p-6 shadow-lg w-[90%] max-w-xl">
-        <h2 className="text-[#004aad] mb-4 text-xl md:text-2xl font-bold">
-          Enter Your Details
-        </h2>
-
+    <Card className="">
+      <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -90,23 +89,19 @@ export default function RouteFormPopup({ form, onSubmit, onCancel }) {
 
             {/* Submit Button */}
             <div className="md:col-span-2 flex justify-end mt-4 gap-1.5">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm cursor-pointer"
-              >
+              <DialogClose className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm">
                 Cancel
-              </button>
-              <button
+              </DialogClose>
+              <DialogClose
                 type="submit"
                 className="bg-[#004aad] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition cursor-pointer"
               >
                 Notify Me
-              </button>
+              </DialogClose>
             </div>
           </form>
         </Form>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,4 +1,3 @@
-// src/redux/services/paymentApiSlice.js
 import { apiSlice } from "./apiSlice";
 
 export const paymentApiSlice = apiSlice.injectEndpoints({
