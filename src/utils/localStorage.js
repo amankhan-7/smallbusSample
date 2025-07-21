@@ -1,9 +1,11 @@
+import { decryptObject, encryptObject } from "./crypto";
+
 export const safeLocalStorage = {
-  getItem: (key, defaultValue = null) => {
+  getItem: async (key, defaultValue = null) => {
     if (typeof window !== "undefined") {
       try {
         const item = localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue;
+        return item ? await decryptObject(item) : defaultValue;
       } catch (error) {
         console.error(`Error reading localStorage key "${key}":`, error);
         return defaultValue;
@@ -11,13 +13,11 @@ export const safeLocalStorage = {
     }
     return defaultValue;
   },
-  setItem: (key, value) => {
+  setItem: async (key, value) => {
     if (typeof window !== "undefined") {
       try {
-        localStorage.setItem(
-          key,
-          typeof value === "string" ? value : JSON.stringify(value)
-        );
+        const encryptedValue = await encryptObject(value);
+        localStorage.setItem(key, encryptedValue);
       } catch (error) {
         console.error(`Error setting localStorage key "${key}":`, error);
       }

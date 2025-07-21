@@ -21,10 +21,15 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function AccountForm() {
   const [updateUser, { isLoading }] = useUpdateUserProfileMutation();
-  const { user: userInfo, updateUser:updateUserInfo } = useAuth();
+  const {
+    user: userInfo,
+    updateUser: updateUserInfo,
+    isLoading: isAuthLoading,
+  } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
@@ -51,7 +56,7 @@ export default function AccountForm() {
         email: userInfo.email || "",
       });
     }
-  }, [userInfo]);
+  }, [userInfo, form]);
 
   if (!isMounted) {
     return (
@@ -67,17 +72,19 @@ export default function AccountForm() {
         ...data,
         userId: userInfo.id,
       }).unwrap();
-      console.log("Account updated successfully:", result);
-      updateUserInfo({
+
+      const updatedUser = {
         ...userInfo,
         firstName: result.firstName,
         lastName: result.lastName,
         email: result.email,
-      });
-      alert("Account updated successfully!");
+      };
+      await updateUserInfo(updatedUser);
+
+      toast.success("Account updated successfully!");
     } catch (error) {
       console.error("Error updating account:", error);
-      alert("Failed to update account. Please try again.");
+      toast.error("Failed to update account. Please try again.");
     }
   };
 

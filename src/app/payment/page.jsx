@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,18 +12,39 @@ import {
 } from "@/utils/redux/api/bus";
 import { useAuth } from "@/hooks/useAuth";
 import AuthGuard from "@/components/wrapper/AuthGuard";
-import { FORM_DEFAULTS } from "@/constants/payment";
+import { formDefaults } from "@/constants/payment";
 import { usePaymentHandlers } from "@/hooks/usePaymentHandlers";
 import { useBookingData } from "@/hooks/useBookingData";
 import PaymentForm from "@/components/payment/PaymentForm";
 import LoadingSpinner from "@/components/payment/LoadingSpinner";
 import PaymentHeader from "@/components/payment/PaymentHeader";
 import PaymentScripts from "@/components/payment/PaymentScripts";
+import { useRouter } from "next/navigation";
+import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
+import { useSelector } from "react-redux";
+import { useSEO } from "@/hooks/useSEO";
+import { SEO_CONFIG } from "@/config/seo";
+
 
 function PaymentContent() {
   const { value: busId, isLoading: isDecryptingBusId } =
     useDecryptedParam("busId");
   const currentUser = useAuth().user;
+  const router = useRouter();
+
+  useSEO({
+    title: SEO_CONFIG.pages.payment.title,
+    url: `${SEO_CONFIG.siteUrl}/payment`,
+    description: SEO_CONFIG.pages.payment.description,
+    robots: SEO_CONFIG.pages.payment.robots,
+    openGraph: {
+      title: SEO_CONFIG.pages.payment.title,
+      description: SEO_CONFIG.pages.payment.description,
+      url: `${SEO_CONFIG.siteUrl}/payment`,
+    },
+  });
+
+  const selectedSeats = useSelector(selectSelectedSeats);
 
   const { data, isLoading } = useGetBusDetailsQuery(
     { busId },
@@ -42,9 +63,16 @@ function PaymentContent() {
     currentUser
   );
 
+  useEffect(() => {
+    if (selectedSeats.length === 0 && !isLoading) {
+      console.log(booking, isLoading);
+      router.push("/");
+    }
+  }, [selectedSeats.length, isLoading, router]);
+
   const form = useForm({
     resolver: zodResolver(passengerSchema),
-    defaultValues: FORM_DEFAULTS,
+    defaultValues: formDefaults(currentUser),
   });
 
   const handleSubmit = async (formData) => {
@@ -55,7 +83,7 @@ function PaymentContent() {
 
   return (
     <AuthGuard redirectTo="/login" requireAuth>
-      <div className="bg-gray-100 min-h-screen">
+      <div className="flex items-center justify-center min-h-screen">
         <PaymentScripts />
         <PaymentHeader />
 

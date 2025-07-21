@@ -1,10 +1,12 @@
 import { useLogoutMutation } from "@/utils/redux/api/user";
 import {
-  clearAuth,
   selectCurrentUser,
   selectIsAuthenticated,
   selectIsLoading,
+  selectAuthError,
   setCredentials,
+  logout,
+  clearAuth,
 } from "@/utils/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -15,18 +17,31 @@ export const useAuth = () => {
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectIsLoading);
+  const authError = useSelector(selectAuthError);
   const router = useRouter();
-  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  const [logoutAPI, { isLoading: isLogoutLoading }] = useLogoutMutation();
 
-  const handleLogout = useCallback(() => {
-    logout();
-    dispatch(clearAuth());
-    router.push("/login");
-  }, [dispatch, logout, router]);
+  const handleLogout = useCallback(async () => {
+    try {
+      await logoutAPI().unwrap();
+      dispatch(logout());
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      dispatch(clearAuth());
+      router.push("/login");
+    }
+  }, [dispatch, logoutAPI, router]);
 
   const updateUser = useCallback(
-    (data) => {
-      return dispatch(setCredentials({user: data}));
+    async (data) => {
+      try {
+        const result = await dispatch(setCredentials({ user: data })).unwrap();
+        return result;
+      } catch (error) {
+        console.error("Update user error:", error);
+        throw error;
+      }
     },
     [dispatch]
   );
@@ -35,6 +50,7 @@ export const useAuth = () => {
     user,
     isAuthenticated,
     isLoading: isLoading || isLogoutLoading,
+    error: authError,
     logout: handleLogout,
     updateUser,
   };

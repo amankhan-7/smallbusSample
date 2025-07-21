@@ -165,6 +165,8 @@ export default function PassengerValidation({ form }) {
                     type="tel"
                     placeholder="10-digit phone number"
                     className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-200 ease-in-out"
+                    disabled
+                    readOnly
                   />
                 </FormControl>
                 <p className="text-xs text-slate-500 pt-2">

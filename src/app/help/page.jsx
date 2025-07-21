@@ -1,97 +1,110 @@
+"use client";
+import { useState, useEffect } from "react";
+import HelpHeader from "@/components/help/HelpHeader";
+import SearchSection from "@/components/help/SearchSection";
+import ContactCard from "@/components/help/ContactCard";
+import FAQCategory from "@/components/help/FAQCategory";
+import CallbackModal from "@/components/help/CallbackModal";
+import { useSEO } from "@/hooks/useSEO";
+import { SEO_CONFIG } from "@/config/seo";
 
-'use client'
-import { useState } from 'react'
-import HelpHeader from '@/components/help/HelpHeader'
-import SearchSection from '@/components/help/SearchSection'
-import ContactCard from '@/components/help/ContactCard'
-import FAQCategory from '@/components/help/FAQCategory'
-import CallbackModal from '@/components/help/CallbackModal'
-
-const HelpCenter = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false)
+export default function HelpCenter() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
+  useSEO({
+    title: SEO_CONFIG.pages.help.title,
+    description:
+      SEO_CONFIG.pages.help.description,
+    url: `${SEO_CONFIG.siteUrl}/help`,
+    robots: SEO_CONFIG.pages.help.robots,
+    openGraph: {
+      title: SEO_CONFIG.pages.help.title,
+      description: SEO_CONFIG.pages.help.description,
+      url: `${SEO_CONFIG.siteUrl}/help`,
+    },
+  });
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   const faqData = [
     {
-      title: 'Booking & Tickets',
-      icon: 'fa-ticket-alt',
+      title: "Booking & Tickets",
+      icon: "fa-ticket-alt",
       items: [
         {
-          question: 'How do I book a bus ticket?',
+          question: "How do I book a bus ticket?",
           answer:
-            'You can book a ticket by selecting your departure and destination cities, choosing your travel date, and selecting from available buses. Complete the booking by making payment.',
+            "You can book a ticket by selecting your departure and destination cities, choosing your travel date, and selecting from available buses. Complete the booking by making payment.",
         },
         {
-          question: 'Can I cancel my booking?',
+          question: "Can I cancel my booking?",
           answer:
-            'Yes, you can cancel your booking up to 2 hours before departure. Cancellation charges may apply based on the timing of cancellation.',
+            "Yes, you can cancel your booking up to 2 hours before departure. Cancellation charges may apply based on the timing of cancellation.",
         },
         {
-          question: 'How do I get my ticket?',
+          question: "How do I get my ticket?",
           answer:
             "After successful booking, you'll receive an e-ticket via email and SMS. You can also download it from your account or show the booking confirmation on your mobile.",
         },
       ],
     },
     {
-      title: 'Payment & Refunds',
-      icon: 'fa-credit-card',
+      title: "Payment & Refunds",
+      icon: "fa-credit-card",
       items: [
         {
-          question: 'What payment methods do you accept?',
+          question: "What payment methods do you accept?",
           answer:
-            'We accept all major credit/debit cards, net banking, UPI, and digital wallets like Paytm, PhonePe, and Google Pay.',
+            "We accept all major credit/debit cards, net banking, UPI, and digital wallets like Paytm, PhonePe, and Google Pay.",
         },
         {
-          question: 'How long does it take to get a refund?',
+          question: "How long does it take to get a refund?",
           answer:
-            'Refunds are processed within 5-7 business days to your original payment method. The exact time may vary depending on your bank.',
+            "Refunds are processed within 5-7 business days to your original payment method. The exact time may vary depending on your bank.",
         },
         {
-          question: 'Is my payment information secure?',
+          question: "Is my payment information secure?",
           answer:
             "Yes, all payments are processed through secure, encrypted gateways. We don't store your payment information on our servers.",
         },
       ],
     },
     {
-      title: 'Travel & Services',
-      icon: 'fa-bus',
+      title: "Travel & Services",
+      icon: "fa-bus",
       items: [
         {
-          question: 'What amenities are available on buses?',
+          question: "What amenities are available on buses?",
           answer:
-            'Amenities vary by bus type but may include AC, WiFi, charging points, entertainment systems, and refreshments. Check bus details while booking.',
+            "Amenities vary by bus type but may include AC, WiFi, charging points, entertainment systems, and refreshments. Check bus details while booking.",
         },
         {
-          question: 'Can I track my bus location?',
+          question: "Can I track my bus location?",
           answer:
-            'Yes, you can track your bus in real-time through our mobile app or website using your booking reference number.',
+            "Yes, you can track your bus in real-time through our mobile app or website using your booking reference number.",
         },
         {
-          question: 'What if my bus is delayed?',
+          question: "What if my bus is delayed?",
           answer:
-            'You\'ll receive SMS and email notifications about any delays. In case of significant delays, you may be eligible for compensation or rebooking.',
+            "You'll receive SMS and email notifications about any delays. In case of significant delays, you may be eligible for compensation or rebooking.",
         },
       ],
     },
-  ]
+  ];
 
   const filteredFaqData = faqData
     .map((category) => ({
       ...category,
       items: category.items.filter(
         (item) =>
-          searchTerm === '' ||
+          searchTerm === "" ||
           item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.answer.toLowerCase().includes(searchTerm.toLowerCase())
       ),
     }))
-    .filter((category) => category.items.length > 0)
+    .filter((category) => category.items.length > 0);
 
   return (
     <div className="font-sans bg-gray-100 text-gray-900 min-h-screen">
@@ -101,7 +114,10 @@ const HelpCenter = () => {
       />
 
       <HelpHeader />
-      <SearchSection searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+      <SearchSection
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
+      />
 
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-5">
@@ -127,7 +143,9 @@ const HelpCenter = () => {
               title="Email Support"
               description="Send us an email and we'll get back to you within 24 hours with a detailed response."
               buttonText="Send Email"
-              buttonAction={() => (window.location.href = 'mailto:support@smallbus.com')}
+              buttonAction={() =>
+                (window.location.href = "mailto:support@smallbus.com")
+              }
             />
           </div>
         </div>
@@ -163,7 +181,5 @@ const HelpCenter = () => {
         onClose={() => setIsCallbackModalOpen(false)}
       />
     </div>
-  )
+  );
 }
-
-export default HelpCenter

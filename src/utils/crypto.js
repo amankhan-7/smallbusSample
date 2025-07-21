@@ -1,55 +1,87 @@
 /**
- * Crypto utilities for encrypting and decrypting URL search parameters
+ * Crypto utilities for encrypting and decrypting text, objects, arrays, and URL search parameters
  * Uses Web Crypto API for secure encryption/decryption
  */
 
 // Configuration for encryption
 const ALGORITHM = "AES-GCM";
-const KEY_LENGTH = 256;
 const IV_LENGTH = 12; // 96 bits for GCM
 
 /**
- * Generate or retrieve encryption key from localStorage
- * In production, consider using a more secure key management approach
+ * Generate or retrieve encryption key from environment variable
  */
 async function getEncryptionKey() {
-  let keyData = localStorage.getItem("url_encryption_key");
+  const envKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
 
-  if (!keyData) {
-    // Generate new key if none exists
-    const key = await crypto.subtle.generateKey(
-      {
-        name: ALGORITHM,
-        length: KEY_LENGTH,
-      },
-      true,
-      ["encrypt", "decrypt"]
-    );
+  if (envKey) {
+    try {
+      if (!/^[a-fA-F0-9]{64}$/.test(envKey)) {
+        throw new Error(
+          "Invalid encryption key format in environment variable"
+        );
+      }
 
-    // Export and store the key
-    const exported = await crypto.subtle.exportKey("raw", key);
-    keyData = Array.from(new Uint8Array(exported))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-    localStorage.setItem("url_encryption_key", keyData);
-    return key;
+      const keyBytes = new Uint8Array(
+        envKey.match(/.{2}/g).map((byte) => parseInt(byte, 16))
+      );
+
+      return await crypto.subtle.importKey(
+        "raw",
+        keyBytes,
+        { name: ALGORITHM },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    } catch (error) {
+      console.error("Failed to import environment encryption key:", error);
+      throw new Error("Invalid encryption key configuration");
+    }
   }
 
-  // Import existing key
-  const keyBytes = new Uint8Array(
-    keyData.match(/.{2}/g).map((byte) => parseInt(byte, 16))
-  );
-  return await crypto.subtle.importKey(
-    "raw",
-    keyBytes,
-    { name: ALGORITHM },
-    false,
-    ["encrypt", "decrypt"]
+  throw new Error(
+    "No encryption key found. Set ENCRYPTION_KEY environment variable."
   );
 }
 
 /**
- * Encrypt a string value
+ * Encrypt a string value (generic text encryption)
+ * @param {string} plaintext - The text to encrypt
+ * @returns {Promise<string>} - Base64 encoded encrypted data with IV
+ */
+export async function encryptText(plaintext) {
+  try {
+    if (!plaintext) return "";
+
+    const key = await getEncryptionKey();
+    const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plaintext);
+
+    const encrypted = await crypto.subtle.encrypt(
+      {
+        name: ALGORITHM,
+        iv: iv,
+      },
+      key,
+      data
+    );
+
+    const combined = new Uint8Array(iv.length + encrypted.byteLength);
+    combined.set(iv);
+    combined.set(new Uint8Array(encrypted), iv.length);
+
+    return btoa(String.fromCharCode.apply(null, combined))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
+  } catch (error) {
+    console.error("Encryption error:", error);
+    throw new Error("Failed to encrypt text");
+  }
+}
+
+/**
+ * Encrypt a string value for URL parameters (with fallback for compatibility)
  * @param {string} plaintext - The text to encrypt
  * @returns {Promise<string>} - Base64 encoded encrypted data with IV
  */
@@ -71,24 +103,68 @@ export async function encryptParam(plaintext) {
       data
     );
 
-    // Combine IV and encrypted data
     const combined = new Uint8Array(iv.length + encrypted.byteLength);
     combined.set(iv);
     combined.set(new Uint8Array(encrypted), iv.length);
 
-    // Convert to base64 and make URL-safe
     return btoa(String.fromCharCode.apply(null, combined))
       .replace(/\+/g, "-")
       .replace(/\//g, "_")
       .replace(/=/g, "");
   } catch (error) {
     console.error("Encryption error:", error);
-    return plaintext; // Fallback to plaintext if encryption fails
+    return plaintext; // Fallback for URL params
   }
 }
 
 /**
- * Decrypt an encrypted string value
+ * Decrypt an encrypted string value (generic text decryption)
+ * @param {string} encryptedData - Base64 encoded encrypted data with IV
+ * @returns {Promise<string>} - Decrypted plaintext
+ */
+export async function decryptText(encryptedData) {
+  try {
+    if (!encryptedData) return "";
+    if (!isLikelyEncrypted(encryptedData)) {
+      throw new Error("Invalid encrypted data format");
+    }
+
+    let base64 = encryptedData.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+
+    const combined = new Uint8Array(
+      atob(base64)
+        .split("")
+        .map((char) => char.charCodeAt(0))
+    );
+
+    // Extract IV and encrypted data
+    const iv = combined.slice(0, IV_LENGTH);
+    const encrypted = combined.slice(IV_LENGTH);
+
+    const key = await getEncryptionKey();
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: ALGORITHM,
+        iv: iv,
+      },
+      key,
+      encrypted
+    );
+
+    const decoder = new TextDecoder();
+    return decoder.decode(decrypted);
+  } catch (error) {
+    console.error("Decryption error:", error);
+    throw new Error("Failed to decrypt text");
+  }
+}
+
+/**
+ * Decrypt an encrypted string value for URL parameters (with fallback for compatibility)
  * @param {string} encryptedData - Base64 encoded encrypted data with IV
  * @returns {Promise<string>} - Decrypted plaintext
  */
@@ -99,7 +175,6 @@ export async function decryptParam(encryptedData) {
       return encryptedData;
     }
 
-    // Restore base64 padding and convert from URL-safe
     let base64 = encryptedData.replace(/-/g, "+").replace(/_/g, "/");
     while (base64.length % 4) {
       base64 += "=";
@@ -131,6 +206,71 @@ export async function decryptParam(encryptedData) {
   } catch (error) {
     console.error("Decryption error:", error);
     return encryptedData; // Fallback to original data if decryption fails
+  }
+}
+
+/**
+ * Encrypt an object by converting it to JSON and then encrypting
+ * @param {Object} obj - The object to encrypt
+ * @returns {Promise<string>} - Base64 encoded encrypted JSON data
+ */
+export async function encryptObject(obj) {
+  try {
+    if (!obj) return "";
+    const jsonString = JSON.stringify(obj);
+    return await encryptText(jsonString);
+  } catch (error) {
+    console.error("Object encryption error:", error);
+    throw new Error("Failed to encrypt object");
+  }
+}
+
+/**
+ * Decrypt an encrypted string and parse it as JSON object
+ * @param {string} encryptedData - Base64 encoded encrypted JSON data
+ * @returns {Promise<Object>} - Decrypted and parsed object
+ */
+export async function decryptObject(encryptedData) {
+  try {
+    if (!encryptedData) return null;
+    const decryptedString = await decryptText(encryptedData);
+    return JSON.parse(decryptedString);
+  } catch (error) {
+    console.error("Object decryption error:", error);
+    throw new Error("Failed to decrypt object");
+  }
+}
+
+/**
+ * Encrypt an array by converting it to JSON and then encrypting
+ * @param {Array} arr - The array to encrypt
+ * @returns {Promise<string>} - Base64 encoded encrypted JSON data
+ */
+export async function encryptArray(arr) {
+  try {
+    if (!arr || !Array.isArray(arr)) return "";
+    const jsonString = JSON.stringify(arr);
+    return await encryptText(jsonString);
+  } catch (error) {
+    console.error("Array encryption error:", error);
+    throw new Error("Failed to encrypt array");
+  }
+}
+
+/**
+ * Decrypt an encrypted string and parse it as JSON array
+ * @param {string} encryptedData - Base64 encoded encrypted JSON data
+ * @returns {Promise<Array>} - Decrypted and parsed array
+ */
+export async function decryptArray(encryptedData) {
+  try {
+    if (!encryptedData) return [];
+    const decryptedString = await decryptText(encryptedData);
+    const result = JSON.parse(decryptedString);
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Array decryption error:", error);
+    throw new Error("Failed to decrypt array");
   }
 }
 

@@ -1,17 +1,20 @@
 "use client";
 
-import {
-  hydrate,
-  selectIsLoading,
-} from "@/utils/redux/slices/authSlice";
-import { useEffect } from "react";
+import { hydrateAuth, selectIsLoading } from "@/utils/redux/slices/authSlice";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function HydrationWrapper({ children }) {
   const dispatch = useDispatch();
   const isLoading = useSelector(selectIsLoading);
+  const hasHydrated = useRef(false);
+
   useEffect(() => {
-    if (isLoading) dispatch(hydrate());
+    if (!hasHydrated.current && isLoading) {
+      hasHydrated.current = true;
+      dispatch(hydrateAuth());
+    }
   }, [dispatch, isLoading]);
+
   return <>{children}</>;
 }

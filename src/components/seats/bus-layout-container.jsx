@@ -3,10 +3,7 @@ import { memo, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { generateSeatLayout } from "@/utils/seat-utils";
 import { useDispatch, useSelector } from "react-redux";
-// import { Separator } from "@/components/ui/separator";
 import BusRow from "@/components/seats/bus-row";
-// import BusFrontRow from "@/components/seats/bus-front-row";
-// import BusLastRow from "@/components/seats/bus-last-row";
 import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
 import {
   deselectSeat,

@@ -6,13 +6,12 @@ import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import { Button } from "@/components/ui/button";
+import { useBusRouteSEO } from "@/hooks/useSEO";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
   const router = useRouter();
   const [currentBusSchedule, setCurrentBusSchedule] = useState([]);
-
-  // Use individual hooks for each parameter to avoid infinite loops
   const { value: fromCity, isLoading: isLoadingFrom } =
     useDecryptedParam("fromCity");
   const { value: toCity, isLoading: isLoadingTo } = useDecryptedParam("toCity");
@@ -23,9 +22,10 @@ function BusesContent() {
 
   const isDecrypting = isLoadingFrom || isLoadingTo || isLoadingDate;
 
+  useBusRouteSEO(fromCity, toCity, travelDate, currentBusSchedule);
+
   useEffect(() => {
     const fetchBusSchedule = async () => {
-      // Don't fetch if still decrypting or missing required parameters
       if (isDecrypting || !fromCity || !toCity || !travelDate) {
         console.log("Skipping bus schedule fetch:", {
           isDecrypting,
@@ -79,7 +79,6 @@ function BusesContent() {
     router.push("/");
   };
 
-  // Show loading state while decrypting parameters
   if (isDecrypting) {
     return (
       <div className="bg-gray-100 min-h-screen">
@@ -95,7 +94,6 @@ function BusesContent() {
     );
   }
 
-  // Show error state if required parameters are missing
   if (!fromCity || !toCity || !travelDate) {
     return (
       <div className="bg-gray-100 min-h-screen">

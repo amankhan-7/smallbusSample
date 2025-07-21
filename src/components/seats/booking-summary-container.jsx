@@ -36,7 +36,7 @@ function BookingSummaryContent() {
       router.push(encryptedUrl);
     } catch (error) {
       console.error("Booking failed:", error);
-      alert("Booking failed. Please try again.");
+      toast.error("Booking failed. Please try again.");
     }
   };
 

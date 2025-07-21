@@ -8,6 +8,7 @@ import {
   formatPaymentError,
   createPrefillData,
 } from "@/utils/payment-utils";
+import { toast } from "sonner";
 
 export const usePaymentHandlers = (
   lockSeats,
@@ -46,7 +47,7 @@ export const usePaymentHandlers = (
       router.push("/account?tab=bookingHistory");
     } catch (err) {
       console.error("Booking confirmation failed:", err);
-      alert("Payment succeeded, but booking failed. Please contact support.");
+      toast.success("Payment succeeded, but booking failed. Please contact support.");
     } finally {
       setProcessing(false);
     }
@@ -54,7 +55,7 @@ export const usePaymentHandlers = (
 
   const handlePaymentFailure = (response) => {
     console.error("Razorpay payment failed:", response.error);
-    alert(`Payment Failed\nReason: ${response.error.description}`);
+    toast.error(`Payment Failed\nReason: ${response.error.description}`);
     setProcessing(false);
   };
 
@@ -67,7 +68,7 @@ export const usePaymentHandlers = (
     try {
       validateRazorpayAvailability();
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
       setProcessing(false);
       return;
     }
@@ -106,7 +107,7 @@ export const usePaymentHandlers = (
       );
     } catch (err) {
       console.error("Seat lock or Razorpay setup failed:", err);
-      alert(formatPaymentError(err));
+      toast.error(formatPaymentError(err));
       setProcessing(false);
     }
   };

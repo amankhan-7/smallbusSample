@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner';
 
 const CallbackModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -11,10 +12,10 @@ const CallbackModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = () => {
     if (!formData.fullName || !formData.phone) {
-      alert('Please fill in all required fields.')
+      toast.error('Please fill in all required fields.')
       return
     }
-    alert('Thank you! We have received your callback request. Our team will contact you within 24 hours.')
+    toast.success('Thank you! We have received your callback request. Our team will contact you within 24 hours.')
     onClose()
     setFormData({
       fullName: '',

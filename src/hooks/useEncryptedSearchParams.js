@@ -7,7 +7,6 @@ export function useEncryptedSearchParams() {
   const [decryptedCache, setDecryptedCache] = useState(new Map());
   const [isDecrypting, setIsDecrypting] = useState(false);
 
-  // Clear cache when search params change
   useEffect(() => {
     setDecryptedCache(new Map());
   }, [searchParams]);
@@ -18,24 +17,21 @@ export function useEncryptedSearchParams() {
     const encryptedValue = searchParams.get(key);
     if (!encryptedValue) return null;
 
-    // Check cache first
     const cacheKey = `${key}:${encryptedValue}`;
     if (decryptedCache.has(cacheKey)) {
       return decryptedCache.get(cacheKey);
     }
 
-    // Decrypt the value
     setIsDecrypting(true);
     try {
       const decryptedValue = await decryptParam(encryptedValue);
 
-      // Update cache
       setDecryptedCache((prev) => new Map(prev).set(cacheKey, decryptedValue));
 
       return decryptedValue;
     } catch (error) {
       console.error(`Failed to decrypt parameter '${key}':`, error);
-      return encryptedValue; // Fallback to encrypted value
+      return encryptedValue; 
     } finally {
       setIsDecrypting(false);
     }
@@ -47,13 +43,11 @@ export function useEncryptedSearchParams() {
     const encryptedValue = searchParams.get(key);
     if (!encryptedValue) return null;
 
-    // Check cache first
     const cacheKey = `${key}:${encryptedValue}`;
     if (decryptedCache.has(cacheKey)) {
       return decryptedCache.get(cacheKey);
     }
 
-    // Return encrypted value if not in cache (will be decrypted asynchronously)
     return encryptedValue;
   };
 
@@ -115,14 +109,14 @@ export function useDecryptedParam(key) {
         setValue(decryptedValue);
       } catch (error) {
         console.error(`Failed to decrypt parameter '${key}':`, error);
-        setValue(encryptedValue); // Fallback to encrypted value
+        setValue(encryptedValue); 
       } finally {
         setIsLoading(false);
       }
     };
 
     decryptValue();
-  }, [key, encryptedValue]); // Only depend on key and encryptedValue
+  }, [key, encryptedValue]);
 
   return { value, isLoading };
 }

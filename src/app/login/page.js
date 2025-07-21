@@ -3,7 +3,7 @@ import OTPPage from "@/components/authentication/otp-page";
 import LoginPage from "@/components/authentication/phone-page";
 import RegisterPage from "@/components/authentication/register-page";
 import AuthGuard from "@/components/wrapper/AuthGuard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -13,12 +13,34 @@ import {
   useVerifyOtpMutation,
 } from "@/utils/redux/api/user";
 import { setCredentials } from "@/utils/redux/slices/authSlice";
+import { useSEO } from "@/hooks/useSEO";
+import { SEO_CONFIG } from "@/config/seo";
 
 const STEPS = {
   PHONE: 1,
   OTP: 2,
   REGISTER: 3,
 };
+
+export default function Login() {
+  useSEO({
+    title: SEO_CONFIG.pages.login.title,
+    description: SEO_CONFIG.pages.login.description,
+    url: `${SEO_CONFIG.siteUrl}/login`,
+    robots: SEO_CONFIG.pages.login.robots,
+    openGraph: {
+      title: SEO_CONFIG.pages.login.title,
+      description: SEO_CONFIG.pages.login.description,
+      url: `${SEO_CONFIG.siteUrl}/login`,
+    },
+  });
+
+  return (
+    <AuthGuard redirectTo="/" requireNotAuth>
+      <LoginComponent />
+    </AuthGuard>
+  );
+}
 
 function LoginComponent() {
   const [step, setStep] = useState(STEPS.PHONE);
@@ -92,9 +114,14 @@ function LoginComponent() {
       console.log("OTP verification result:", result);
 
       if (result) {
-        dispatch(setCredentials({ user: result.user }));
-        toast.success("Login successful!");
-        router.push("/");
+        try {
+          await dispatch(setCredentials({ user: result.user })).unwrap();
+          toast.success("Login successful!");
+          router.push("/");
+        } catch (error) {
+          console.error("Failed to set credentials:", error);
+          toast.error("Login failed. Please try again.");
+        }
       } else {
         toast.error(result.message || "Invalid OTP. Please try again.");
       }
@@ -188,13 +215,5 @@ function LoginComponent() {
     <main className="flex md:items-center justify-center h-fit md:min-h-screen pt-[6.25rem] md:p-0 px-5">
       {renderStep()}
     </main>
-  );
-}
-
-export default function Login() {
-  return (
-    <AuthGuard requireAuth={false}>
-      <LoginComponent />
-    </AuthGuard>
   );
 }
