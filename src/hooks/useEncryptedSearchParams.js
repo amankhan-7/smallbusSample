@@ -93,10 +93,8 @@ export function useDecryptedParam(key) {
 
   useEffect(() => {
     const decryptValue = async () => {
-      console.log(`Decrypting parameter '${key}' with value:`, encryptedValue);
 
       if (!encryptedValue) {
-        console.log(`No value found for parameter '${key}'`);
         setValue(null);
         setIsLoading(false);
         return;
@@ -105,7 +103,6 @@ export function useDecryptedParam(key) {
       setIsLoading(true);
       try {
         const decryptedValue = await decryptParam(encryptedValue);
-        console.log(`Decrypted '${key}':`, decryptedValue);
         setValue(decryptedValue);
       } catch (error) {
         console.error(`Failed to decrypt parameter '${key}':`, error);

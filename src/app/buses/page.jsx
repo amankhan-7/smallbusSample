@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem } from "@/components/UI/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -31,20 +32,9 @@ function BusesContent() {
   useEffect(() => {
     const fetchBusSchedule = async () => {
       if (isDecrypting || !fromCity || !toCity || !travelDate) {
-        console.log("Skipping bus schedule fetch:", {
-          isDecrypting,
-          fromCity,
-          toCity,
-          travelDate,
-        });
         return;
       }
 
-      console.log("Fetching bus schedule with params:", {
-        fromCity,
-        toCity,
-        travelDate,
-      });
 
       try {
         const response = await getBusSchedule({
@@ -52,7 +42,6 @@ function BusesContent() {
           toCity,
           travelDate,
         }).unwrap();
-        console.log("Bus schedule response:", response);
         response.schedule && setCurrentBusSchedule(response.schedule);
       } catch (error) {
         console.error("Failed to fetch bus schedule:", error);
@@ -80,11 +69,8 @@ function BusesContent() {
   }, [currentBusSchedule, sortOption]);
 
   const handleModifySearch = () => {
-    router.push("/");
+    router.back();
   };
-
-  const [showPopup, setShowPopup] = useState(false);
-
   const form = useForm({
     defaultValues: {
       name: "",
@@ -94,9 +80,9 @@ function BusesContent() {
       phone: "",
     },
   });
-  const handleBusRequest = () => {
+  const handleBusRequest = (data) => {
     console.log("Form submitted:", data);
-    setShowPopup(false);
+    form.reset();
   };
   if (isDecrypting) {
     return (
@@ -181,36 +167,32 @@ function BusesContent() {
             <p className="text-center text-red-600">
               Could not fetch results. Please try again later.
             </p>
-          )} 
+          )}
           {!isLoading &&
             !isError &&
             sortedSchedule.length > 0 &&
             sortedSchedule.map((bus, index) => (
               <BusCard key={bus._id} bus={bus} router={router} />
             ))}
-          {!isLoading && !isError && sortedSchedule.length === 0  && (
+          {!isLoading && !isError && sortedSchedule.length === 0 && (
             <div className="flex flex-col items-center pt-20">
-               <p className="text-center text-gray-600 lg:text-xl pb-3">
-               No buses found for this route on the selected date.
-             </p>
-            <button
-              onClick={() => setShowPopup(true)}
-              className="border border-[#004aad] text-[#004aad] text-xs px-2 py-1 md:px-3 md:py-1.5 md:text-sm w-30 rounded bg-white hover:bg-gray-50 transition font-medium"
-            >
-              Notify Me
-            </button>
-          </div>
-          )}
-          {showPopup && (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <NotifyForm
-                  
-                  form={form}
-                  onCancel={() => setShowPopup(false)}
-                  onSubmit={form.handleSubmit(handleBusRequest)}
-                />
-              </div>
+              <p className="text-center text-gray-600 lg:text-xl pb-3">
+                No buses found for this route on the selected date.
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="border border-[#004aad] text-[#004aad] text-xs px-2 py-1 md:px-3 md:py-1.5 md:text-sm w-30 rounded bg-white hover:bg-gray-50 transition font-medium">
+                    Notify Me
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-fit">
+                  <DialogTitle>Notify Me</DialogTitle>
+                  <NotifyForm
+                    form={form}
+                    onSubmit={form.handleSubmit(handleBusRequest)}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </section>

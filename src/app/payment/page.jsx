@@ -65,7 +65,6 @@ function PaymentContent() {
 
   useEffect(() => {
     if (selectedSeats.length === 0 && !isLoading) {
-      console.log(booking, isLoading);
       router.push("/");
     }
   }, [selectedSeats.length, isLoading, router]);

@@ -105,13 +105,11 @@ function LoginComponent() {
 
   const handleOTPSubmit = async ({ otp }) => {
     try {
-      console.log("OTP submitted:", otp);
       const result = await verifyOtp({
         phoneNumber: phoneData.phone,
         otp,
         purpose: "login",
       }).unwrap();
-      console.log("OTP verification result:", result);
 
       if (result) {
         try {
@@ -132,15 +130,12 @@ function LoginComponent() {
   };
 
   const handleRegisterSubmit = async (data) => {
-    console.log("Registering with data:", data);
     try {
       const result = await register({
         phoneNumber: phoneData.phone,
         firstName: data.firstName,
         lastName: data.lastName,
       }).unwrap();
-
-      console.log("Registration result:", result);
 
       if (result) {
         setPhoneData({

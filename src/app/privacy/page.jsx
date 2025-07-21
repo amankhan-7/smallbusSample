@@ -1,5 +1,5 @@
 import LegalDocument from "@/components/LegalDocument";
-import { privacyContent } from "@/data/legal/privacy";
+import { privacyContent } from "@/lib/legal/privacy";
 import { SEO_CONFIG } from "@/config/seo";
 
 export const metadata = {

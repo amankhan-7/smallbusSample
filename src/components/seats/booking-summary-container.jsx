@@ -31,7 +31,6 @@ function BookingSummaryContent() {
 
   const handleProceed = async () => {
     try {
-      console.log("Proceeding to payment with selected seats:", selectedSeats);
       const encryptedUrl = await createPaymentUrl(busId);
       router.push(encryptedUrl);
     } catch (error) {
