@@ -27,20 +27,20 @@ export default function NotFound() {
         </div>
 
         <div className="space-y-4">
-          <Link href="/">
-            <Button className="w-full bg-[#004aad] hover:bg-[#00388a] text-white py-3 px-6 rounded-lg font-medium transition-colors">
-              Return to Home
-            </Button>
-          </Link>
+          <Button
+            asChild
+            className="w-full bg-[#004aad] hover:bg-[#00388a] text-white py-3 px-6 rounded-lg font-medium transition-colors"
+          >
+            <Link href="/">Return to Home</Link>
+          </Button>
 
-          <Link href="/help">
-            <Button
-              variant="outline"
-              className="w-full border-[#004aad] text-[#004aad] hover:bg-[#004aad] hover:text-white py-3 px-6 rounded-lg font-medium transition-colors"
-            >
-              Get Help
-            </Button>
-          </Link>
+          <Button
+            asChild
+            variant="outline"
+            className="w-full border-[#004aad] text-[#004aad] hover:bg-[#004aad] hover:text-white py-3 px-6 rounded-lg font-medium transition-colors"
+          >
+            <Link href="/help">Get Help</Link>
+          </Button>
         </div>
 
         <div className="mt-8 text-sm text-gray-500">
