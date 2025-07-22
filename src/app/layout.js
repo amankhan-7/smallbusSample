@@ -46,6 +46,9 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
+  alternates: {
+    canonical: SEO_CONFIG.siteUrl,
+  },
   other: {
     "google-site-verification": "your-google-verification-code",
   },
@@ -55,7 +58,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href={SEO_CONFIG.siteUrl} />
         <meta name="theme-color" content="#004aad" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

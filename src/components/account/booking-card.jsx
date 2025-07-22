@@ -8,15 +8,15 @@ import { BookingDetailsDialog } from "@/components/account/booking-details-dialo
 const getStatusClass = (status) => {
   switch (status) {
     case "confirmed":
-      return "bg-[#28a745]";
+      return "bg-green-600 text-white";
     case "pending":
-      return "bg-[#ffc107]";
+      return "bg-yellow-500 text-black";
     case "cancelled":
-      return "bg-[#dc3545]";
+      return "bg-red-600 text-white";
     case "expired":
-      return "bg-[#6c757d]";
+      return "bg-gray-600 text-white";
     default:
-      return "bg-muted";
+      return "bg-muted text-muted-foreground";
   }
 };
 

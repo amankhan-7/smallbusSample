@@ -36,7 +36,7 @@ export default function Login() {
   });
 
   return (
-    <AuthGuard redirectTo="/" requireNotAuth>
+    <AuthGuard redirectTo="/" requireAuth={false}>
       <LoginComponent />
     </AuthGuard>
   );
