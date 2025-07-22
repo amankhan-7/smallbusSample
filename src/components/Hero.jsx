@@ -101,6 +101,7 @@ function Hero() {
   };
 
   return (
+
     <div className="relative flex flex-col bg-gradient-to-b from-white via-gray-50 to-gray-100 text-gray-900 leading-relaxed items-center w-full">
       <div className="mt-1 lg:mt-6 w-full ">
         <section className="pt-24 pb-8 text-center">
@@ -110,7 +111,6 @@ function Hero() {
             </h1>
           </div>
         </section>
-
         <div
           className="bg-white rounded-xl shadow-lg mx-4 px-6 py-8 mb-12 max-w-4xl md:mx-auto"
           ref={wrapperRef}

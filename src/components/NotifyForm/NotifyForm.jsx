@@ -10,12 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 
 export default function RouteFormPopup({ form, onSubmit }) {
   return (
-    <Card className="">
+    <Card className="w-70 lg:w-100">
       <CardContent>
         <Form {...form}>
           <form
@@ -25,7 +24,7 @@ export default function RouteFormPopup({ form, onSubmit }) {
             {/* Name */}
             <FormField
               control={form.control}
-              name="name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-slate-700">
@@ -34,7 +33,7 @@ export default function RouteFormPopup({ form, onSubmit }) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="John Doe"
+                      placeholder="Ashok Raj"
                       className="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-800"
                     />
                   </FormControl>
@@ -94,9 +93,9 @@ export default function RouteFormPopup({ form, onSubmit }) {
               </DialogClose>
               <DialogClose
                 type="submit"
-                className="bg-[#004aad] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition"
+                className="bg-[#004aad] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition cursor-pointer"
               >
-                Submit
+                Notify Me
               </DialogClose>
             </div>
           </form>

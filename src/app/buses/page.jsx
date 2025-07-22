@@ -7,11 +7,13 @@ import { createSeatSelectionUrl } from "@/utils/navigation";
 import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { notifyFormSchema } from "@/utils/validations/form-validation";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -50,6 +52,14 @@ function BusesContent() {
 
     fetchBusSchedule();
   }, [fromCity, toCity, travelDate, isDecrypting, getBusSchedule]);
+
+  const sortOptions = [
+    "Price: Low to High",
+    "Price: High to Low",
+    "Departure Time",
+    "Rating",
+  ];
+
   const sortedSchedule = useMemo(() => {
     const schedule = [...currentBusSchedule];
     switch (sortOption) {
@@ -71,12 +81,13 @@ function BusesContent() {
   const handleModifySearch = () => {
     router.back();
   };
+
+
   const form = useForm({
+    resolver: zodResolver(notifyFormSchema),
     defaultValues: {
-      name: "",
+      fullName: "",
       email: "",
-      routeFrom: "",
-      routeTo: "",
       phone: "",
     },
   });
@@ -122,7 +133,11 @@ function BusesContent() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div
+      className={cn(
+        "min-h-screen transition-all duration-300 bg-gray-100"
+      )}
+    >
       <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>
@@ -144,20 +159,26 @@ function BusesContent() {
             Modify Search
           </button>
         </section>
-        <div className="flex justify-normal items-center mb-6 md:max-w-9/10 md:mx-auto">
-          <label className="text-xs md:text-base font-medium text-gray-600">
+        <div className="flex justify-normal items-center mb-6 md:max-w-9/10 md:mx-auto pl-1">
+          <label className="text-xs md:text-base font-medium text-gray-600 mr-3">
             Sort by:
           </label>
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="rounded px-2 py-1.5 md:text-sm shadow-sm ml-3 text-xs"
-          >
-            <option key="price-low-high">Price: Low to High</option>
-            <option key="price-high-low">Price: High to Low</option>
-            <option key="departure-time">Departure Time</option>
-            <option key="rating">Rating</option>
-          </select>
+          <Select value={sortOption} onValueChange={setSortOption}>
+            <SelectTrigger className="w-[170px] focus:outline-none focus:ring-1 focus:ring-primary">
+              <SelectValue placeholder="Select sort option" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem
+                  key={option}
+                  value={option}
+                  className="cursor-pointer data-[highlighted]:bg-primary data-[highlighted]:text-white"
+                >
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <section className="w-full space-y-6 animate-fadeInUp md:max-w-9/10 md:mx-auto">
           {isLoading && (

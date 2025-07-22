@@ -39,7 +39,7 @@ export default function PopularRoutes() {
               }}
               className="w-full max-w-full"
             >
-              <CarouselContent className="-ml-1 w-full">
+              <CarouselContent className="carousel-scroll -ml-0.5 w-full overflow-x-auto touch-pan-x sm:overflow-visible sm:touch-auto">
                 {routes.map((r, i) => (
                   <CarouselItem
                     key={i}
