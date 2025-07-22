@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 
-const protectedRoutes = [
-  "/account",
-  "/payment",
-];
+const protectedRoutes = ["/account", "/payment", "/seat"];
+const authRoutes = ["/login"];
 
 export function middleware(request) {
   const { nextUrl, cookies } = request;
+
   const accessToken = cookies.get("accessToken");
   const refreshToken = cookies.get("refreshToken");
 
-  const isAuthenticated = !!(accessToken || refreshToken);
+
+  const isAuthenticated = !!(accessToken?.value || refreshToken?.value);
+
   const isProtectedRoute = protectedRoutes.some((route) =>
     nextUrl.pathname.startsWith(route)
   );
-  const isAuthRoute = nextUrl.pathname.startsWith("/login");
+  const isAuthRoute = authRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route)
+  );
 
   if (isAuthenticated && isAuthRoute) {
     return NextResponse.redirect(new URL("/", request.url));
@@ -31,9 +34,7 @@ export function middleware(request) {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    // Only match a minimal set to reduce overhead
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };
