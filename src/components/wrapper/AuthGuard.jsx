@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import AuthRedirectLoading from "../AuthRediectLoading";
+import LoadingPage from "../loading";
 
 const AuthGuard = ({ children, requireAuth = true, redirectTo = "/login" }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -24,19 +24,15 @@ const AuthGuard = ({ children, requireAuth = true, redirectTo = "/login" }) => {
   }, [isAuthenticated, requireAuth, redirectTo, router, isLoading, isMounted]);
 
   if (!isMounted || isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   if (requireAuth && !isAuthenticated) {
-    return <AuthRedirectLoading path={"login"} />;
+    return <LoadingPage />;
   }
 
   if (!requireAuth && isAuthenticated) {
-    return <AuthRedirectLoading path={""} />;
+    return <LoadingPage />;
   }
 
   return children;

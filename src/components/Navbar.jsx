@@ -82,29 +82,26 @@ export default function Navbar({ navItems = [], logoText = "smallbus" }) {
 
         {/* Mobile Toggle */}
         <button
-          className="w-8 h-8 text-[#004aad] flex items-center justify-center md:hidden"
+          className="relative w-8 h-8 text-[#004aad] flex items-center justify-center md:hidden"
           onClick={handleMenuToggle}
           aria-label="Toggle menu"
         >
-          {!menuOpen ? (
-            <FaBars
-              size={24}
-              className={`transition-all duration-300 ease-in-out transform ${
-                menuOpen
-                  ? "opacity-0 scale-90 rotate-45"
-                  : "opacity-100 scale-100 rotate-0"
-              }`}
-            />
-          ) : (
-            <FaTimes
-              size={26}
-              className={`transition-all duration-300 ease-in-out transform ${
-                menuOpen
-                  ? "opacity-100 scale-100 rotate-0"
-                  : "opacity-0 scale-90 -rotate-45"
-              }`}
-            />
-          )}
+          <FaBars
+            size={24}
+            className={`absolute transition-all duration-300 ease-in-out transform ${
+              menuOpen
+                ? "opacity-0 scale-90 rotate-45"
+                : "opacity-100 scale-100 rotate-0"
+            }`}
+          />
+          <FaTimes
+            size={26}
+            className={`absolute transition-all duration-300 ease-in-out transform ${
+              menuOpen
+                ? "opacity-100 scale-100 rotate-0"
+                : "opacity-0 scale-90 -rotate-45"
+            }`}
+          />
         </button>
       </nav>
 
