@@ -8,19 +8,12 @@ import { useGetBusScheduleMutation } from "@/utils/redux/api/bus";
 import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/UI/select";
-import ReactDOM from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { notifyFormSchema } from "@/utils/validations/form-validation";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -58,7 +51,7 @@ function BusesContent() {
     };
 
     fetchBusSchedule();
-  }, [from, to, getBusSchedule]);
+  }, [fromCity, toCity, travelDate, isDecrypting, getBusSchedule]);
 
   const sortOptions = [
     "Price: Low to High",
@@ -89,16 +82,7 @@ function BusesContent() {
     router.back();
   };
 
-  useEffect(() => {
-    if (showPopup) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showPopup]);
+
   const form = useForm({
     resolver: zodResolver(notifyFormSchema),
     defaultValues: {
@@ -151,8 +135,7 @@ function BusesContent() {
   return (
     <div
       className={cn(
-        "min-h-screen transition-all duration-300",
-        showPopup ? "relative opacity-20" : "bg-gray-100"
+        "min-h-screen transition-all duration-300 bg-gray-100"
       )}
     >
       <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
@@ -176,7 +159,7 @@ function BusesContent() {
             Modify Search
           </button>
         </section>
-        <div className="flex justify-normal items-center mb-6 md:max-w-9/10 md:mx-auto">
+        <div className="flex justify-normal items-center mb-6 md:max-w-9/10 md:mx-auto pl-1">
           <label className="text-xs md:text-base font-medium text-gray-600 mr-3">
             Sort by:
           </label>

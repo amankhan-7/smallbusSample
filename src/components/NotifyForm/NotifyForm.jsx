@@ -10,12 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 
 export default function RouteFormPopup({ form, onSubmit }) {
   return (
-    <Card className="">
+    <Card className="w-70 lg:w-100">
       <CardContent>
         <Form {...form}>
           <form

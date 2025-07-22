@@ -20,7 +20,7 @@ function Footer() {
           <div>
             <h3 className="text-xl font-semibold mb-5 text-gray-900">Support</h3>
             <ul className="space-y-3 text-[15px] text-gray-600">
-              <li><a href="#" className="hover:text-[#004aad]">Help Center</a></li>
+              {/* <li><a href="#" className="hover:text-[#004aad]">Help Center</a></li> */}
               <li><a href="#" className="hover:text-[#004aad]">Contact Us</a></li>
               <li><a href="#" className="hover:text-[#004aad]">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-[#004aad]">Terms & Conditions</a></li>

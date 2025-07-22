@@ -176,3 +176,12 @@
     animation: fadeInUp 0.6s ease-out forwards;
   }
 }
+
+/*For hiding Popular Rotes scrollbar in mobile view*/
+.carousel-scroll::-webkit-scrollbar {
+  display: none;
+}
+.carousel-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

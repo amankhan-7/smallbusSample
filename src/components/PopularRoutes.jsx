@@ -15,7 +15,7 @@ export default function PopularRoutes() {
   const routes = data || [];
 
   return (
-    <section className="h-140 md:h-78 pt-15 bg-white">
+    <section className="h-98 lg:h-78 pt-15 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl md:text-3xl font-semibold text-center text-gray-900 mb-12">
           Popular Bus Routes
@@ -39,7 +39,7 @@ export default function PopularRoutes() {
               }}
               className="w-full max-w-full"
             >
-              <CarouselContent className="-ml-1 w-full">
+              <CarouselContent className="carousel-scroll -ml-0.5 w-full overflow-x-auto touch-pan-x sm:overflow-visible sm:touch-auto">
                 {routes.map((r, i) => (
                   <CarouselItem
                     key={i}
