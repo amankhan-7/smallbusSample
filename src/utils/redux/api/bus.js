@@ -1,3 +1,4 @@
+import { createBusSearchUrl } from "@/utils/navigation";
 import { apiSlice } from "./apiSlice";
 
 export const busApiSlice = apiSlice.injectEndpoints({
@@ -36,7 +37,25 @@ export const busApiSlice = apiSlice.injectEndpoints({
 
     getPopularRoutes: builder.query({
       query: () => ({ url: `/popular-routes`, method: "GET" }),
-      transformResponse: (res) => res.data.popularRoutes,
+      transformResponse: async (res) => {
+        if (!res.data || !Array.isArray(res.data.popularRoutes)) {
+          return [];
+        }
+        const popularRoutes = await Promise.all(
+          res.data.popularRoutes.map(async (route) => ({
+            from: route.route.from,
+            to: route.route.to,
+            totalBookings: route.totalBookings,
+            avgPrice: route.avgPrice,
+            href: await createBusSearchUrl({
+              fromCity: route.route.from,
+              toCity: route.route.to,
+              travelDate: new Date().toISOString().split("T")[0],
+            }),
+          }))
+        );
+        return popularRoutes;
+      },
       providesTags: () => [{ type: "PopularRoutes", id: "LIST" }],
     }),
 

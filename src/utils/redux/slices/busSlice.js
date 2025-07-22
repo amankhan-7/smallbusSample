@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  busDetails: null,
   selectedSeats: [],
   currentBusSchedule: [],
 };
@@ -25,7 +24,6 @@ const busSlice = createSlice({
     },
     resetBooking: (state) => {
       state.selectedSeats = [];
-      state.busDetails = null;
     },
   },
 });

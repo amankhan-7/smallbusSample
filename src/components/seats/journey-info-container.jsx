@@ -1,14 +1,21 @@
 "use client";
+import React, { Suspense } from "react";
 import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
 import { useSelector } from "react-redux";
 import JourneyInfo from "@/components/seats/journey-info";
-import { useSearchParams } from "next/navigation";
+import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 
-export default function JourneyInfoContainer() {
-  const busId = useSearchParams().get("busId");
-  const { data: busDetailsResponse, isLoading } = useGetBusDetailsQuery({
-    busId,
-  });
+function JourneyInfoContent() {
+  const { value: busId, isLoading: isDecryptingBusId } =
+    useDecryptedParam("busId");
+  const { data: busDetailsResponse, isLoading } = useGetBusDetailsQuery(
+    {
+      busId,
+    },
+    {
+      skip: !busId || isDecryptingBusId,
+    }
+  );
 
   const busData = busDetailsResponse?.bus;
 
@@ -22,5 +29,13 @@ export default function JourneyInfoContainer() {
       busType={busData?.busName}
       isLoading={isLoading}
     />
+  );
+}
+
+export default function JourneyInfoContainer() {
+  return (
+    <Suspense fallback={<div>Loading journey info...</div>}>
+      <JourneyInfoContent />
+    </Suspense>
   );
 }

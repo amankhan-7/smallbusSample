@@ -4,17 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaUser, FaUserCircle } from "react-icons/fa";
-import { cn } from "@/lib/utils";
-import { Montserrat } from "next/font/google";
 import { useAuth } from "@/hooks/useAuth";
+import { Logo } from "@/components/ui/svg-components";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["700"],
-});
-
-export default function Navbar({ navItems = [], logoText = "smallbus"}) {
+export default function Navbar({ navItems = [], logoText = "smallbus" }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
 
@@ -37,18 +32,27 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
   }, [menuOpen]);
 
+  const handleMenuToggle = () => {
+    if (!menuOpen) {
+      setIsTransitioning(true);
+      setMenuOpen(true);
+    } else {
+      setMenuOpen(false);
+      setTimeout(() => setIsTransitioning(false), 300);
+    }
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setTimeout(() => setIsTransitioning(false), 300);
+  };
+
   return (
     <header className="bg-white shadow fixed w-full top-0 z-[1000]">
       <nav className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className={cn(
-            "text-[24px] text-[#004aad] font-black",
-            montserrat.className
-          )}
-        >
-          {logoText}
+        <Link href="/">
+          <Logo width={120} height={50} />
         </Link>
 
         {/* Desktop Nav */}
@@ -78,8 +82,8 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
 
         {/* Mobile Toggle */}
         <button
-          className="relative w-8 h-8 text-[#004aad] md:hidden pb-5"
-          onClick={() => setMenuOpen(!menuOpen)}
+          className="relative w-8 h-8 text-[#004aad] flex items-center justify-center md:hidden"
+          onClick={handleMenuToggle}
           aria-label="Toggle menu"
         >
           <FaBars
@@ -92,7 +96,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
           />
           <FaTimes
             size={26}
-            className={` absolute transition-all duration-300 ease-in-out transform ${
+            className={`absolute transition-all duration-300 ease-in-out transform ${
               menuOpen
                 ? "opacity-100 scale-100 rotate-0"
                 : "opacity-0 scale-90 -rotate-45"
@@ -102,18 +106,28 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
       </nav>
 
       {/* Mobile Sidebar & Overlay */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[999] flex">
+      {(menuOpen || isTransitioning) && (
+        <div
+          className={`fixed inset-0 z-[999] flex transition-all duration-300 ease-in-out ${
+            menuOpen ? "opacity-100" : "opacity-0"
+          }`}
+        >
           {/* Overlay */}
           <div
-            className="w-1/2 bg-black/30 mix-blend-multiply"
-            onClick={() => setMenuOpen(false)}
+            className={`w-1/2 bg-black/30 mix-blend-multiply transition-opacity duration-300 ease-in-out ${
+              menuOpen ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={handleMenuClose}
           />
           {/* Sidebar */}
-          <div className="w-1/2 bg-white shadow-lg p-6 flex flex-col pt-30 items-center relative">
+          <div
+            className={`w-1/2 bg-white shadow-lg p-6 flex flex-col pt-30 items-center relative transform transition-all duration-300 ease-in-out ${
+              menuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
             <button
               className="absolute top-4 right-4 text-[#004aad]"
-              onClick={() => setMenuOpen(false)}
+              onClick={handleMenuClose}
               aria-label="Close menu"
             >
               <FaTimes size={26} className="mb-18 mt-2 mr-0.5" />
@@ -129,7 +143,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
                       ? "text-[#004aad] underline underline-offset-4"
                       : "hover:text-[#004aad]"
                   } transition`}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={handleMenuClose}
                 >
                   {item.name}
                 </Link>
@@ -138,7 +152,7 @@ export default function Navbar({ navItems = [], logoText = "smallbus"}) {
               <Link
                 href={actionLink.href}
                 className="mt-4 px-4 py-2 bg-[#004aad] text-white rounded-md hover:bg-[#00348a] transition inline-flex items-center gap-2"
-                onClick={() => setMenuOpen(false)}
+                onClick={handleMenuClose}
               >
                 {actionLink.icon}
                 {actionLink.label}

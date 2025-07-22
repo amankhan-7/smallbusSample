@@ -82,3 +82,23 @@ export const signInPhoneSchema = registerSchema.pick({
   phone: true,
   tnc: true,
 });
+
+export const notifyFormSchema = userSchema
+  .pick({
+    phone: true,
+  })
+  .extend({
+    fullName: z
+      .string()
+      .min(3, { message: "Full name must be at least 3 characters" })
+      .max(50, { message: "Full name must not exceed 50 characters" }),
+
+    email: z
+      .string()
+      .trim()
+      .max(100, { message: "Email must not exceed 100 characters" })
+      .email({ message: "Please enter a valid email address" })
+      .refine((val) => val.length === 0 || val.includes("@"), {
+        message: "Please enter a valid email address",
+      }),
+  });
