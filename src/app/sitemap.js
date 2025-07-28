@@ -1,4 +1,4 @@
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export default function sitemap() {
   const baseUrl = SEO_CONFIG.siteUrl;

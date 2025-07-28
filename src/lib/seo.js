@@ -1,21 +1,15 @@
-/**
- * SEO Configuration for SmallBus
- * Centralized SEO settings and constants
- */
+
 
 export const SEO_CONFIG = {
-  // Website details
   siteName: "SmallBus",
   siteUrl: process.env.NEXT_PUBLIC_URL || "https://smallbus.in",
   defaultTitle:
     "SmallBus - Book Bus Tickets Online | Affordable & Reliable Bus Travel",
   titleTemplate: "%s | SmallBus",
 
-  // Default meta information
   defaultDescription:
     "Book bus tickets online with SmallBus. Find the best deals on bus travel across India. Safe, affordable, and reliable bus booking platform with instant confirmation.",
 
-  // Keywords
   defaultKeywords: [
     "bus tickets",
     "online bus booking",
@@ -29,7 +23,6 @@ export const SEO_CONFIG = {
     "book bus online",
   ],
 
-  // Open Graph defaults
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -67,13 +60,10 @@ export const SEO_CONFIG = {
       availableLanguage: ["English", "Hindi"],
     },
     sameAs: [
-      "https://facebook.com/smallbus",
-      "https://twitter.com/smallbus",
-      "https://instagram.com/smallbus",
+      "https://instagram.com/smallbus.official",
     ],
   },
 
-  // Page-specific configurations
   pages: {
     home: {
       title: "Book Bus Tickets Online - Best Deals on Bus Travel | SmallBus",

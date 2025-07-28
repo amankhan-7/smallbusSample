@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export const metadata = {
   title: SEO_CONFIG.pages.home.title,

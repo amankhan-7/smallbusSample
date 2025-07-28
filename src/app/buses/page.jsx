@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { notifyFormSchema } from "@/utils/validations/form-validation";
+import LoadingScreen from "@/components/ui/loading";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -273,7 +274,7 @@ export default function BusesPage() {
     <Suspense
       fallback={
         <div className="flex justify-center items-center min-h-screen">
-          Loading buses...
+          <LoadingScreen />
         </div>
       }
     >

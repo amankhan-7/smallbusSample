@@ -37,6 +37,7 @@ export const busApiSlice = apiSlice.injectEndpoints({
 
     getPopularRoutes: builder.query({
       query: () => ({ url: `/popular-routes`, method: "GET" }),
+      keepUnusedDataFor: 3600,
       transformResponse: async (res) => {
         if (!res.data || !Array.isArray(res.data.popularRoutes)) {
           return [];

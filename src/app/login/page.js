@@ -14,7 +14,7 @@ import {
 } from "@/utils/redux/api/user";
 import { setCredentials } from "@/utils/redux/slices/authSlice";
 import { useSEO } from "@/hooks/useSEO";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 const STEPS = {
   PHONE: 1,

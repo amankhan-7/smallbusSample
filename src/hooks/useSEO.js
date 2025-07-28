@@ -10,7 +10,7 @@ import {
   SEO_CONFIG,
   generateRouteTitle,
   generateRouteDescription,
-} from "@/config/seo";
+} from "@/lib/seo";
 
 /**
  * Custom hook for managing SEO metadata in client components

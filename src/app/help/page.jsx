@@ -6,7 +6,7 @@ import ContactCard from "@/components/help/ContactCard";
 import FAQCategory from "@/components/help/FAQCategory";
 import CallbackModal from "@/components/help/CallbackModal";
 import { useSEO } from "@/hooks/useSEO";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export default function HelpCenter() {
   const [searchTerm, setSearchTerm] = useState("");

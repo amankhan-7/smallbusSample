@@ -35,6 +35,6 @@ export function middleware(request) {
 export const config = {
   matcher: [
     // Only match a minimal set to reduce overhead
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|smallbus.ico|favicon.ico).*)",
   ],
 };

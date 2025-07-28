@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSEO } from "@/hooks/useSEO";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export default function Error({ error, reset }) {
   useSEO({

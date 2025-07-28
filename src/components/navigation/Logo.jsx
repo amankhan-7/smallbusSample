@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Logo as LogoIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className, ...props }) {
@@ -13,12 +14,7 @@ export function Logo({ className, ...props }) {
       )}
       {...props}
     >
-      <Image
-        src="/logo.svg"
-        alt="SmallBus Logo"
-        width={120}
-        height={40}
-      />
+      <LogoIcon width={120} height={40} priority={true} />
     </Link>
   );
 }

@@ -23,10 +23,12 @@ const AuthGuard = ({ children, requireAuth = true, redirectTo = "/login" }) => {
     }
   }, [isAuthenticated, requireAuth, redirectTo, router, isLoading, isMounted]);
 
+  // Always show loading during SSR and initial client render
   if (!isMounted || isLoading) {
     return <LoadingPage />;
   }
 
+  // Show loading while redirecting for auth checks
   if (requireAuth && !isAuthenticated) {
     return <LoadingPage />;
   }
