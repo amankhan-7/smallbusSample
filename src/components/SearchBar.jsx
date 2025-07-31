@@ -100,22 +100,24 @@ export default function SearchBar() {
     router.push(encryptedUrl);
   };
   return (
-    <div className="mt-1 lg:mt-6 w-full">
-      <section
-        className="pt-24 pb-8 text-center bg-cover bg-center bg-no-repeat relative"
-        style={{
-          backgroundImage: "url('/background.jpg')",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40"></div>
+    <div
+      className="mt-1 lg:mt-6 min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: "url('/background.svg')",
+      }}
+    >
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-black/40 z-0"></div>
+
+      <section className="pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-6 sm:pb-8 text-center relative">
         <div className="max-w-xl mx-auto px-4 relative z-10">
-          <h1 className="text-3xl md:text-[45px] font-bold mb-6 text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold mb-4 sm:mb-6 text-white leading-tight">
             Book a Bus Ticket
           </h1>
         </div>
       </section>
       <div
-        className="bg-white rounded-xl shadow-lg mx-4 px-6 py-8 mb-12 max-w-4xl md:mx-auto"
+        className="bg-white rounded-xl shadow-lg mx-4 px-4 sm:px-6 py-6 sm:py-8 mb-8 sm:mb-12 max-w-4xl md:mx-auto relative z-10"
         ref={wrapperRef}
       >
         {/* DESTINATION BOOKING FORM */}
