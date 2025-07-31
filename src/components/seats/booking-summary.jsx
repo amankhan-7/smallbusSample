@@ -4,12 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { IndianRupee } from "lucide-react";
 
-const SummaryItem = memo(({
-  label,
-  children,
-  className,
-  labelClassName,
-}) => {
+const SummaryItem = memo(({ label, children, className, labelClassName }) => {
   return (
     <div className="flex p-0 m-0 justify-between font-semibold">
       <span
@@ -44,31 +39,14 @@ const BookingSummary = memo(
     const canProceed = selectedSeats.length > 0;
 
     if (isLoading) {
-      return (
-        <div className={cn("p-5 md:p-6", className)}>
-          <div className="mb-6">
-            <h3 className="text-center text-primary text-[1.2rem] font-semibold md:text-[1.4rem]">
-              Booking Summary
-            </h3>
-          </div>
-          <div className="text-center text-gray-500">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
-            <p>Loading booking details...</p>
-          </div>
-        </div>
-      );
+      return null;
     }
 
     return (
-      <div
-        className={cn(
-          "p-5 md:p-6 gap-0 ",
-          className
-        )}
-      >
+      <div className={cn("p-5 md:p-6 gap-0 ", className)}>
         <div className="mb-6">
           <h3 className="flex justify-center text-primary items-center text-[1.2rem] font-semibold md:text-[1.4rem]">
-           Booking Summary
+            Booking Summary
           </h3>
         </div>
         <div className="space-y-4 p-0 m-0">

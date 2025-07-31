@@ -7,6 +7,7 @@ import BookingHistory from "@/components/account/booking-history";
 import { useSearchParams, useRouter } from "next/navigation";
 import LogoutButton from "@/components/account/logout-button";
 import { Suspense } from "react";
+import { PageSkeleton } from "@/components/ui/skeletons";
 
 const MenuItem = ({ label, description, Icon, onClick }) => (
   <Button
@@ -72,7 +73,7 @@ const AccountMenu = () => {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<PageSkeleton />}>
       <AccountMenu />
     </Suspense>
   );

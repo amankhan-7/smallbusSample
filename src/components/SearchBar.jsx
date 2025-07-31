@@ -100,10 +100,16 @@ export default function SearchBar() {
     router.push(encryptedUrl);
   };
   return (
-    <div className="mt-1 lg:mt-6 w-full ">
-      <section className="pt-24 pb-8 text-center">
-        <div className="max-w-xl mx-auto px-4">
-          <h1 className="text-3xl md:text-[45px] font-bold mb-6 text-black">
+    <div className="mt-1 lg:mt-6 w-full">
+      <section
+        className="pt-24 pb-8 text-center bg-cover bg-center bg-no-repeat relative"
+        style={{
+          backgroundImage: "url('/background.jpg')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="max-w-xl mx-auto px-4 relative z-10">
+          <h1 className="text-3xl md:text-[45px] font-bold mb-6 text-white">
             Book a Bus Ticket
           </h1>
         </div>
@@ -249,9 +255,11 @@ export default function SearchBar() {
             <label className="font-medium mb-2 text-sm text-gray-700">
               TRAVEL DATE
             </label>
-            <div className="relative">
+            <div
+              className="relative"
+              onClick={() => dateInputRef.current?.showPicker()}
+            >
               <FaRegCalendarAlt
-                onClick={() => dateInputRef.current?.showPicker()}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#004aad] cursor-pointer"
                 size={18}
               />

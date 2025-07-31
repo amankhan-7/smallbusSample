@@ -8,6 +8,7 @@ import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { createPaymentUrl } from "@/utils/navigation";
 import BookingSummary from "./booking-summary";
 import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
+import { SeatSelectionSkeleton } from "../ui/skeletons";
 
 function BookingSummaryContent() {
   const selectedSeats = useSelector(selectSelectedSeats);
@@ -53,7 +54,7 @@ function BookingSummaryContent() {
 
 export default function BookingSummaryContainer() {
   return (
-    <Suspense fallback={<div>Loading booking summary...</div>}>
+    <Suspense fallback={<SeatSelectionSkeleton />}>
       <BookingSummaryContent />
     </Suspense>
   );

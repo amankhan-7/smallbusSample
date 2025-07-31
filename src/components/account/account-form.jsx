@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { FormSkeleton } from "@/components/ui/skeletons";
 
 export default function AccountForm() {
   const [updateUser, { isLoading }] = useUpdateUserProfileMutation();
@@ -61,7 +62,7 @@ export default function AccountForm() {
   if (!isMounted) {
     return (
       <div className="flex items-center justify-center h-[200px]">
-        <div className="animate-pulse text-gray-500">Loading...</div>
+        <FormSkeleton />
       </div>
     );
   }

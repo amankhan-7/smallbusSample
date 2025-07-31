@@ -9,12 +9,24 @@ import NotifyForm from "@/components/NotifyForm/NotifyForm";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useBusRouteSEO } from "@/hooks/useSEO";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { notifyFormSchema } from "@/utils/validations/form-validation";
 import LoadingScreen from "@/components/ui/loading";
+import { BusSearchSkeleton } from "@/components/ui/skeletons";
 
 function BusesContent() {
   const [sortOption, setSortOption] = useState("Price: Low to High");
@@ -37,7 +49,6 @@ function BusesContent() {
       if (isDecrypting || !fromCity || !toCity || !travelDate) {
         return;
       }
-
 
       try {
         const response = await getBusSchedule({
@@ -83,7 +94,6 @@ function BusesContent() {
     router.back();
   };
 
-
   const form = useForm({
     resolver: zodResolver(notifyFormSchema),
     defaultValues: {
@@ -97,18 +107,7 @@ function BusesContent() {
     form.reset();
   };
   if (isDecrypting) {
-    return (
-      <div className="bg-gray-100 min-h-screen">
-        <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004aad] mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading search results...</p>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return <BusSearchSkeleton />;
   }
 
   if (!fromCity || !toCity || !travelDate) {
@@ -134,11 +133,7 @@ function BusesContent() {
   }
 
   return (
-    <div
-      className={cn(
-        "min-h-screen transition-all duration-300 bg-gray-100"
-      )}
-    >
+    <div className={cn("min-h-screen transition-all duration-300 bg-gray-100")}>
       <main className="w-full max-w-screen-xl mx-auto pt-[90px] pb-[50px] px-2">
         <section className="md:max-w-9/10 md:mx-auto bg-white px-4 py-2 md:py-4.5 md:text-lg shadow-sm shadow-gray-400/50 flex flex-row justify-between items-center rounded-lg mb-6">
           <div>

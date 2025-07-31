@@ -1,13 +1,10 @@
 import React from "react";
+import { LoadingSpinnerSkeleton } from "@/components/ui/skeletons";
 
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="relative">
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-primary">Loading...</div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+      <LoadingSpinnerSkeleton />
     </div>
   );
 }

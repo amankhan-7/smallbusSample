@@ -1,12 +1,11 @@
 import React from "react";
+import { PageSkeleton } from "@/components/ui/skeletons";
 
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="relative">
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-primary">Loading...</div>
-        </div>
+    <div className="min-h-screen bg-[#f8f9fa]">
+      <div className="container mx-auto py-8">
+        <PageSkeleton />
       </div>
     </div>
   );
