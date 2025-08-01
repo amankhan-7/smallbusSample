@@ -9,6 +9,7 @@ const baseQuery = fetchBaseQuery({
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
+    headers.set("contentType", "consumer");
     return headers;
   },
 });

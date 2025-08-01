@@ -8,6 +8,9 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: "/get-payment-methods",
         method: "POST",
+        body: {
+          userType: "consumer",
+        },
       }),
       transformResponse: (res) => res?.data ?? null,
     }),
@@ -16,7 +19,7 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
       query: ({ paymentId }) => ({
         url: "/get-payment-details",
         method: "POST",
-        body: { paymentId },
+        body: { paymentId, userType: "consumer" },
       }),
       transformResponse: (res) => res?.data ?? null,
     }),
@@ -25,7 +28,7 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
       query: ({ refundId }) => ({
         url: "/get-refund-details",
         method: "POST",
-        body: { refundId },
+        body: { refundId, userType: "consumer" },
       }),
       transformResponse: (res) => res?.data ?? null,
     }),
@@ -34,6 +37,9 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: "/razorpay-health",
         method: "POST",
+        body: {
+          userType: "consumer",
+        },
       }),
       transformResponse: (res) => res?.data ?? null,
     }),
