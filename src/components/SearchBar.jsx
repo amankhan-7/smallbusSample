@@ -17,6 +17,11 @@ import { toast } from "sonner";
 
 const cities = [
   { name: "Patna", state: "Bihar" },
+  { name: "Sasaram", state: "Bihar" },
+  { name: "Darbhanga", state: "Bihar" },
+  { name: "Aurangabad", state: "Bihar" },
+  { name: "Dehri", state: "Bihar" },
+  { name: "Bodh gaya", state: "Bihar" },
   { name: "Delhi", state: "Delhi" },
   { name: "Bangalore", state: "Karnataka" },
   { name: "Hyderabad", state: "Telangana" },
