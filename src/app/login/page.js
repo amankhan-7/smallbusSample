@@ -113,7 +113,9 @@ function LoginComponent() {
 
       if (result) {
         try {
-          await dispatch(setCredentials({ user: result.user })).unwrap();
+          await dispatch(
+            setCredentials({ user: { ...result.user, userType: "consumer" } })
+          ).unwrap();
           toast.success("Login successful!");
           router.push("/");
         } catch (error) {
