@@ -54,7 +54,7 @@ const BusLayoutContent = memo(
         .map((seat) => seat.seatNumber);
     }, [seatsData?.seatMap]);
 
-    if (!isLoading) {
+    if (isLoading) {
       return <SeatSelectionSkeleton />;
     }
 
