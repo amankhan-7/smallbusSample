@@ -1,6 +1,6 @@
 import AccountPage from "@/components/account/account-page";
 import AuthGuard from "@/components/wrapper/AuthGuard";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export const metadata = {
   title: SEO_CONFIG.pages.account.title,

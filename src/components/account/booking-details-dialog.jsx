@@ -276,9 +276,9 @@ export function BookingDetailsDialog({ booking, open, onOpenChange }) {
           {/* Action Buttons */}
           {booking.status === "confirmed" && (
             <div className="flex space-x-2">
-              <Button variant="outline" className="flex-1">
+              {/* <Button variant="outline" className="flex-1">
                 Download Ticket
-              </Button>
+              </Button> */}
               <Button asChild variant="outline" className="flex-1">
                 <Link href="/help" >Contact Support</Link>
               </Button>

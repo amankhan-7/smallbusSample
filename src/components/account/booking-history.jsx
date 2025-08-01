@@ -11,6 +11,7 @@ import { BookingCard } from "@/components/account/booking-card";
 import { useRouter } from "next/navigation";
 import { useGetBookingHistoryMutation } from "@/utils/redux/api/bus";
 import { useAuth } from "@/hooks/useAuth";
+import { BookingHistorySkeleton } from "@/components/ui/skeletons";
 
 export default function BookingHistory() {
   const { user, isAuthenticated } = useAuth();
@@ -56,11 +57,7 @@ export default function BookingHistory() {
       <BookingFilter value={filter} onChange={setFilter} />
 
       {isLoading ? (
-        <Card className="flex flex-col items-center justify-center h-[300px]">
-          <div className="flex items-center justify-center h-[300px]">
-            <div className="animate-pulse text-gray-500">Loading...</div>
-          </div>
-        </Card>
+        <BookingHistorySkeleton />
       ) : filtered.length > 0 ? (
         filtered.map((booking, idx) => (
           <BookingCard key={idx} booking={booking} />

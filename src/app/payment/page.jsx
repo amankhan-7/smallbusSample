@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation";
 import { selectSelectedSeats } from "@/utils/redux/slices/busSlice";
 import { useSelector } from "react-redux";
 import { useSEO } from "@/hooks/useSEO";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 
 function PaymentContent() {

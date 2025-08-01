@@ -1,7 +1,6 @@
 "use client";
 import React, { Suspense } from "react";
 import { useGetBusDetailsQuery } from "@/utils/redux/api/bus";
-import { useSelector } from "react-redux";
 import JourneyInfo from "@/components/seats/journey-info";
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 
@@ -34,7 +33,7 @@ function JourneyInfoContent() {
 
 export default function JourneyInfoContainer() {
   return (
-    <Suspense fallback={<div>Loading journey info...</div>}>
+    <Suspense fallback={null}>
       <JourneyInfoContent />
     </Suspense>
   );

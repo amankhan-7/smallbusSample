@@ -36,7 +36,9 @@ export const useAuth = () => {
   const updateUser = useCallback(
     async (data) => {
       try {
-        const result = await dispatch(setCredentials({ user: data })).unwrap();
+        const result = await dispatch(
+          setCredentials({ user: { ...data, userType: "consumer" } })
+        ).unwrap();
         return result;
       } catch (error) {
         console.error("Update user error:", error);

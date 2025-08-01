@@ -1,6 +1,6 @@
 import LegalDocument from "@/components/LegalDocument";
 import { privacyContent } from "@/lib/legal/privacy";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export const metadata = {
   title: SEO_CONFIG.pages.privacy.title,

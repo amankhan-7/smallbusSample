@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/ui/icons";
 import Link from "next/link";
 
 export default function PaymentHeader() {
@@ -8,7 +8,7 @@ export default function PaymentHeader() {
         href="/"
         className="inline-block py-1 text-[24px] text-[#004aad] font-black"
       >
-        <Image src="/logo.svg" alt="SmallBus Logo" width={120} height={40} />
+        <Logo width={120} height={40} priority={true} />
       </Link>
     </header>
   );

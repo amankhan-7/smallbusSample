@@ -12,6 +12,7 @@ import {
 } from "@/utils/redux/slices/busSlice";
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { Suspense } from "react";
+import { SeatSelectionSkeleton } from "../ui/skeletons";
 
 const BusLayoutContent = memo(
   ({ selectedSeats = [], onSeatClick, className = "" }) => {
@@ -54,18 +55,7 @@ const BusLayoutContent = memo(
     }, [seatsData?.seatMap]);
 
     if (isLoading) {
-      return (
-        <Card
-          className={`mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] w-full rounded-xl ${className}`}
-        >
-          <CardContent className="flex items-center justify-center p-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
-              <p>Loading bus layout...</p>
-            </div>
-          </CardContent>
-        </Card>
-      );
+      return <SeatSelectionSkeleton />;
     }
 
     if (error) {
@@ -121,7 +111,7 @@ export default function BusLayoutContainer() {
   };
 
   return (
-    <Suspense fallback={<div>Loading bus layout...</div>}>
+    <Suspense fallback={null}>
       <BusLayoutContent
         selectedSeats={selectedSeats}
         onSeatClick={handleSeatClick}
@@ -129,12 +119,3 @@ export default function BusLayoutContainer() {
     </Suspense>
   );
 }
-
-const BusLayout = ({ selectedSeats, onSeatClick }) => {
-  return (
-    <BusLayoutContent
-      selectedSeats={selectedSeats}
-      onSeatClick={handleSeatClick}
-    />
-  );
-};

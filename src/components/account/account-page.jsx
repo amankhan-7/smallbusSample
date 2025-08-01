@@ -1,6 +1,7 @@
 import AccountMenu from "@/components/account/account-menu";
 import AccountHeader from "@/components/account/account-header";
 import { Suspense } from "react";
+import { PageSkeleton } from "@/components/ui/skeletons";
 
 export default function AccountPage() {
   return (
@@ -9,8 +10,8 @@ export default function AccountPage() {
         <AccountHeader />
         <Suspense
           fallback={
-            <div className="text-center text-muted-foreground my-6">
-              Loading...
+            <div className="my-6">
+              <PageSkeleton />
             </div>
           }
         >

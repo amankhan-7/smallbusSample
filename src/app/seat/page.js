@@ -1,5 +1,5 @@
 import SeatSelection from "@/components/seats/seat-selection";
-import { SEO_CONFIG } from "@/config/seo";
+import { SEO_CONFIG } from "@/lib/seo";
 
 export const metadata = {
   title: SEO_CONFIG.pages.seat.title,
