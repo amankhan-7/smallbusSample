@@ -1,6 +1,7 @@
 "use client";
 import React, { memo } from "react";
 import Seat from "@/components/seats/seat";
+import { Separator } from "../ui/separator";
 
 const DriverSeat = memo(() => {
   return (
@@ -13,27 +14,25 @@ const DriverSeat = memo(() => {
   );
 });
 
-const BusFrontRow = memo(
-  ({
-    onSeatClick,
-    bookedSeats = [],
-    selectedSeats = [],
-    frontSeatId = "F",
-  }) => {
-    const frontRowSeats = [{ id: frontSeatId, type: "seat" }];
-
-    return (
+const BusFrontRow = memo(() => {
+  return (
+    <>
       <div className="flex justify-between items-center p-2.5">
         <Seat
-          seatItem={frontRowSeats[0]}
-          onSeatClick={onSeatClick}
-          bookedSeats={bookedSeats}
-          selectedSeats={selectedSeats}
+          seatItem={{
+            seatNumber: "A",
+            status: "booked",
+            type: "seat",
+          }}
+          onSeatClick={() => {}}
+          bookedSeats={["F"]}
+          selectedSeats={[]}
         />
         <DriverSeat />
       </div>
-    );
-  }
-);
+      <Separator className="my-2" />
+    </>
+  );
+});
 
 export default BusFrontRow;

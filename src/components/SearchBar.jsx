@@ -108,7 +108,7 @@ export default function SearchBar() {
     <div
       className="mt-1 lg:mt-6 min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: "url('/background.svg')",
+        backgroundImage: "url('/background.png')",
       }}
     >
       {/* Background Overlay */}

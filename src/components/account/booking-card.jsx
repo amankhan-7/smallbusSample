@@ -90,7 +90,7 @@ export function BookingCard({ booking }) {
               <div className="text-[0.8rem] text-[var(--text-secondary)]">
                 Seat
               </div>
-              <div className="font-medium">{booking.seatNumber}</div>
+              <div className="font-medium">{booking.seatNumbers}</div>
             </div>
             <div className="w-1/2 mb-[10px]">
               <div className="text-[0.8rem] text-[var(--text-secondary)]">
