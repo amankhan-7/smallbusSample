@@ -185,12 +185,9 @@ function BusesContent() {
               Could not fetch results. Please try again later.
             </p>
           )}
-          {!isLoading &&
-            !isError &&
-            sortedSchedule.length > 0 &&
-            sortedSchedule.map((bus, index) => (
-              <BusCard key={bus._id} bus={bus} router={router} />
-            ))}
+          {!isLoading && !isError && sortedSchedule.length > 0 && sortedSchedule.map((bus, index) => (
+            <BusCard key={index} bus={bus} router={router} />
+          ))}
           {!isLoading && !isError && sortedSchedule.length === 0 && (
             <div className="flex flex-col items-center pt-20">
               <p className="text-center text-gray-600 lg:text-xl pb-3">
@@ -253,7 +250,8 @@ function BusCard({ bus, router }) {
       </div>
       <Button
         onClick={async () => {
-          const encryptedUrl = await createSeatSelectionUrl(bus._id);
+          console.log("Selected bus:", bus);
+          const encryptedUrl = await createSeatSelectionUrl(bus.id);
           router.push(encryptedUrl);
         }}
         className="w-full hover:bg-[#00388a] mt-4 py-1.5"

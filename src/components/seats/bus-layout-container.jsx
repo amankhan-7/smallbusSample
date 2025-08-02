@@ -13,6 +13,7 @@ import {
 import { useDecryptedParam } from "@/hooks/useEncryptedSearchParams";
 import { Suspense } from "react";
 import { SeatSelectionSkeleton } from "../ui/skeletons";
+import BusFrontRow from "./bus-front-row";
 
 const BusLayoutContent = memo(
   ({ selectedSeats = [], onSeatClick, className = "" }) => {
@@ -79,6 +80,7 @@ const BusLayoutContent = memo(
         className={`mx-auto shadow-[0_2px_15px_rgba(0,0,0,0.05)] p-4 md:p-[1.5625rem] mb-[1.875rem] w-full rounded-xl will-change-transform ${className}`}
       >
         <CardContent className="space-y-2 p-0">
+          <BusFrontRow />
           {seatLayout.map((rowSeats, rowIndex) => (
             <div
               key={rowIndex}
