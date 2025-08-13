@@ -58,8 +58,8 @@ export function BookingCard({ booking }) {
           </div>
         </div>
         <div className="p-[15px]">
-          <div className="flex w-full justify-between items-center mb-[15px]">
-            <div className="flex-1">
+          <div className="flex w-full justify-center items-center mb-[15px] relative">
+            <div className="flex-1 text-right pr-6">
               <div className="font-medium text-[1.1rem]">
                 {booking.fromCity}
               </div>
@@ -67,16 +67,17 @@ export function BookingCard({ booking }) {
                 {booking.busId?.departureTime || "--"}
               </div>
             </div>
-            <div className="flex mr-5 items-center">
-              <ArrowRight className="w-4 h-4" />
-            </div>
-            <div className="flex-1">
+
+            <ArrowRight className="w-4 h-4 absolute left-1/2 transform -translate-x-1/2" />
+
+            <div className="flex-1 text-left pl-6">
               <div className="font-medium text-[1.1rem]">{booking.toCity}</div>
               <div className="text-[0.9rem] text-[var(--text-secondary)]">
                 {booking.busId?.arrivalTime || "--"}
               </div>
             </div>
           </div>
+
           <div className="flex flex-wrap">
             <div className="w-1/2 mb-[10px]">
               <div className="text-[0.8rem] text-[var(--text-secondary)]">
@@ -90,7 +91,11 @@ export function BookingCard({ booking }) {
               <div className="text-[0.8rem] text-[var(--text-secondary)]">
                 Seat
               </div>
-              <div className="font-medium">{booking.seatNumbers}</div>
+              <div className="font-medium">
+                {Array.isArray(booking.seatNumbers)
+                  ? booking.seatNumbers.join(", ")
+                  : booking.seatNumbers}
+              </div>
             </div>
             <div className="w-1/2 mb-[10px]">
               <div className="text-[0.8rem] text-[var(--text-secondary)]">

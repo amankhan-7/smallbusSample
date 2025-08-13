@@ -44,7 +44,8 @@ export const usePaymentHandlers = (
         paymentMethod: PAYMENT_CONFIG.DEFAULT_PAYMENT_METHOD,
       }).unwrap();
 
-      router.push("/account?tab=bookingHistory");
+
+      router.push(`/payment/success?bookingId=${bookingId}`);
     } catch (err) {
       console.error("Booking confirmation failed:", err);
       toast.success("Payment succeeded, but booking failed. Please contact support.");
@@ -57,6 +58,7 @@ export const usePaymentHandlers = (
     console.error("Razorpay payment failed:", response.error);
     toast.error(`Payment Failed\nReason: ${response.error.description}`);
     setProcessing(false);
+    router.push(`/payment/failure?reason=${encodeURIComponent(response.error.description)}`);
   };
 
   const initiateRazorpayPayment = (
