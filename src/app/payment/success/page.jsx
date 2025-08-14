@@ -48,6 +48,13 @@ export default function ThankYouPage() {
         <p className="text-sm text-gray-500 mb-6">
           Your seat is confirmed. A confirmation email has been sent to your inbox.
         </p>
+        <div className="flex flex-col gap-2">
+            <Link
+          href="/account?tab=bookingHistory"
+          className="inline-block w-full py-2 px-4 rounded-xl bg-[#004aad] text-white font-medium text-center hover:bg-blue-800 transition duration-300 cursor-pointer"
+        >
+          Your Booking History
+        </Link>
 
         <Link
           href="/"
@@ -55,6 +62,8 @@ export default function ThankYouPage() {
         >
           Return to Homepage
         </Link>
+        </div>
+      
       </div>
     </div>
   );

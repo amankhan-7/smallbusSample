@@ -4,7 +4,7 @@ import LoginPage from "@/components/authentication/phone-page";
 import RegisterPage from "@/components/authentication/register-page";
 import AuthGuard from "@/components/wrapper/AuthGuard";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import {
@@ -48,6 +48,8 @@ function LoginComponent() {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/";
 
   const [initiateLogin, { isLoading: isSendingOtp }] =
     useInitiateLoginMutation();
@@ -117,7 +119,7 @@ function LoginComponent() {
             setCredentials({ user: { ...result.user, userType: "consumer" } })
           ).unwrap();
           toast.success("Login successful!");
-          router.push("/");
+          router.push(redirectPath); 
         } catch (error) {
           console.error("Failed to set credentials:", error);
           toast.error("Login failed. Please try again.");

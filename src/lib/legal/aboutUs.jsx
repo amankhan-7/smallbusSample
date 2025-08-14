@@ -1,6 +1,6 @@
 const aboutContent = {
   title: "About Us",
-  lastUpdated: "August 14, 2025",
+  lastUpdated: "April 12, 2025",
   introduction:
     "Connecting Cities. Creating Comfort. At Smallbus (a brand of AR Group Co.), we believe intercity travel shouldn’t be complicated, uncomfortable, or overpriced. We’re building a modern travel network using small buses like Force Travellers, Tata Wingers, and mini-buses — designed for routes within 100–300 km or up to 6 hours of travel time.",
   sections: [
