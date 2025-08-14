@@ -92,8 +92,8 @@ const termsContent = {
   ],
   contact: {
     title: "SmallBus Support",
-    email: "support@smallbus.com",
-    phone: "+91 1234567890"
+    email: "info@smallbus.com",
+    phone: "+91 8069641128"
   }
 };
 

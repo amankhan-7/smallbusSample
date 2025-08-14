@@ -1,5 +1,6 @@
 import React from "react";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
+import Link from "next/link";
 
 function Footer() {
   return (
@@ -20,10 +21,10 @@ function Footer() {
           <div>
             <h3 className="text-xl font-semibold mb-5 text-gray-900">Support</h3>
             <ul className="space-y-3 text-[15px] text-gray-600">
-              {/* <li><a href="#" className="hover:text-[#004aad]">Help Center</a></li> */}
-              <li><a href="#" className="hover:text-[#004aad]">Contact Us</a></li>
-              <li><a href="#" className="hover:text-[#004aad]">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-[#004aad]">Terms & Conditions</a></li>
+              <li><Link href="/about" className="hover:text-[#004aad]">About Us</Link></li>
+              <li><Link href="/help" className="hover:text-[#004aad]">Contact Us</Link></li>
+              <li><Link href="/privacy" className="hover:text-[#004aad]">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-[#004aad]">Terms & Conditions</Link></li>
             </ul>
           </div>
 
