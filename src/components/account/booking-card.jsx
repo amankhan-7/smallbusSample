@@ -59,7 +59,7 @@ export function BookingCard({ booking }) {
         </div>
         <div className="p-[15px]">
           <div className="flex w-full justify-center items-center mb-[15px] relative">
-            <div className="flex-1 text-right pr-6">
+            <div className="flex-1 flex-wrap">
               <div className="font-medium text-[1.1rem]">
                 {booking.fromCity}
               </div>
@@ -67,10 +67,8 @@ export function BookingCard({ booking }) {
                 {booking.busId?.departureTime || "--"}
               </div>
             </div>
-
-            <ArrowRight className="w-4 h-4 absolute left-1/2 transform -translate-x-1/2" />
-
-            <div className="flex-1 text-left pl-6">
+            
+            <div className="flex-1">
               <div className="font-medium text-[1.1rem]">{booking.toCity}</div>
               <div className="text-[0.9rem] text-[var(--text-secondary)]">
                 {booking.busId?.arrivalTime || "--"}

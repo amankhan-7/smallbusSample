@@ -3,11 +3,11 @@ import React from "react";
 const SmallbusDownload = () => {
   return (
     <section className="font-poppins bg-white text-black flex flex-col justify-center items-start min-h-screen px-5 py-10 sm:px-8 md:px-16 lg:px-20">
-      <h1 className="text-[#004aad] font-bold text-md md:text-2xl sm:text-[32px] mb-4">
+      <h1 className="text-[#004aad] font-bold text-4xl md:text-5xl mb-4">
         welcome to smallbus
       </h1>
 
-      <p className="text-[14px] sm:text-[16px] leading-relaxed mb-6">
+      <p className="md:text-2xl text-md leading-relaxed mb-6">
         we officially launched on <strong>15th August</strong>! 🎉<br />
         our app will be live soon on{" "}
         <span className="font-semibold text-[#004aad]">Google Play Store</span>
