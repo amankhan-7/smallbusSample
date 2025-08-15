@@ -59,10 +59,8 @@ export default function SearchBar() {
   //Assigning minimum and default booking date
   const today = new Date();
   const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  const defaultBookingDate = tomorrow.toISOString().split("T")[0];
-
+  const defaultBookingDate = today.toISOString().split("T")[0];
+ 
   //on clicking outside of wrapped DOM clear states
   useEffect(() => {
     const handleClickOutside = (event) => {
