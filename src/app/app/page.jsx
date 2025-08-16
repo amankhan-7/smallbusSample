@@ -4,7 +4,7 @@ const SmallbusDownload = () => {
   return (
     <section className="font-poppins bg-white text-black flex flex-col justify-center items-start min-h-screen px-5 py-10 sm:px-8 md:px-16 lg:px-20">
       <h1 className="text-[#004aad] font-bold text-4xl md:text-5xl mb-4">
-        welcome to smallbus
+        Welcome to smallbus
       </h1>
 
       <p className="md:text-2xl text-md leading-relaxed mb-6">

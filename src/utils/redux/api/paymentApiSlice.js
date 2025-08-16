@@ -43,6 +43,23 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
       }),
       transformResponse: (res) => res?.data ?? null,
     }),
+    //discount endpoints
+    verifyCoupon: builder.mutation({
+      query: (couponCode) => ({
+        url: "/discount/validate",
+        method: "POST",
+        body: { code: couponCode, userType: "consumer" },
+      }),
+      transformResponse: (res) => res?.data ?? null,
+    }),
+    applyCoupon: builder.mutation({
+      query: (couponCode) => ({
+        url: "/discount/apply",
+        method: "POST",
+        body: { code: couponCode, userType: "consumer" },
+      }),
+      transformResponse: (res) => res?.data ?? null,
+    }),
   }),
 });
 
@@ -51,4 +68,6 @@ export const {
   useGetPaymentDetailsMutation,
   useGetRefundDetailsMutation,
   useGetRazorpayHealthQuery,
+  useVerifyCouponMutation,
+  useApplyCouponMutation,
 } = paymentApiSlice;
